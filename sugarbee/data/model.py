@@ -8,8 +8,7 @@ import math
 import numpy as np
 import pandas as pd
 
-def load_headers():
-    headerfile = './kddcup.names'
+def load_headers(headerfile):
     assert(os.path.isfile(headerfile))
     with open(headerfile,'r') as f:
         attacks=f.readline().replace('.\n','').split(',')
@@ -20,9 +19,9 @@ def load_headers():
     headers.append('attack_idx')
     return headers, attacks
 
-def load_dataframe(datafile,headers):
+def load_dataframe(datafile,headers,datasize=None):
     assert(os.path.isfile(datafile))
-    df = pd.read_csv(datafile, names=headers)
+    df = pd.read_csv(datafile, names=headers, nrows=datasize)
     df.iloc[0]
     return df
 
@@ -66,6 +65,7 @@ if __name__ == '__main__':
     datafile = './KDDTrain+_20Percent.txt'
 
     start = time.time()
+    headerfile = './kddcup.names'
     headers,attacks = load_headers()
     df = load_dataframe(datafile,headers)
     elapsed = (time.time() - start)
@@ -82,3 +82,5 @@ if __name__ == '__main__':
     print "pre-processing work done in %s seconds" % (elapsed)
     print df[:5]
 
+    for i in range(len(headers)):
+        print headers[i], max(df[headers[i]])
