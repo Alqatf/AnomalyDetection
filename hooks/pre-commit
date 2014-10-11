@@ -1,2 +1,2 @@
 #!/bin/sh
-report/progress.py
+report/texcount.py

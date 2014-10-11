@@ -4,6 +4,17 @@
 # texcount
 texcount.*
 
+# tex tmps
+*.aux
+*.dvi
+*.idx
+*.out.ps
+*.pdf
+*.ps
+*.tdo
+*.lo[ftoc]
+*.toc
+
 # Datasets
 *.arff
 *.txt
