@@ -14,12 +14,12 @@ def scale_bignums_to_log2(df,targets):
     df.iloc[0]
     return df
 
-def get_preprocessed_data():
+def get_preprocessed_data(datasize):
     headerfile = './data/kddcup.names'
     datafile = './data/KDDTrain+_20Percent.txt'
 
     headers, attacks = model.load_headers(headerfile)
-    df = model.load_dataframe(datafile,headers,datasize=500)
+    df = model.load_dataframe(datafile,headers,datasize=datasize)
 
     protocols = list(set(df['protocol_type']))
     services = list(set(df['service']))
@@ -31,9 +31,9 @@ def get_preprocessed_data():
     df = discretize_elems_in_list(df,flags,'flag')
 
     scaled=['duration','src_bytes','dst_bytes','num_root','num_compromised','num_file_creations','count','srv_count','dst_host_count', 'dst_host_srv_count']
-
     df = scale_bignums_to_log2(df,scaled)
-    return df
+
+    return df, headers
 
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
