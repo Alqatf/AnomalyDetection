@@ -10,4 +10,4 @@ Chart by [Google Chart](https://code.google.com/p/google-chartwrapper/)
 
 Word counted by [counter](http://app.uio.no/ifi/texcount/download.html)
 
-Data saved in [phant](https://data.sparkfun.com/)
+Data saved in [datastream](https://data.sparkfun.com/streams/zDaaX7Rp9pcDg8rVvdQJ) of [phant](https://data.sparkfun.com/)
