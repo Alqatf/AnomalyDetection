@@ -1,0 +1,59 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{lmodern}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{algpseudocode}
+\usepackage[hidelinks]{hyperref}
+\usepackage{mathtools}
+\usepackage{tikz}
+\usepackage{paralist}
+\usepackage{mdframed} % figure box frame
+
+\usepackage[]{mcode}
+\usetikzlibrary{matrix,arrows,decorations.pathmorphing}
+
+\input{title}
+
+\begin{document}
+\maketitle
+%\input{abstract}
+\clearpage
+\tableofcontents{}
+
+\include{introduction}
+
+% background
+%\chapter{Anomaly detection}
+\include{chandola2009}
+
+%\chapter{Normalized cut}
+\include{jianbo2000}
+
+%\chapter{Spectral clustering}
+\include{ulrike2007}
+\include{ulrike2004}
+\include{ulrike2008}
+\include{jordan04}
+\include{ng01}
+\include{dhillon04}
+\include{ding04}
+
+%\chapter{Outlier detection}
+\include{Knorr00}
+
+%\chapter{NSL-KDD}
+\include{tavallaee2009}
+
+\include{bibliography}
+\bibliography{mybib1}
+\bibliographystyle{acm}
+
+\end{document}
+\endinput

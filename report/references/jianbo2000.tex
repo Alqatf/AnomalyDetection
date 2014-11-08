@@ -1,0 +1,33 @@
+\section{Normalized Cuts and Image Segmentation}
+\label{ch:jianbo00}
+
+\textit{Normalized Cuts and Image Segmentation} by Jianbo Shi(Associate Professor at the University of Pennsylvania, Computer and Information Science) and Jitendra Malik(Professor in Computer Science at University of California, Berkeley).
+\newline
+
+\textbf{Main point} is that the normalized cut algorithm \begin{inparaenum}[\itshape a\upshape)]
+\item partitioning algorithm to disjoint the graph into two cluster.
+\item and it solves NP-hard problem by approximate solution.
+\end{inparaenum}
+
+A graph $G = (V, E)$ can be partitioned into two disjoint sets $A, B$ by removing edges connecting two parts. The goal of algorithm is that computes the cut cost as a fraction of the total edge connections to all the nodes in the graph. It can be founded in polynomial time but often divide with small cluster. Normalized cut solves this problem.
+
+\begin{figure}[ht]
+\begin{mdframed}
+$Ncut(A,B) = \frac{cut(A,B)}{assoc(A,V)} + \frac{cut(A,B)}{assoc(B,V)}$ \\
+\\
+where \\
+$cut(A,B) = \sum_{u \in A, v \in B} w(u, v)$,\\
+$assoc(A,V) = \sum_{u \in A, t \in V} w(u, t)$
+\end{mdframed}
+\caption{Nomalized cut algorithm}
+\end{figure}
+
+Basic idea is that big clusters will inclease $assoc(A,B)$, thus decreasing $Ncut(A,B)$. It is NP-Hard problem though, it can find approximate solution by finding the eigenvector with the second-smallest eigenvalue of this generalized eigenvalue problem. This splits the data into two clusters. We can recursively partition data to find more clusters.
+\begin{figure}[ht]
+\begin{mdframed}
+$(D - W)y = \lambda D y$
+\end{mdframed}
+\caption{Generalized eigenvalue system to solve}
+\end{figure}
+
+

@@ -1,0 +1,105 @@
+\section{A Tutorial on Spectral Clustering}
+\label{ch:ulrike07}
+
+\textit{A Tutorial on Spectral Clustering} by Ulrike Von Luxburg. Professor of Computer Science, focus on ML and computational statistics, University of Hamburg.
+\newline
+
+\textbf{Main point} is that \begin{inparaenum}[\itshape a\upshape)]
+\item spectral clustering obtains high-quality solution to general clustering problem.
+\item graph Laplacian has important properties.
+\item three different perspectives  are given as motivation and explanation: a graph cut point of view, a random walks point of view, and a pertubation theory point of view.
+\end{inparaenum}
+
+\subsection{graph Laplacian}
+Spectral clustering algorithms attemp to find $k$ subsets of vertices which have the property that vertices within a cluster are similar to each other than to vertices in other clusters. In order to find sets, spectral clustering makes the unnormalized Laplacian $n \times n$ matrix $L$.
+
+$L = D - W$ where $D$ is the diagonal degree matrix $d_{ii}$ is the detree of vertex $i$ defined as $d_{ii} = \sum_{j=1}^n$ and $W$ is the weighted adjacency matrix, such that $W_{ii} = 0$ and $w_{ij}$ is the weight of the edge between $v_i \in V$ and $v_j \in V$.
+
+Note that we are assuming that the graph is undirect which makes $W$ and $L$ symmetric and the weight of an edge is a non-negative measure of similiarity between the two vertices. Higher weights imply greater similarity.
+
+\subsubsection{Unnormalized $L$}
+\begin{description}
+\item[Property 1] \hfill \\
+for every vector $f \in R^n$, we have $f^T L f = \frac{1}{2} \sum_{i,j=1}^{n} w_{i,j}(f_i - f_j)^2$.
+\item[Property 2] \hfill \\
+$L$ is symmetric and positive-definite.
+\item[Property 3] \hfill \\
+The smallest eigenvalue of $L$ is 0, and the corresponding eigenvector is the constant eigenvector 1.
+\item[Property 4] \hfill \\
+$L$ has $n$ non-negative, real-valued eigenvalues are $0 = \lambda_1 \leq \lambda_2 \leq \cdots \leq  \lambda_n$.
+\end{description}
+
+\subsubsection{Normalized $L$}
+Here is the definition of $L_{sym}$ and $L_{rw}$. \\
+$\bullet$$L_{sym} = D^{-\frac{1}{2}} L D^{-\frac{1}{2}} = I - D^{-\frac{1}{2}} W D^{-\frac{1}{2}}$ \\
+$\bullet$$L_{rw} = D^{-1} L = I - D^{-1} W$
+
+\begin{description}
+\item[Property 1] \hfill \\
+for every vector $f \in R^n$, we have $f^T L_{sym} f = \frac{1}{2} \sum_{i,j=1}^{n} w_{i,j}(\frac{f_i}{\sqrt{d_{ii}}} - \frac{f_j}{\sqrt{d_{jj}}})^2$.
+\item[Property 2] \hfill \\
+$\lambda$ is an eigenvalue of $L_{rw}$ with eigenvector $u$ if and only if $\lambda$ is an eigenvalue of $L_{sym}$ with eigenvector $w = D^{\frac{1}{2}} u$.
+
+\item[Property 3] \hfill \\
+$\lambda$ is an eigenvalue of $L_{rw}$ with eigenvector $u$ if and only if $u$ solve the gereralized eigenvalue problem $L u = \lambda D u$.
+
+\item[Property 4] \hfill \\
+0 is an eigenvalue of $L_{rw}$ with the constant vector 1 as eigenvector.\\
+0 is an eigenvalue of $L_{sym}$ with eigenvector $D^{\frac{1}{2}} 1 $.
+
+\item[Property 4] \hfill \\
+$L_{sym}$ and $L_{rw}$ are positive semi-definite and have $n$ non-negative, real-valued eigenvalues are $0 = \lambda_1 \leq  \lambda_2 \leq  \cdots \leq  \lambda_n$.
+\end{description}
+
+\subsection{Spectral clustering}
+Normalized and unnormalized spectral clustering is similar.
+
+\begin{description}
+\item[Unnormalized spectral clustering] \hfill \\
+
+\begin{enumerate}
+\item[Input] : Similarity matrix $S \in R^{n \times n}$, number $k$ of clusters. \\
+\item[Step 1] : Construct the unnomalized graph Laplacian $L = D - W$, using the weighted $n \times n$ adjacency matrix $W$, where $w_{ij}$ is a function of $S_{ij}$ that gives non-negative weights. \\
+\item[Step 2] : Find the $k$ eigenvectors $u_1, \cdots, u_k$ corresponding to the smallest $k$ eigenvalues of $L$ \\
+\item[Step 3] : Let $U = R^{n \times k}$ be the matrix containing the eigenvectors $u_i$ as columns, and let $y_i \in R^k$ be the $i$th row of $U$.\\
+\item[Step 4] : Cluster the points $(y_i)_{i=1,\cdots,n}$ in $R^k$ using $k$-means clustering into clusters $C_1,\cdots,C_k$.\\
+\item[Output] : clusters $A_1, \cdots, A_k$ where $A_k - {v_j|y_j \in C_i}$
+\end{enumerate}
+
+\item[Normalized spectral clustering according to Shi] \hfill \\
+In normalized case, the algorithm use $L_{rw}$. Shi's normalized clustering uses eigenvectors of $L_{rw}$.
+
+\begin{enumerate}
+\item[Input] : Similarity matrix $S \in R^{n \times n}$, number $k$ of clusters. \\
+\item[Step 1] : Construct the unnomalized graph Laplacian $L = D - W$, using the weighted $n \times n$ adjacency matrix $W$, where $w_{ij}$ is a function of $S_{ij}$ that gives non-negative weights. \\
+\item[Step 2] : Find the $k$ eigenvectors $u_1, \cdots, u_k$ corresponding to the smallest $k$ eigenvalues that solve the generalized eigenvector problem $L u = \lambda D u$ \\
+\item[Step 3] : Let $U = R^{n \times k}$ be the matrix containing the eigenvectors $u_i$ as columns, and let $y_i \in R^k$ be the $i$th row of $U$.\\
+\item[Step 4] : Cluster the points $(y_i)_{i=1,\cdots,n}$ in $R^k$ using $k$-means clustering into clusters $C_1,\cdots,C_k$.\\
+\item[Output] : clusters $A_1, \cdots, A_k$ where $A_k - {v_j|y_j \in C_i}$
+\end{enumerate}
+
+\item[Normalized spectral clustering according to Ng] \hfill \\
+
+\begin{enumerate}
+\item[Input] : Similarity matrix $S \in R^{n \times n}$, number $k$ of clusters. \\
+\item[Step 1] : Construct the nomalized graph Laplacian $L_{sym} = I - D^{-\frac{1}{2}} W D^{-\frac{1}{2}}$, using the weighted $n \times n$ adjacency matrix $W$, where $w_{ij}$ is a function of $S_{ij}$ that gives non-negative weights. \\
+\item[Step 2] : Find the $k$ eigenvectors $u_1, \cdots, u_k$ corresponding to the smallest $k$ eigenvalues of $L_{sym}$. \\
+\item[Step 3] : Let $U = R^{n \times k}$ be the matrix containing the eigenvectors $u_i$ as columns, and let $y_i \in R^k$ be the $i$th row of $U$.\\
+\item[Step 4] : Let $T$ be the row-normalized $U$ matrix where $t_{ij} = \frac{u_{ij}}{(\sum_k u_{ik}^2)^2}$ and let $y_i \in R^k$ be the $i$th row of $T$.\\
+\item[Step 5] : Cluster the points $(y_i)_{i=1,\cdots,n}$ in $R^k$ using $k$-means clustering into clusters $C_1,\cdots,C_k$.\\
+\item[Output] : clusters $A_1, \cdots, A_k$ where $A_k - {v_j|y_j \in C_i}$
+\end{enumerate}
+
+\end{description}
+
+\subsection{Approaches}
+\begin{description}
+\item[Graph cut] \hfill \\
+$\bullet$ Apporaximate solution by finding eigenvector. \\
+$\bullet$ There is no guarantee on quality of the solution.
+\item[Random walk approach] \hfill \\
+$\bullet$ Minimizing normalized cut is equivalent to minimizing the probability that a random walk on the graph.
+\item[Perturbation theory approach] \hfill \\
+$\bullet$ The larger the gap between $\lambda_{k}$ and $\lambda_{k+1}$, the closer the piecewise-constant eigenvectors will be.
+\end{description}
+
