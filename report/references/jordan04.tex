@@ -1,9 +1,38 @@
 \section{Learning spectral clustering}
 \label{ch:jordan04}
 
-\textit{Learning spectral clustering} by Francis R. Bach and Michael I. Jordan.
+\textit{Learning spectral clustering} by Francis R. Bach and Michael I. Jordan. \\
+Cited by 313. \textit{Advances in Neural Information Processing Systems 16 (2004)}.
 \newline
 
-a new algorithm for spectral clustering with an objective function that minimize the error measure between a given partition and the minimum normalized cut partition is suggested.
+\textbf{Main point} is that the author derived \begin{inparaenum}[\itshape a\upshape)]
+\item a cost function for spectral clustering that minimize the error between a given partition and the minimum normalized cut
+\item with respect to two algorithms one for spectral clustering and one for learning the similarity matrix.
+\end{inparaenum}.
 
+\subsection{Objective way of similarity measure}
+A general framework is provided for learning the similarity matrix for spectral clustering. New cost function $J(W,e)$ that characterizes how close the eigen structure of a similarity matrix $W$ is to a partition $e$. 
+%
+%\subsection{Spectral clustering}
+%Given a dataset $I$ of $P$ points in space $X$ and a $P \times P$ similarity matrix $W$ that measures the similarity between the $P$ points. 
+
+\subsection{Learning the similarity matrix}
+
+\begin{figure}[ht]
+\begin{mdframed}
+\begin{description}
+\item[Assumption] \hfill \\
+given $N$ datasets $D_n, n \in \{ 1, \cdots, N \}$ of points in $R^F$ where $D_n$ is composed of $P_n$ points $x_{np}, p \in \{ 1, \cdots, P_n \}$.
+\item[Step 1] \hfill \\
+for each $n$ we know the partition $e_n$, so that target matrix $ \Pi (e_n, \alpha)$ can be computed from each dataset.
+\item[Step 2] \hfill \\
+for each $n$, we have a similarity matrix $W_n (\alpha)$
+\item[Step 3] \hfill \\
+The cost function $H(\alpha) = \frac{1}{N} \sum_n F( W_n(\alpha), \Pi_0 (e_n, \alpha)) + C || \alpha ||_1$.
+\item[Step 4] \hfill \\
+The learning algorithm is the minimization of $H(\alpha)$ with respect to $\alpha \in R_{+}^F$ using the method of conjugate gradient with line search.
+\end{description}
+\end{mdframed}
+\caption{Learning similarity matrix}
+\end{figure}
 

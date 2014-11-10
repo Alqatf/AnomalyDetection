@@ -3,17 +3,24 @@
 \BOOKMARK [2][-]{subsection.2.1}{Intrusion detection}{section.2}% 3
 \BOOKMARK [2][-]{subsection.2.2}{Spectral anomaly detection}{section.2}% 4
 \BOOKMARK [1][-]{section.3}{Normalized Cuts and Image Segmentation}{}% 5
-\BOOKMARK [1][-]{section.4}{A Tutorial on Spectral Clustering}{}% 6
-\BOOKMARK [2][-]{subsection.4.1}{graph Laplacian}{section.4}% 7
-\BOOKMARK [3][-]{subsubsection.4.1.1}{Unnormalized L}{subsection.4.1}% 8
-\BOOKMARK [3][-]{subsubsection.4.1.2}{Normalized L}{subsection.4.1}% 9
-\BOOKMARK [2][-]{subsection.4.2}{Spectral clustering}{section.4}% 10
-\BOOKMARK [2][-]{subsection.4.3}{Approaches}{section.4}% 11
-\BOOKMARK [1][-]{section.5}{Limits of spectral clustering}{}% 12
-\BOOKMARK [1][-]{section.6}{Consistency of spectral clustering}{}% 13
-\BOOKMARK [1][-]{section.7}{Learning spectral clustering}{}% 14
-\BOOKMARK [1][-]{section.8}{On Spectral Clustering: Analysis and an algorithm}{}% 15
-\BOOKMARK [1][-]{section.9}{Kernel K- means, Spectral Clustering and Normalized Cut}{}% 16
-\BOOKMARK [1][-]{section.10}{Linearize Cluster Assignment via Spectral Ordering}{}% 17
-\BOOKMARK [1][-]{section.11}{Distance-Based Outliers: Algorithms and Applications}{}% 18
-\BOOKMARK [1][-]{section.12}{A detailed analysis of the KDD CUP 99 data set}{}% 19
+\BOOKMARK [2][-]{subsection.3.1}{Normalized cut algorithm}{section.3}% 6
+\BOOKMARK [1][-]{section.4}{A Tutorial on Spectral Clustering}{}% 7
+\BOOKMARK [2][-]{subsection.4.1}{graph Laplacian}{section.4}% 8
+\BOOKMARK [3][-]{subsubsection.4.1.1}{Unnormalized L}{subsection.4.1}% 9
+\BOOKMARK [3][-]{subsubsection.4.1.2}{Normalized L}{subsection.4.1}% 10
+\BOOKMARK [2][-]{subsection.4.2}{Approaches}{section.4}% 11
+\BOOKMARK [2][-]{subsection.4.3}{Spectral clustering}{section.4}% 12
+\BOOKMARK [1][-]{section.5}{Limits of spectral clustering}{}% 13
+\BOOKMARK [1][-]{section.6}{Consistency of spectral clustering}{}% 14
+\BOOKMARK [1][-]{section.7}{Learning spectral clustering}{}% 15
+\BOOKMARK [2][-]{subsection.7.1}{Objective way of similarity measure}{section.7}% 16
+\BOOKMARK [2][-]{subsection.7.2}{Learning the similarity matrix}{section.7}% 17
+\BOOKMARK [1][-]{section.8}{On Spectral Clustering: Analysis and an algorithm}{}% 18
+\BOOKMARK [2][-]{subsection.8.1}{Algorithm}{section.8}% 19
+\BOOKMARK [1][-]{section.9}{Kernel k-means, Spectral Clustering and Normalized Cut}{}% 20
+\BOOKMARK [2][-]{subsection.9.1}{Weighted Kernel k-means}{section.9}% 21
+\BOOKMARK [2][-]{subsection.9.2}{Spectral connection}{section.9}% 22
+\BOOKMARK [1][-]{section.10}{Linearize Cluster Assignment via Spectral Ordering}{}% 23
+\BOOKMARK [2][-]{subsection.10.1}{Linearized cluster assignment}{section.10}% 24
+\BOOKMARK [1][-]{section.11}{Distance-Based Outliers: Algorithms and Applications}{}% 25
+\BOOKMARK [1][-]{section.12}{A detailed analysis of the KDD CUP 99 data set}{}% 26

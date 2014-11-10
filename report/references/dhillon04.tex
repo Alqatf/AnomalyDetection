@@ -1,9 +1,48 @@
-\section{Kernel K- means, Spectral Clustering and Normalized Cut}
+\section{Kernel k-means, Spectral Clustering and Normalized Cut}
 \label{ch:dhillon04}
 
-\textit{Kernel K- means, Spectral Clustering and Normalized Cut} by Dhillon.
+\textit{Kernel k-means, Spectral Clustering and Normalized Cut} by Inderjit S. Dhillon.
+Cited by 552. \textit{ACM SIGKDD international conference on Knowledge discovery and data mining}
 \newline
 
-the authors present kernel k-means algorithm and derive the nominalized cut algorithm as a special case of the kernel k-means.
+\textbf{Main point} is that the paper \begin{inparaenum}[\itshape a\upshape)]
+\item shows weighted kernel k-means formulation is very general so spectral clustering is a special case of k-means objective-function, 
+\item found k-means algorithm that decreases the normalized cut given weight and a kernel matrix.
+\end{inparaenum}
 
+\subsection{Weighted Kernel k-means}
+Let us denote a weight for each point $a$ by $w(a)$, clusters by $\pi_j$, and a partitioning of points as $\{\pi_j\}_{j=1}^k$. Using using non-linear function $\phi$, the objective function of weighted kernel k-means is defined as :
 
+\begin{figure}[ht]
+\begin{mdframed}
+$ D(\{ \pi_j \}_{j=1}^k) = \sum\limits_{j=1}^k \sum\limits_{a \in \pi_j} w(a)\| \phi(a) - m_j \|^2 $ (1) \\
+where $m_j = \frac{\sum_{b \in \pi_j} w(b) \phi(b)}{ \sum_{b \in \pi_j } w(b) } $
+\end{mdframed}
+\caption{Objective function of weight kernel k-means}
+\end{figure}
+
+\begin{figure}[ht]
+\begin{mdframed}
+$ (\phi(a) - \frac{\sum_{b \in \pi_j} w(b)\phi(b)}{\sum_{b \in \pi_j} w(b) })^2$  (2)
+\end{mdframed}
+\caption{Distrance function from $\phi(a)$ to center $m_j$}
+\end{figure}
+
+\begin{figure}[ht]
+\begin{mdframed}
+WeightedKernelKMeans( $ K, k, w, C_1, \cdots, C_k $ ) \\
+Input : K: kernel matrix, k: number of clusters, w: weights for each point \\
+Output : $C_1, \cdots, C_k$ : partitioning of the points \\
+1. Initialize the k clusters: $C_1^{(0)}, \cdots, C_k^{(0)}$. \\
+2. set = $t=0$. \\
+3. For each point $a$, find its new cluster index as \\
+$j^{*}(a) = \operatorname*{arg\,min}_j \| \phi(a) - m_j \|^2 $ using (2) \\
+4. Compute the updated clusters as \\
+$C_j^{t+1} = \{ a : j^{*}(a) = j \}$ \\
+5. If not converged, set $t = t + 1$ and go to Step 3, otherwise stop.
+\end{mdframed}
+\caption{weighted kernel k-means}
+\end{figure}
+
+\subsection{Spectral connection}
+Minimization of the objective function in (1) is equivalent to the maximization of trace($Y^T W^{1/2} K W^{1/2} Y)$. We can obtain an optimal $Y$ by taking the top $k$ eigenvectors of $W^{1/2}K W^{1/2}$. It shows Kernel k-means and spectral clustering have a theoretical connection. 

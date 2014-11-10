@@ -1,2 +1,18 @@
 \section{Introduction}
-Most of spectral clustering algorithms here are highly dependent on the eigenvector decomposition of the graph Laplacian and are variants of the normalized cut method.
+
+The main focus of the report is to find anomaly in data set from NSL-KDD dataset. Most of these patterns represent normal behaviour, but there are several cases that due to faulty device or attack to the network with abnormal patterns. In this report, spectral clustering method is going to be used.
+
+Most of spectral clustering algorithms here are highly dependent on the eigenvector decomposition of the graph Laplacian and are variants of the normalized cut method. Basic idea of clustering started from \textit{Normalized Cuts and Image Segmentation}. All graph clustering objective function can be written as: \\
+
+\begin{figure}[ht]
+\begin{mdframed}
+$J = cut(A,B)/assoc(1) + cut(A,B)/assoc(2)$. \\
+$assoc(1) = \sum_{i \in C_k} 1$ for \textit{Ratio cut}.  \\
+$assoc(1) \sum_{i,j \in C_k} w_{i,j}$ for \textit{Normalized cut}. \\
+\end{mdframed}
+\caption{Objective function of graph clustering algorithm}
+\end{figure}
+
+In \textit{Learning spectral clustering}, a new algorithm for spectral clustering with an objective function that minimize the error measure between a given partition and the minimum normalized cut partition is suggested. In \textit{On Spectral Clustering: Analysis and an algorithm}, a similar approach with previous one is used except the authors normalize the rows of the chosen eigenvectors. In \textit{Kernel K-means, Spectral Clustering and Normalized Cut}, the authors present kernel k-means algorithm and derive the nomi- nalized cut algorithm as a special case of the kernel k-means. In \textit{Linearized Cluster Assignment via Spectral Ordering}, the authors suggest a new way clustering method that is able to partition the data into $K$ clusters. \\
+
+

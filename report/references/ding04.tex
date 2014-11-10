@@ -1,7 +1,20 @@
 \section{Linearize Cluster Assignment via Spectral Ordering}
 
-\textit{Linearize Cluster Assignment via Spectral Ordering} by Chris Ding.
+\textit{Linearize Cluster Assignment via Spectral Ordering} by Chris Ding. \\
+Cited by 69. \textit{Machine learning. ACM, 2004.}
 \newline
 
-the authors suggest a new K-way clustering method that is able to partition the data into K clusters.
+\textbf{Main point} is that \begin{inparaenum}[\itshape a\upshape)]
+\item that K-way clustering method depends on a linear ordering provided by the spectral ordering, 
+\item paper provide a ordering objective function.
+\end{inparaenum}
+
+\subsection{Linearized cluster assignment}
+The linearized assignment algorithm depends on three techniques \begin{inparaenum}[\itshape a\upshape)]
+\item an ordering of the data objects, 
+\item clustering crossing,
+\item the connectivity matrix,
+\end{inparaenum}
+
+The actual linearization is performed via the cluster clustering, the sum of similarities symmetrically across a cut point along the linear ordering.
 

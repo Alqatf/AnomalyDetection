@@ -1,9 +1,31 @@
 \section{On Spectral Clustering: Analysis and an algorithm}
 \label{ch:ng01}
 
-\textit{On Spectral Clustering: Analysis and an algorithm} by Andrew Ng, Michael I. Jordan, and Francis R. Bach.
+\textit{On Spectral Clustering: Analysis and an algorithm} by Andrew Ng, Michael I. Jordan, and Francis R. Bach. \\
+Cited by 3787. \textit{Advances in neural information processing systems 2 (2002)}.
 \newline
 
-a similar approach with Shi is used except the authors normalize the rows of the chosen eigenvectors of step 3 to norm 1.
+\textbf{Main point} is that the author \begin{inparaenum}[\itshape a\upshape)]
+\item suggest the method nomalize the rows of the chosen eigenvector.
+\end{inparaenum}
+
+\subsection{Algorithm}
+Form a similarity matrix $S \in R^{n \times n}$ defined by $A_{ij} = exp(- \| s_i - s_j \|^2 / 2 \sigma^2)$ if $i \neq j$, and $S_{ii} = 0$.
+\begin{figure}[ht]
+\begin{mdframed}
+\begin{enumerate}
+\item[Input] : Similarity matrix $S \in R^{n \times n}$, number $k$ of clusters. \\
+\item[Step 1] : Construct the normalized graph Laplacian $L_{sym} = I - D^{-\frac{1}{2}} S D^{-\frac{1}{2}}$. \\
+\item[Step 2] : Find the $k$ eigenvectors $u_1, \cdots, u_k$ corresponding to the largest $k$ eigenvalues of $L_{sym}$. \\
+\item[Step 3] : Let $U = R^{n \times k}$ be the matrix containing the eigenvectors $u_i$ as columns, and let $y_i \in R^k$ be the $i$th row of $U$.\\
+\item[Step 4] : Let $T$ be the row-normalized $U$ matrix where $t_{ij} = \frac{u_{ij}}{(\sum_k u_{ik}^2)^2}$ and let $y_i \in R^k$ be the $i$th row of $T$.\\
+\item[Step 5] : Cluster the points $(y_i)_{i=1,\cdots,n}$ in $R^k$ into clusters $C_1,\cdots,C_k$ via $k$-means clustering or any other algorithm that attempts to minimize distortion. \\
+\item[Output] : clusters $A_1, \cdots, A_k$ where $A_k - {v_j|y_j \in C_i}$
+\end{enumerate}
+\end{mdframed}
+\caption{Normalized spectral clustering according to Ng}
+\end{figure}
+
+Then assign the original point $s_i$ to cluster $j$ if and only if row $i$ of the matrix $Y$ was assigned to cluster $j$. The scaling parameter $\sigma^2$ controls how rapidly the affinity $S_{ij}$ falls off with the distance between $s_i$ and $s_j$.
 
 
