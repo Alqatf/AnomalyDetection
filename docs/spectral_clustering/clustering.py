@@ -63,7 +63,7 @@ if __name__ == '__main__':
     print get_second_eigenvector(V)
     
     
-    k = get_ideal_k(S)
+    k = 2 #get_ideal_k(S)
     eigenspace = np.zeros((n, k));
     for i in range(k):
         eigenspace[:,i] = get_ith_eigenvector(V,i)
