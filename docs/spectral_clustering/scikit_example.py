@@ -27,12 +27,18 @@ assign_undirected_weight(W,3,4,1)
 D = np.zeros((n,n))
 for i in V:
     D[i,i] = np.sum(W[i,:])
+D[D == 0] = 1e-8 #don't laugh, there is a core package in R actually does this
 
-A = D + W
+print W
+print D
 
+D_hat = D**(-0.5)
+L = D_hat * W * D_hat
+print L
+print "=================="
 #labels = spectral_clustering(A, n_clusters = 2)
 random_state = check_random_state(None)
-maps = spectral_embedding(A, n_components = 2, 
+maps = spectral_embedding(L, n_components = 2, 
     eigen_solver = None, 
     random_state = random_state,
     eigen_tol = 0.0,
@@ -41,3 +47,4 @@ print maps
 
 _, labels, _ = k_means(maps,n_clusters=2,random_state=random_state,n_init=10)
 print labels
+

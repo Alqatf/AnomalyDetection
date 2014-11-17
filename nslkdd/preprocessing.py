@@ -14,9 +14,9 @@ def scale_bignums_to_log2(df,targets):
     df.iloc[0]
     return df
 
-def get_preprocessed_data(datasize):
-    headerfile = './data/kddcup.names'
-    datafile = './data/KDDTrain+_20Percent.txt'
+def get_preprocessed_data(datasize=None):
+    headerfile = './nslkdd/data/kddcup.names'
+    datafile = './nslkdd/data/KDDTrain+_20Percent.txt'
 
     headers, attacks = model.load_headers(headerfile)
     df = model.load_dataframe(datafile,headers,datasize=datasize)
