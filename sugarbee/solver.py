@@ -8,7 +8,7 @@ def get_ith_eigenvector(V,i):
 def solve(L, k=2):
     U, S, V = np.linalg.svd(L, full_matrices=True)
     target = np.argmax(np.absolute(np.diff(S)))
-    print V.transpose()[:,target+1]
+#    print V.transpose()[:,target+1]
 
     n = len(L)
     eigenspace = np.zeros((n, k));

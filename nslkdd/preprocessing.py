@@ -1,6 +1,10 @@
+import os
 import math
-from data import model
+import copy
+import cPickle as pickle
 import numpy as np
+from data import model
+from sklearn import mixture
 
 def discretize_elems_in_list(df, l, key):
     for i, _ in enumerate(l):
@@ -14,38 +18,84 @@ def scale_bignums_to_log2(df,targets):
     df.iloc[0]
     return df
 
-def get_preprocessed_data(datasize=None):
-    headerfile = './nslkdd/data/kddcup.names'
-    datafile = './nslkdd/data/KDDTrain+_20Percent.txt'
+def get_preprocessed_data(datasize=None, headerfile = './nslkdd/data/kddcup.names', datafile = './nslkdd/data/KDDTrain+_20Percent.txt', regenerate=False):
+    df = None
+    headers = None
+    workpath = os.path.dirname(os.path.abspath(__file__))
+    print workpath
+    if os.path.isfile(workpath+'/./df.pkl') and os.path.isfile(workpath+'/./headers.pkl') and os.path.isfile(workpath+'/./gmms.pkl') and regenerate == False:
+        with open(workpath+'/./df.pkl','rb') as input:
+            df = pickle.load(input)
+        with open(workpath+'/./headers.pkl','rb') as input:
+            headers = pickle.load(input)
+        with open(workpath+'/./gmms.pkl','rb') as input:
+            gmms = pickle.load(input)
+        return df, headers, gmms
 
-    headers, attacks = model.load_headers(headerfile)
-    df = model.load_dataframe(datafile,headers,datasize=datasize)
+    else : 
+        headers, attacks = model.load_headers(headerfile)
+        df = model.load_dataframe(datafile,headers,datasize=datasize)
+    
+        protocols = list(set(df['protocol_type']))
+        services = list(set(df['service']))
+        flags = list(set(df['flag']))
+    
+        df = discretize_elems_in_list(df,attacks,'attack')
+        df = discretize_elems_in_list(df,protocols,'protocol_type')
+        df = discretize_elems_in_list(df,services,'service')
+        df = discretize_elems_in_list(df,flags,'flag')
+    
+        scaled=['duration','src_bytes','dst_bytes','num_root','num_compromised','num_file_creations','count','srv_count','dst_host_count', 'dst_host_srv_count']
+        df = scale_bignums_to_log2(df,scaled)
 
-    protocols = list(set(df['protocol_type']))
-    services = list(set(df['service']))
-    flags = list(set(df['flag']))
+        # only select for normal data
+        df_train = copy.deepcopy(df)
+        df_train = df_train[(df_train["attack"] == 11)] 
+        gmms_normal = generate_gmms(df_train, headers)
 
-    df = discretize_elems_in_list(df,attacks,'attack')
-    df = discretize_elems_in_list(df,protocols,'protocol_type')
-    df = discretize_elems_in_list(df,services,'service')
-    df = discretize_elems_in_list(df,flags,'flag')
+        # only select for abnormal data
+        df_train = copy.deepcopy(df)
+        df_train = df_train[(df_train["attack"] != 11)] 
+        gmms_abnormal = generate_gmms(df_train, headers)
 
-    scaled=['duration','src_bytes','dst_bytes','num_root','num_compromised','num_file_creations','count','srv_count','dst_host_count', 'dst_host_srv_count']
-    df = scale_bignums_to_log2(df,scaled)
+        gmms = [gmms_normal, gmms_abnormal]
 
-    return df, headers
+        with open(workpath + '/./df.pkl','wb') as output:
+            pickle.dump(df, output,-1)
+        with open(workpath + '/./headers.pkl','wb') as output:
+            pickle.dump(headers, output,-1)
+        with open(workpath + '/./gmms.pkl','wb') as output:
+            pickle.dump(gmms, output,-1)
+
+        return df, headers, gmms
+
+def generate_gmms(df, headers, min_covariance=0.001, n_initialization=10):
+    gmms = []
+    for key in headers:
+        if key  in ['attack', 'difficulty'] :
+            continue
+        # gmm fitting
+        clf = mixture.GMM(n_components=5, covariance_type='full', min_covar=min_covariance, n_init=n_initialization)
+        clf.fit(df[key])
+        gmms.append(clf)
+    return gmms
 
 if __name__ == '__main__':
-    import matplotlib.pyplot as plt
-    import matplotlib.pyplot
-    import matplotlib.mlab
+    import sys
+    import time
 
-    df = get_preprocessed_data()
+    if sys.version_info < (2, 7) or sys.version_info >= (3, 0):
+        print ("Requires Python 2.7.x")
+        exit()
+    del sys
+
     headerfile = './data/kddcup.names'
+    datafile = './data/KDDTrain+_20Percent.txt'
 
-    headers, _ = model.load_headers(headerfile)
-    key = 'duration'
-    histdist = plt.hist(df[key], 30, normed=True, alpha=0.2)
-
-    plt.show()
+    datasize = None
+    start = time.time()
+    print "preprocessing data..."
+    df, headers, _ = get_preprocessed_data(datasize,headerfile,datafile,regenerate=True)
+    elapsed = (time.time() - start)
+    print "preprocessing done in %s seconds" % (elapsed)
 

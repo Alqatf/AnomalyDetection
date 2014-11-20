@@ -19,8 +19,8 @@ def gaussian(x,y,param=None):
 
 def dist(X_1, X_2, param='euclidean'):
     dist = DistanceMetric.get_metric(param)
-    print X_1
-    print X_2
+#    print X_1
+#    print X_2
     X = [X_1,X_2]
     return dist.pairwise(X)[0,1]
 
