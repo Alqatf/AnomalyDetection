@@ -1,3 +1,8 @@
+"""
+It usually takes about 400 seconds (7 minutes)
+"""
+print (__doc__)
+
 import os
 import math
 import copy
@@ -71,13 +76,17 @@ def get_preprocessed_data(datasize=None, headerfile = './nslkdd/data/kddcup.name
 
 def generate_gmms(df, headers, min_covariance=0.001, n_initialization=10):
     gmms = []
-    for key in headers:
-        if key  in ['attack', 'difficulty'] :
-            continue
-        # gmm fitting
-        clf = mixture.GMM(n_components=5, covariance_type='full', min_covar=min_covariance, n_init=n_initialization)
-        clf.fit(df[key])
-        gmms.append(clf)
+    for protocol_type in range(3): #udp, tcp, icmp
+        df_for_protocol = df[df['protocol_type']==protocol_type]
+        gmms_for_protocol = []
+        for key in headers:
+            if key  in ['protocol_type', 'attack', 'difficulty'] :
+                continue
+            # gmm fitting
+            clf = mixture.GMM(n_components=5, covariance_type='full', min_covar=min_covariance, n_init=n_initialization)
+            clf.fit(df_for_protocol[key])
+            gmms_for_protocol.append(clf)
+        gmms.append(gmms_for_protocol)
     return gmms
 
 if __name__ == '__main__':
@@ -97,5 +106,5 @@ if __name__ == '__main__':
     print "preprocessing data..."
     df, headers, _ = get_preprocessed_data(datasize,headerfile,datafile,regenerate=True)
     elapsed = (time.time() - start)
-    print "preprocessing done in %s seconds" % (elapsed)
+    print "Preprocessing done (%s seconds)" % (elapsed)
 

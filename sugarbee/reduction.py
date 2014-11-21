@@ -2,8 +2,10 @@
 """
 http://www.astroml.org/sklearn_tutorial/dimensionality_reduction.html
 """
+import math
 import numpy as np
 from sklearn.decomposition import RandomizedPCA
+import matplotlib
 
 def get_score(gmm, value):
     minval = 1e+20
@@ -19,20 +21,21 @@ def get_score(gmm, value):
             minval = matplotlib.mlab.normpdf(value,m1,np.sqrt(c1))[0][0]
     minval = minval*len(gmm.means_) # make it dense
 
-    sums = 0
+    sums = [0]*len(gmm.means_)
     for mi, _ in enumerate(gmm.means_) :
         m1 = gmm.means_[mi]
         c1 = gmm.covars_[mi]
         w1 = gmm.weights_[mi]
         ys = matplotlib.mlab.normpdf(value,m1,np.sqrt(c1))[0]*w1
-        sums = sums + ys[0]
+        sums[mi] = ys[0]
 
-    score = max(sums, minval)
+#    score = max(np.median(sums), minval)
+    score = np.median(sums)
 
     if score == 0:
         score = 1e-20
-    score = math.log(score)
-
+    score = -math.log(score)
+    print score
     return score
 
 def gmm_reduction(df, headers, gmms):
@@ -47,31 +50,32 @@ def gmm_reduction(df, headers, gmms):
 
         normal_scores = []
         abnormal_scores = []
+
+        protocol_type = d["protocol_type"]
+        gmm_normals_prtcl = gmm_normals[protocol_type]
+        gmm_abnormals_prtcl = gmm_abnormals[protocol_type]
         for hi, header in enumerate(headers) :
             if header in ["attack", "difficulty"] :
                 continue
             val = d[header]
-            gmm_normal = gmm_normals[hi]
-            gmm_abnormal = gmm_abnormals[hi]
-            score = gmm_normal.score([val]).tolist()[0]
+            gmm_normal_prtcl = gmm_normals_prtcl[hi]
+            gmm_abnormal_prtcl = gmm_abnormals_prtcl[hi]
+            score = gmm_normal_prtcl.score([val]).tolist()[0]
+#            score = get_score(gmm_normal_prtcl, val);
             normal_scores.append(score)
-            score = gmm_abnormal.score([val]).tolist()[0]
+            score = gmm_abnormal_prtcl.score([val]).tolist()[0]
+#            score = get_score(gmm_abnormal_prtcl, val);
             abnormal_scores.append(score)
-
-#        print str(sum(normal_scores)) + " vs " + str(max(normal_scores))
-#        print str(sum(abnormal_scores)) + " vs " + str(max(abnormal_scores))
-#        normal_score = sum(normal_scores)
-#        abnormal_score = sum(abnormal_scores)
 
         normals = sum(normal_scores)
         abnormals = sum(abnormal_scores)
 
-        scores = [max(normals,-50), max(abnormals,-50)]
+        scores = [max(normals,-20), max(abnormals,-20)]
         proj.append(scores)
 
     n_components = 2
     random_state = 0
-    rpca = RandomizedPCA(n_components=n_components, random_state=random_state)
+    #rpca = RandomizedPCA(n_components=n_components, random_state=random_state)
     #proj = rpca.fit_transform(proj)
     return proj
 

@@ -18,9 +18,13 @@ import nslkdd.preprocessing as preprocessing
 
 if __name__ == '__main__':
     datasize = 10
-    df, headers, _ = preprocessing.get_preprocessed_data(datasize)
+    df, headers, gmms = preprocessing.get_preprocessed_data(datasize)
     df_train = copy.deepcopy(df)
-    
+
+    print len(gmms[0])
+    print len(gmms[1])
+    print len(gmms[0][0])
+
     # select only normal data
     df_train = df_train[(df_train["attack"] == 11)]
 
@@ -30,7 +34,6 @@ if __name__ == '__main__':
 
     # select one row
     print df_train[0:1]
-    
-    for i, r in df_train.iterrows() :
-        # show one value
-        print "value " + str(r['duration'])
+#    for i, r in df_train.iterrows() :
+#        # show one value
+#        print "value " + str(r['duration'])

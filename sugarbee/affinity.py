@@ -40,11 +40,8 @@ def get_affinity_matrix(proj, metric_method=distance.gaussian, metric_param=None
     return A
 
 def get_laplacian_matrix(A,D):
-#    print A
-#    print D
     D[D == 0] = 1e-8 #don't laugh, there is a core package in R actually does this
     D_hat = D**(-0.5)
     L = D_hat * (D-A) * D_hat
-#   L = D - A
     return L
 

@@ -40,15 +40,12 @@ def consistent_labels(labels):
 
 if __name__ == "__main__":
     # Generate artificial datasets.
-    number_of_blobs = 5  # You can change this!!
-    data, labels_true = make_blobs(n_samples=number_of_blobs * 10,
-                                   centers=number_of_blobs)
+    number_of_blobs = 6  # You can change this!!
+
+    datax = [0.3, 0.4, 0.6, 0.2, 0.5, 0.4]
+    datay = [0.2, 0.5, 0.4, 0.6, 0.2, 0.6]
 
     # Calculate affinity_matrix.
-    connectivity = kneighbors_graph(data, n_neighbors=10)
-    print type(connectivity)
-
-    affinity_matrix = 0.5 * (connectivity + connectivity.T)
     affinity_matrix = csr_matrix( (6,6), dtype=float )
     affinity_matrix[0,1] = 0.8
     affinity_matrix[1,0] = 0.8
@@ -82,6 +79,7 @@ if __name__ == "__main__":
 
     # Plot.
     from pylab import *
+    labels_true = [0,0,0,1,1,1]
     t_map = consistent_labels(labels_true)
     t = [t_map[v] for v in labels_true]
 
@@ -91,12 +89,15 @@ if __name__ == "__main__":
     print labels_pred
     print p_map
 
+    print t
+    print p
+
     subplot(211)
     title("%d blobs(artificial datasets)." % number_of_blobs)
-    scatter(data[:, 0], data[:, 1], s=150, c=t)
+    scatter(datax, datay, s=150, c=t)
 
     subplot(212)
     title("%d clusters(predicted)." % k)
-    scatter(data[:, 0], data[:, 1], s=150, c=p)
+    scatter(datax, datay, s=150, c=p)
 
     show()
