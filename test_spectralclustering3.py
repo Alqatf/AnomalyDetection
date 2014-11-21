@@ -38,11 +38,14 @@ if __name__ == '__main__':
     start = time.time()
 
     df, headers, gmms = preprocessing.get_preprocessed_data()
-    df = df[0:1000]
+    df = df[0:500]
 
     df_train = copy.deepcopy(df)
     df_train.drop('attack',1,inplace=True)
     df_train.drop('difficulty',1,inplace=True)
+    headers.remove('protocol_type')
+    headers.remove('attack')
+    headers.remove('difficulty')
 
     print "reductioning..."
     proj = reduction.gmm_reduction(df_train, headers, gmms)
@@ -57,11 +60,10 @@ if __name__ == '__main__':
     for i, d in enumerate(cproj):
         lists[attacks[i]].append(d)
 
-    plt.subplot(2, 1, 1)
+    plt.subplot(4, 1, 1)
+    title("True labels")
 
     for i, p in enumerate(lists) :
-        print "---"
-        print p
         x = [t[0] for t in p]
         y = [t[1] for t in p]
         x = np.array(x)
@@ -77,18 +79,18 @@ if __name__ == '__main__':
     print "done in %s seconds" % (elapsed)
 
     print "=============="
-#    A = affinity.get_affinity_matrix(proj, metric_method=distance.dist, metric_param='manhattan', knn=30)
+#    A = affinity.get_affinity_matrix(proj, metric_method=distance.dist, metric_param='euclidean', knn=8)
     A = affinity.get_affinity_matrix(proj, metric_method=distance.cosdist, metric_param='manhattan', knn=8)
 
     k = predict_k(A)
     if k > 5 :
+        print "supposed k : " + str(k)
         k = 5
-    print A
+    print "Total number of clusters : " + str(k)
 
     sc = SpectralClustering(n_clusters=k,
                             affinity="precomputed",
                             assign_labels="kmeans").fit(A)
-    print k
 
     D = affinity.get_degree_matrix(A)
     L = affinity.get_laplacian_matrix(A,D)
@@ -98,6 +100,7 @@ if __name__ == '__main__':
     est.fit(cproj)
     res = est.labels_
     res = sc.labels_
+    print "The results : "
     print res
 
     lists = []
@@ -105,10 +108,33 @@ if __name__ == '__main__':
         lists.append([])
     attacks = df["attack"].values.tolist()
 
-    plt.subplot(2, 1, 2)
+    plt.subplot(4, 1, 2)
+    title("Spectral clustered")
+
     for i, p in enumerate(cproj):
         plt.scatter(p[0], p[1], c=colormaps[res[i]])
 
-    elapsed = (time.time() - start)
+    clusters = [0] * k
+    for i, p in enumerate(cproj):
+        true_label = df["attack"].values.tolist()[i]
+        if true_label == 11 :
+            clusters[ res[i] ] = clusters[ res[i] ] + 1
+        else :
+            clusters[ res[i] ] = clusters[ res[i] ] - 1
 
+    plt.subplot(4, 1, 3) # normal
+    title("Normal clustered")
+
+    for i, p in enumerate(cproj):
+        if clusters[ res[i]] >= 0 :
+            plt.scatter(p[0], p[1], c='b')
+
+    plt.subplot(4, 1, 4) # abnormal
+    title("Abnormal clustered")
+
+    for i, p in enumerate(cproj):
+        if clusters[ res[i] ] < 0 :
+            plt.scatter(p[0], p[1], c='r')
+
+    elapsed = (time.time() - start)
     plt.show()

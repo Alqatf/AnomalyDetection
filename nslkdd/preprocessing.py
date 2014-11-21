@@ -1,7 +1,6 @@
 """
 It usually takes about 400 seconds (7 minutes)
 """
-print (__doc__)
 
 import os
 import math
@@ -97,6 +96,8 @@ if __name__ == '__main__':
         print ("Requires Python 2.7.x")
         exit()
     del sys
+
+    print (__doc__)
 
     headerfile = './data/kddcup.names'
     datafile = './data/KDDTrain+_20Percent.txt'
