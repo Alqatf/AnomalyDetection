@@ -15,6 +15,7 @@ from matplotlib import gridspec
 from sklearn.cluster import KMeans
 
 import nslkdd.preprocessing as preprocessing
+import nslkdd.preprocessing as model
 import sugarbee.reduction as reduction
 import sugarbee.distance as distance
 import sugarbee.affinity as affinity
@@ -37,15 +38,21 @@ if __name__ == '__main__':
     import time
     start = time.time()
 
-    df, headers, gmms = preprocessing.get_preprocessed_data()
-    df = df[0:500]
-
-    df_train = copy.deepcopy(df)
-    df_train.drop('attack',1,inplace=True)
-    df_train.drop('difficulty',1,inplace=True)
+    headers, attacks = preprocessing.get_header_data()
     headers.remove('protocol_type')
     headers.remove('attack')
     headers.remove('difficulty')
+
+    df_training_20, df_training_full, gmms_20, gmms_full = preprocessing.get_preprocessed_training_data()
+    df_test_20, df_test_full, gmms_test_20, gmms_test_full = preprocessing.get_preprocessed_test_data()
+
+    df = df_training_20[0:200]
+    gmms = gmms_20
+
+    df_train = copy.deepcopy(df)
+    true_values = df_train["attack"].values.to_list()
+    df_train.drop('attack',1,inplace=True)
+    df_train.drop('difficulty',1,inplace=True)
 
     print "reductioning..."
     proj = reduction.gmm_reduction(df_train, headers, gmms)
@@ -55,13 +62,17 @@ if __name__ == '__main__':
     lists = []
     for i in range(22):
         lists.append([])
-    attacks = df["attack"].values.tolist()
+#    attacks = df["attack"].values.tolist()
 
     for i, d in enumerate(cproj):
         lists[attacks[i]].append(d)
 
+    plt.axis([0,100.0,0,100.0])
+    ax = plt.gca()
+    ax.set_autoscale_on(False)
+
     plt.subplot(4, 1, 1)
-    title("True labels")
+    plt.title("True labels")
 
     for i, p in enumerate(lists) :
         x = [t[0] for t in p]
@@ -83,9 +94,10 @@ if __name__ == '__main__':
     A = affinity.get_affinity_matrix(proj, metric_method=distance.cosdist, metric_param='manhattan', knn=8)
 
     k = predict_k(A)
-    if k > 5 :
+    lim = int(len(df) * 0.1)
+    if k > lim :
         print "supposed k : " + str(k)
-        k = 5
+        k = lim
     print "Total number of clusters : " + str(k)
 
     sc = SpectralClustering(n_clusters=k,
@@ -96,45 +108,76 @@ if __name__ == '__main__':
     L = affinity.get_laplacian_matrix(A,D)
 
     X = solver.solve(L)
-    est = KMeans(n_clusters=k)
-    est.fit(cproj)
-    res = est.labels_
+#    est = KMeans(n_clusters=k)
+#    est.fit(cproj)
+#    res = est.labels_
     res = sc.labels_
     print "The results : "
     print res
 
     lists = []
-    for i in range(22):
+    for i in range( len(attacks) ):
         lists.append([])
-    attacks = df["attack"].values.tolist()
+#    attacks = df["attack"].values.tolist()
 
     plt.subplot(4, 1, 2)
-    title("Spectral clustered")
+    plt.title("Spectral clustered")
 
-    for i, p in enumerate(cproj):
-        plt.scatter(p[0], p[1], c=colormaps[res[i]])
+##    cm = plt.cm.get_cmap('RdYlBu')
+#    for i, p in enumerate(cproj):
+#        plt.scatter(p[0], p[1], c=colormaps[res[i]])
+##        plt.scatter(p[0], p[1], vmin=0, vmax=k, s=35, cmap=cm) #=colormaps[res[i]])
+
+    plt.subplot(4, 1, 3) # normal
+    plt.title("Normal clustered")
 
     clusters = [0] * k
     for i, p in enumerate(cproj):
-        true_label = df["attack"].values.tolist()[i]
-        if true_label == 11 :
+        true_label = attacks[i]
+        if true_label == model.attack_normal :
             clusters[ res[i] ] = clusters[ res[i] ] + 1
         else :
             clusters[ res[i] ] = clusters[ res[i] ] - 1
-
-    plt.subplot(4, 1, 3) # normal
-    title("Normal clustered")
 
     for i, p in enumerate(cproj):
         if clusters[ res[i]] >= 0 :
             plt.scatter(p[0], p[1], c='b')
 
     plt.subplot(4, 1, 4) # abnormal
-    title("Abnormal clustered")
+    plt.title("Abnormal clustered")
 
     for i, p in enumerate(cproj):
         if clusters[ res[i] ] < 0 :
             plt.scatter(p[0], p[1], c='r')
+
+
+    # confusion matrix
+    y_true = []
+    y_pred = []
+
+    for i in true_values :
+        if i == model.attack_normal :
+            y_true.append(0)
+        else :
+            y_true.append(1)
+
+    for i in res :
+        if clusters[i] >= 0 :
+            y_pred.append(0)
+        else :
+            y_pred.append(1)
+
+    from sklearn.metrics import confusion_matrix
+    m = confusion_matrix(list(y_true), list(y_pred))
+
+    s1 = m[0][0] + m[0][1]
+    s2 = m[1][1] + m[1][0]
+
+    print m
+    print "true_positive : " + str(m[0][0]) + " (" + str(m[0][0]*1.0 / s1) + ")" 
+    print "true_negative : " + str(m[1][1]) + " (" + str(m[1][1]*1.0 / s2) + ")" 
+    print "false_positive : " + str(m[1][0]) + " (" + str(m[1][0]*1.0 / s2) + ")" 
+    print "false_negative : " + str(m[0][1]) + " (" + str(m[0][1]*1.0 / s1) + ")" 
 
     elapsed = (time.time() - start)
     plt.show()

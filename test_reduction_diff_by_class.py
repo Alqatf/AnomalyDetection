@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+"""
+It generates plots that shows similarity for anomalies in each dataset.
+"""
+
 import copy
 import math
 import numpy as np
@@ -46,41 +50,39 @@ def get_score(gmm, value):
     score = math.log(score)
     return score
 
-def generate_plots(df_abnormal, df_normal, headers, gmms, title):
+def generate_plots(df_abnormal, df_normal, headers, gmms, title, path="", protcls_name=""):
     proj = []
+
     gmm_normals = gmms[0]
     gmm_abnormals = gmms[1]
 
     fig, ax = plt.subplots()
+    plt.subplot(2, 1, 1)
+    plt.title("normal scores")
+    plt.subplot(2, 1, 2)
+    plt.title("abnormal scores")
+
     for di, d in df_normal.iterrows() :
-        print str(di) + "/" + str(len(df_normal))
+#        print str(di) + "/" + str(len(df_normal))
         normal_score = 0
         abnormal_score = 0
         normal_scores = []
         abnormal_scores = []
         for hi, header in enumerate(headers) :
-            if header in ["attack", "difficulty"] :
+            if header in ["protocol_type", "attack", "difficulty"] :
                 continue
             val = d[header]
             gmm_normal = gmm_normals[hi]
             gmm_abnormal = gmm_abnormals[hi]
-#            score = gmm_normal.score([val]).tolist()[0]
             score = get_score(gmm_normal,val)
-#            print "normal : " + str(score)
             normal_scores.append(score)
-#            score = gmm_abnormal.score([val]).tolist()[0]
             score = get_score(gmm_abnormal,val)
-#            print "abnormal : " + str(score)
             abnormal_scores.append(score)
-#            print "======================"
         xs = range(len(headers))
         plt.subplot(2, 1, 1)
         plt.plot(xs,normal_scores,color='y', lw=3)
         plt.subplot(2, 1, 2)
         plt.plot(xs,abnormal_scores,color='y', lw=3)
-
-#    raw_input()
-#    print "##############################"
 
     for di, d in df_abnormal.iterrows() :
         print str(di) + "/" + str(len(df_abnormal))
@@ -89,20 +91,15 @@ def generate_plots(df_abnormal, df_normal, headers, gmms, title):
         normal_scores = []
         abnormal_scores = []
         for hi, header in enumerate(headers) :
-            if header in ["attack", "difficulty"] :
+            if header in ["protocol_type", "attack", "difficulty"] :
                 continue
             val = d[header]
             gmm_normal = gmm_normals[hi]
             gmm_abnormal = gmm_abnormals[hi]
-#            score = gmm_normal.score([val]).tolist()[0]
             score = get_score(gmm_normal,val)
-#            print "normal : " + str(score)
             normal_scores.append(score)
-#            score = gmm_abnormal.score([val]).tolist()[0]
             score = get_score(gmm_abnormal,val)
             abnormal_scores.append(score)
-#            print "abnormal : " + str(score)
-#            print "======================"
 
         xs = range(len(headers))
         plt.subplot(2, 1, 1)
@@ -111,42 +108,68 @@ def generate_plots(df_abnormal, df_normal, headers, gmms, title):
         plt.plot(xs,abnormal_scores,color='b', lw=1)
 
     # save and close
-    fig.savefig("./plots/" + title + ".png")
+    filename = "./plots/" + path + "/" + title + "_" + protcls_name + "_" + path + ".png"
+    print filename 
+    fig.savefig(filename)
     plt.close()
+
+def generate_plots_for_df(df, gmms, path="") :
+    headers, _ = preprocessing.get_header_data()
+    headers.remove('protocol_type')
+    headers.remove('attack')
+    headers.remove('difficulty')
+
+    # plot for classes
+    attack_names = ['guess_passwd', 'spy', 'ftp_write', 'nmap', 'back', 'multihop', 'rootkit', 'pod', 'portsweep', 'perl', 'ipsweep', 'teardrop', 'satan', 'loadmodule', 'buffer_overflow', 'normal', 'phf', 'warezmaster', 'imap', 'warezclient', 'land', 'neptune', 'smurf', 'processtable', 'named', 'udpstorm', 'snmpguess', 'sqlattack', 'ps', 'httptunnel', 'sendmail', 'snmpgetattack', 'apache2', 'saint', 'mailbomb', 'mscan', 'xterm', 'worm', 'xlock', 'xsnoop']
+
+    protcls = ["udp","tcp","icmp"]
+
+    for gi in range(len(protcls)):
+        gmm_normals = gmms[0][gi]
+        gmm_abnormals = gmms[1][gi]
+
+        # normal data
+        df_normal = copy.deepcopy(df)
+        df_normal = df_normal[(df_normal["attack"] == 11)] # only select for 1 class 
+        df_normal = df_normal[(df_normal["protocol_type"] == gi)]
+        df_normal.drop('attack',1,inplace=True) # remove useless 
+        df_normal.drop('difficulty',1,inplace=True) # remove useless 
+        df_normal.drop('protocol_type',1,inplace=True)
+        df_normal.reset_index(drop=True)
+        df_normal = df_normal[0:10]
+
+        # abnormal data
+        for i, attack_name in enumerate(attack_names) :
+            if i == 11 :
+                continue
+            df_abnormal = copy.deepcopy(df)
+            df_abnormal = df_abnormal[(df_abnormal["attack"] == i)] # only select for 1 class 
+            df_abnormal = df_abnormal[(df_abnormal["protocol_type"] == gi)]
+
+            if 1 >  len(df_abnormal) :
+                continue
+
+            df_abnormal.drop('attack',1,inplace=True) # remove useless 
+            df_abnormal.drop('difficulty',1,inplace=True) # remove useless 
+            df_abnormal.drop('protocol_type',1,inplace=True)
+            df_abnormal.reset_index(drop=True)
+            df_abnormal = df_abnormal[0:10]
+
+            gmm_normals_protcl = gmms[0][gi]
+            gmm_abnormals_protcl = gmms[1][gi]
+            gmms_protcl = [gmm_normals_protcl, gmm_abnormals_protcl]
+
+            generate_plots(df_abnormal, df_normal, headers, gmms_protcl, attack_name, path=path, protcls_name = protcls[gi])
 
 if __name__ == '__main__':
     import time
     start = time.time()
 
-    df, headers, gmms = preprocessing.get_preprocessed_data()
-    headers.remove('attack')
-    headers.remove('difficulty')
+    df_training_20, df_training_full, gmms_training_20, gmms_training_full = preprocessing.get_preprocessed_training_data()
+    df_test_plus, df_test_21, gmms_test_plus, gmms_test_21 = preprocessing.get_preprocessed_test_data()
 
-    # plot for classes
-    attack_names = ["back","buffer_overflow","ftp_write","guess_passwd","imap",
-    "ipsweep","land","loadmodule","multihop","neptune",
-    "nmap","normal","perl","phf","pod",
-    "portsweep","rootkit","satan","smurf","spy",
-    "teardrop","warezclient","warezmaster"]
+    generate_plots_for_df(df_training_20, gmms_training_20, "training20")
+    generate_plots_for_df(df_training_full, gmms_training_full, "trainingfull")
+    generate_plots_for_df(df_test_plus, gmms_test_plus, "testplus")
+    generate_plots_for_df(df_test_21, gmms_test_21, "test21")
 
-    # normal data
-    df_normal = copy.deepcopy(df)
-    df_normal = df_normal[(df_normal["attack"] == 11)] # only select for 1 class 
-    df_normal.drop('attack',1,inplace=True) # remove useless 
-    df_normal.drop('difficulty',1,inplace=True) # remove useless 
-    df_normal.reset_index(drop=True)
-    df_normal = df_normal[0:10]
-
-    # abnormal data
-    for i, attack in enumerate(attack_names) :
-        if i == 11 :
-            continue
-        print "================"
-        print attack
-        df_abnormal = copy.deepcopy(df)
-        df_abnormal = df_abnormal[(df_abnormal["attack"] == i)] # only select for 1 class 
-        df_abnormal.drop('attack',1,inplace=True) # remove useless 
-        df_abnormal.drop('difficulty',1,inplace=True) # remove useless 
-        df_abnormal.reset_index(drop=True)
-        df_abnormal = df_abnormal[0:10]
-        generate_plots(df_abnormal, df_normal, headers, gmms, attack)

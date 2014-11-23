@@ -3,9 +3,10 @@
 Realisation plotting for data check
 ===========================================
 
-In order to understand the data more, it will visualise 20% dataset for every properties.
+In order to understand the data more, it will visualise 20% dataset for every 
+properties.
 
-It usually takes about 1200 seconds (20 minutes)
+It usually takes about 2026 seconds (35 minutes)
 """
 print (__doc__)
 
@@ -22,7 +23,9 @@ import copy
 from data import model
 import preprocessing
 
-def generate_realisation_plots(df, headers, min_sample=1000, min_covariance=0.001, title="", gmms=None):
+def generate_realisation_plots(df, headers, min_sample=1000, path="", title="", gmms=None):
+    min_sample = len(df)
+
     discretes = ['duration', 'protocol_type', 'service', 'flag', 'src_bytes', 'dst_bytes', 'land', 'wrong_fragment', 'urgent', 'hot', 'num_failed_logins', 'logged_in', 'num_compromised', 'root_shell', 'su_attemped', 'num_root', 'num_file_creation', 'num_shells', 'num_access_files', 'num_outbound_cmds', 'is_host_login', 'is_guest_login', 'count', 'srv_count', 'dst_host_count', 'dst_host_srv_count']
 
     for gpi, gmm_for_protocol_type in enumerate(gmms) :
@@ -36,6 +39,9 @@ def generate_realisation_plots(df, headers, min_sample=1000, min_covariance=0.00
             df_for_protocl = df[df['protocol_type']==gpi]
             df_for_protocl = df_for_protocl[key]
     
+            if len(df_for_protocl) == 0 :
+                continue
+
             minval = min(df_for_protocl)
             maxval = max(df_for_protocl)
             margin = 0 #(maxval-minval) / 20.0
@@ -95,8 +101,29 @@ def generate_realisation_plots(df, headers, min_sample=1000, min_covariance=0.00
                 plt.plot(xs,ys,color=colors[mi], lw=1)
     
             # save and close
-            fig.savefig("./plots/" + key+ "_" + title + "_prtcl_" + str(gpi) + ".png")
+            fig.savefig("./plots/" + path + "/" + key+ "_prtcl_" + str(gpi) + "_" + title + "_" + path + ".png")
             plt.close()
+
+def draw_gmm(df, gmms, headers, path) :
+    normal_gmm = gmms[0]
+    abnormal_gmm = gmms[1]
+
+    # plot for abnormal
+    df_train = copy.deepcopy(df)
+    df_train = df_train[(df_train["attack"] != model.attack_normal)] # only select for normal data
+    df_train.drop('attack',1,inplace=True) # remove useless 
+    df_train.drop('difficulty',1,inplace=True) # remove useless 
+    df_train.reset_index(drop=True)
+    generate_realisation_plots(df_train, headers, path=path, title="abnormal", gmms=abnormal_gmm)
+
+    # plot for normal
+    df_train = copy.deepcopy(df)
+    df_train = df_train[(df_train["attack"] == model.attack_normal)] # only select for normal data
+    df_train.drop('attack',1,inplace=True) # remove useless 
+    df_train.drop('difficulty',1,inplace=True) # remove useless 
+    df_train.reset_index(drop=True)
+    df_train.reset_index(drop=True)
+    generate_realisation_plots(df_train, headers,, path=path, title="normal", gmms=normal_gmm)
 
 if __name__ == '__main__':
     import sys
@@ -113,31 +140,20 @@ if __name__ == '__main__':
     datasize = None
     start = time.time()
 
-    # plot preparation
-    df, headers, gmms = preprocessing.get_preprocessed_data(datasize,headerfile,datafile)
+    headers, _ = preprocessing.get_header_data()
     headers.remove('protocol_type')
     headers.remove('attack')
     headers.remove('difficulty')
 
-    normal_gmm = gmms[0]
-    abnormal_gmm = gmms[1]
+    # plot preparation
+    df_training_20, df_training_full, gmms_20, gmms_full = preprocessing.get_preprocessed_training_data(datasize)
+    draw_gmm(df_training_20, gmms_20, headers, "training20")
+    draw_gmm(df_training_full, gmms_full, headers, "trainingfull")
 
-    # plot for abnormal
-    df_train = copy.deepcopy(df)
-    df_train = df_train[(df_train["attack"] != 11)] # only select for normal data
-    df_train.drop('attack',1,inplace=True) # remove useless 
-    df_train.drop('difficulty',1,inplace=True) # remove useless 
-    df_train.reset_index(drop=True)
-    generate_realisation_plots(df_train, headers, min_sample=len(df_train), title="abnormal", gmms=abnormal_gmm)
-
-    # plot for normal
-    df_train = copy.deepcopy(df)
-    df_train = df_train[(df_train["attack"] == 11)] # only select for normal data
-    df_train.drop('attack',1,inplace=True) # remove useless 
-    df_train.drop('difficulty',1,inplace=True) # remove useless 
-    df_train.reset_index(drop=True)
-    df_train.reset_index(drop=True)
-    generate_realisation_plots(df_train, headers, min_sample=len(df_train), title="normal", gmms=normal_gmm)
+    # plot preparation
+    df_test_plus, df_test_21, gmms_test_plus, gmms_test_21 = preprocessing.get_preprocessed_test_data(datasize)
+    draw_gmm(df_test_plus, gmms_test_plus, headers, "testplus")
+    draw_gmm(df_test_21, gmms_test_21, headers, "test21")
 
     elapsed = (time.time() - start)
     print "Plotting done (%s seconds)" % (elapsed)

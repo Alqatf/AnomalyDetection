@@ -1,5 +1,0 @@
-€]q(UdurationqUprotocol_typeqUserviceqUflagqU	src_bytesqU	dst_bytesqUlandqUwrong_fragmentq	Uurgentq
-UhotqUnum_failed_loginsqU	logged_inqUnum_compromisedqU
-root_shellqUsu_attemptedqUnum_rootqUnum_file_creationsqU
-num_shellsqUnum_access_filesqUnum_outbound_cmdsqUis_host_loginqUis_guest_loginqUcountqU	srv_countqUserror_rateqUsrv_serror_rateqUrerror_rateqUsrv_rerror_rateqUsame_srv_rateqUdiff_srv_rateqUsrv_diff_host_rateq Udst_host_countq!Udst_host_srv_countq"Udst_host_same_srv_rateq#Udst_host_diff_srv_rateq$Udst_host_same_src_port_rateq%Udst_host_srv_diff_host_rateq&Udst_host_serror_rateq'Udst_host_srv_serror_rateq(Udst_host_rerror_rateq)Udst_host_srv_rerror_rateq*Uattackq+U
-difficultyq,e.

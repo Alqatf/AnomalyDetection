@@ -60,10 +60,16 @@ def gmm_reduction(df, headers, gmms):
             val = d[header]
             gmm_normal_prtcl = gmm_normals_prtcl[hi]
             gmm_abnormal_prtcl = gmm_abnormals_prtcl[hi]
-            score = gmm_normal_prtcl.score([val]).tolist()[0]
+            if gmm_normal_prtcl == None :
+                score = 0
+            else :
+                score = gmm_normal_prtcl.score([val]).tolist()[0]
 #            score = get_score(gmm_normal_prtcl, val);
             normal_scores.append(score)
-            score = gmm_abnormal_prtcl.score([val]).tolist()[0]
+            if gmm_normal_prtcl == None :
+                score = 0
+            else :
+                score = gmm_abnormal_prtcl.score([val]).tolist()[0]
 #            score = get_score(gmm_abnormal_prtcl, val);
             abnormal_scores.append(score)
 

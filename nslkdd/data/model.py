@@ -1,5 +1,5 @@
-""" Test code for existing dataset
-Author : Kim Seonghyun <shyeon.kim@scipi.net>
+""" 
+Data loader class for KDD99 dataset
 """
 
 import time
@@ -8,12 +8,27 @@ import math
 import numpy as np
 import pandas as pd
 
+attack_normal = 15
+
 def load_headers(headerfile):
+    """Headers, Attacks loader.
+    
+    It loads data from the file, but for attacks, hardcoded since many of those 
+    attacks are not included in the header file.
+    """
+
     assert(os.path.isfile(headerfile))
     with open(headerfile,'r') as f:
         attacks=f.readline().replace('.\n','').split(',')
         headers=f.readlines()
     f.close()
+    attacks = ['guess_passwd', 'spy', 'ftp_write', 'nmap', 'back', 'multihop', 
+    'rootkit', 'pod', 'portsweep', 'perl', 'ipsweep', 'teardrop', 'satan', 
+    'loadmodule', 'buffer_overflow', 'normal', 'phf', 'warezmaster', 'imap', 
+    'warezclient', 'land', 'neptune', 'smurf', 'processtable', 'named', 
+    'udpstorm', 'snmpguess', 'sqlattack', 'ps', 'httptunnel', 'sendmail', 
+    'snmpgetattack', 'apache2', 'saint', 'mailbomb', 'mscan', 'xterm', 'worm', 
+    'xlock', 'xsnoop']
     headers = [h.split(':')[0] for h in headers]
     headers.append('attack')
     headers.append('difficulty')
@@ -75,12 +90,20 @@ if __name__ == '__main__':
     print "discretizing attack..."
     df = discretize_attack_to_integer(df)
     print "discretizing protocol type..."
+
+    for i, r in df[10:20].iterrows():
+        print "value " + str(r['protocol_type'])
     df = discretize_protocol_type_to_integer(df)
+    for i, r in df[10:20].iterrows():
+        print "value " + str(r['protocol_type'])
+
     print "discretizing service..."
     df = discretize_service_to_integer(df)
     print "discretizing flag..."
     df = discretize_flag_to_integer(df)
-    scaled=['duration','src_bytes','dst_bytes','num_root','num_compromised','num_file_creations','count','srv_count','dst_host_count', 'dst_host_srv_count']
+    scaled=['duration','src_bytes','dst_bytes','num_root','num_compromised',
+    'num_file_creations','count','srv_count','dst_host_count', 
+    'dst_host_srv_count']
     print "scaling big numbers..."
     df = scale_bignums_to_log2(df,scaled)
     elapsed = (time.time() - start)
