@@ -8,6 +8,16 @@ import math
 import numpy as np
 import pandas as pd
 
+attack_types = ['guess_passwd', 'spy', 'ftp_write', 'nmap', 'back', 'multihop', 
+    'rootkit', 'pod', 'portsweep', 'perl', 'ipsweep', 'teardrop', 'satan', 
+    'loadmodule', 'buffer_overflow', 'normal', 'phf', 'warezmaster', 'imap', 
+    'warezclient', 'land', 'neptune', 'smurf', 'processtable', 'named', 
+    'udpstorm', 'snmpguess', 'sqlattack', 'ps', 'httptunnel', 'sendmail', 
+    'snmpgetattack', 'apache2', 'saint', 'mailbomb', 'mscan', 'xterm', 'worm', 
+    'xlock', 'xsnoop']
+
+protocol_types = ["udp", "icmp", "tcp"]
+
 attack_normal = 15
 
 def load_headers(headerfile):
@@ -19,20 +29,13 @@ def load_headers(headerfile):
 
     assert(os.path.isfile(headerfile))
     with open(headerfile,'r') as f:
-        attacks=f.readline().replace('.\n','').split(',')
-        headers=f.readlines()
+        _ = f.readline().replace('.\n','').split(',')
+        headers = f.readlines()
     f.close()
-    attacks = ['guess_passwd', 'spy', 'ftp_write', 'nmap', 'back', 'multihop', 
-    'rootkit', 'pod', 'portsweep', 'perl', 'ipsweep', 'teardrop', 'satan', 
-    'loadmodule', 'buffer_overflow', 'normal', 'phf', 'warezmaster', 'imap', 
-    'warezclient', 'land', 'neptune', 'smurf', 'processtable', 'named', 
-    'udpstorm', 'snmpguess', 'sqlattack', 'ps', 'httptunnel', 'sendmail', 
-    'snmpgetattack', 'apache2', 'saint', 'mailbomb', 'mscan', 'xterm', 'worm', 
-    'xlock', 'xsnoop']
     headers = [h.split(':')[0] for h in headers]
     headers.append('attack')
     headers.append('difficulty')
-    return headers, attacks
+    return headers, attack_types
 
 def load_dataframe(datafile,headers,datasize=None):
     assert(os.path.isfile(datafile))
@@ -41,8 +44,8 @@ def load_dataframe(datafile,headers,datasize=None):
     return df
 
 def discretize_attack_to_integer(df):
-    for i in range(len(attacks)):
-        df['attack'][df['attack']==attacks[i]]=i
+    for i in range(len(attack_types)):
+        df['attack'][df['attack']==attack_types[i]]=i
     return df
 
 def discretize_protocol_type_to_integer(df):

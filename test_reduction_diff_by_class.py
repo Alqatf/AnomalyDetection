@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 from matplotlib import gridspec
 
 import nslkdd.preprocessing as preprocessing
+import nslkdd.data.model as model
 
 def get_score(gmm, value):
     minval = 1e+20
@@ -120,18 +121,16 @@ def generate_plots_for_df(df, gmms, path="") :
     headers.remove('difficulty')
 
     # plot for classes
-    attack_names = ['guess_passwd', 'spy', 'ftp_write', 'nmap', 'back', 'multihop', 'rootkit', 'pod', 'portsweep', 'perl', 'ipsweep', 'teardrop', 'satan', 'loadmodule', 'buffer_overflow', 'normal', 'phf', 'warezmaster', 'imap', 'warezclient', 'land', 'neptune', 'smurf', 'processtable', 'named', 'udpstorm', 'snmpguess', 'sqlattack', 'ps', 'httptunnel', 'sendmail', 'snmpgetattack', 'apache2', 'saint', 'mailbomb', 'mscan', 'xterm', 'worm', 'xlock', 'xsnoop']
+    protocol_types = model.protocol_types #["udp","tcp","icmp"]
 
-    protcls = ["udp","tcp","icmp"]
-
-    for gi in range(len(protcls)):
-        gmm_normals = gmms[0][gi]
-        gmm_abnormals = gmms[1][gi]
+    for protocol_index, protocol_type in enumerate(protocol_types):
+        gmm_normals = gmms[0][protocol_index]
+        gmm_abnormals = gmms[1][protocol_index]
 
         # normal data
         df_normal = copy.deepcopy(df)
         df_normal = df_normal[(df_normal["attack"] == 11)] # only select for 1 class 
-        df_normal = df_normal[(df_normal["protocol_type"] == gi)]
+        df_normal = df_normal[(df_normal["protocol_type"] == protocol_index)]
         df_normal.drop('attack',1,inplace=True) # remove useless 
         df_normal.drop('difficulty',1,inplace=True) # remove useless 
         df_normal.drop('protocol_type',1,inplace=True)
@@ -139,12 +138,12 @@ def generate_plots_for_df(df, gmms, path="") :
         df_normal = df_normal[0:10]
 
         # abnormal data
-        for i, attack_name in enumerate(attack_names) :
+        for i, attack_type in enumerate(model.attack_types) :
             if i == 11 :
                 continue
             df_abnormal = copy.deepcopy(df)
             df_abnormal = df_abnormal[(df_abnormal["attack"] == i)] # only select for 1 class 
-            df_abnormal = df_abnormal[(df_abnormal["protocol_type"] == gi)]
+            df_abnormal = df_abnormal[(df_abnormal["protocol_type"] == protocol_index)]
 
             if 1 >  len(df_abnormal) :
                 continue
@@ -155,11 +154,11 @@ def generate_plots_for_df(df, gmms, path="") :
             df_abnormal.reset_index(drop=True)
             df_abnormal = df_abnormal[0:10]
 
-            gmm_normals_protcl = gmms[0][gi]
-            gmm_abnormals_protcl = gmms[1][gi]
+            gmm_normals_protcl = gmms[0][protocol_index]
+            gmm_abnormals_protcl = gmms[1][protocol_index]
             gmms_protcl = [gmm_normals_protcl, gmm_abnormals_protcl]
 
-            generate_plots(df_abnormal, df_normal, headers, gmms_protcl, attack_name, path=path, protcls_name = protcls[gi])
+            generate_plots(df_abnormal, df_normal, headers, gmms_protcl, attack_type, path=path, protcls_name = protocol_type)
 
 if __name__ == '__main__':
     import time

@@ -23,9 +23,7 @@ import nslkdd.data.model as model
 import sugarbee.reduction as reduction
 import colorhex
 
-
 if __name__ == '__main__':
-
     import time
     start = time.time()
 
@@ -37,7 +35,7 @@ if __name__ == '__main__':
 
     df = df_training_20
     gmms = gmms_training_20
-    df = df[0:100]
+    df = df[0:1000]
 
     df_train = copy.deepcopy(df)
     df_train.drop('attack',1,inplace=True)
