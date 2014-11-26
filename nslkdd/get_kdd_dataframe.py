@@ -4,10 +4,10 @@ import nslkdd.data.model as model
 attack_types = model.attack_types
 protocol_types = model.protocol_types
 
-def get_attack_type_by_name(name):
+def get_attack_type_index_by_name(name):
     return attack_types.index(name)
 
-def get_protocol_type_by_name(name):
+def get_protocol_type_index_by_name(name):
     return protocol_types.index(name)
 
 def df_by_attack_and_protocol_type(df, attack_type, protocol_type) :

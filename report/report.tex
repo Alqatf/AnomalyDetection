@@ -1,46 +1,31 @@
-\documentclass[titlesmallcaps,%
-examinerscopy,%
-copyrightpage]{uqthesis}
-\input{defs}
-\usepackage[colorinlistoftodos]{todonotes}
-\usepackage{xkeyval}
-\presetkeys{todonotes}{inline}{}
-\usepackage{titlesec}
-\usepackage{listings}
-\usepackage{verbatimbox}
-\expandafter\def\expandafter\UrlBreaks\expandafter{\UrlBreaks% save the current one
-\do\a\do\b\do\c\do\d\do\e\do\f\do\g\do\h\do\i\do\j%
-\do\k\do\l\do\m\do\n\do\o\do\p\do\q\do\r\do\s\do\t%
-\do\u\do\v\do\w\do\x\do\y\do\z\do\A\do\B\do\C\do\D%
-\do\E\do\F\do\G\do\H\do\I\do\J\do\K\do\L\do\M\do\N%
-\do\O\do\P\do\Q\do\R\do\S\do\T\do\U\do\V\do\W\do\X%
-\do\Y\do\Z\do\/}
+%-----------------------
+\documentclass[a4paper,twoside=false,abstract=false,numbers=noenddot,
+titlepage=false,headings=small,parskip=half,version=last]{scrartcl}
+%-----------------------
+\usepackage{../lib/header}
+\usepackage{../lib/probability}
+%-----------------------
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{lmodern}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{algpseudocode}
+\usepackage[hidelinks]{hyperref}
+\usepackage{mathtools}
+\usepackage{tikz}
+%-----------------------
+\usetikzlibrary{matrix,arrows,decorations.pathmorphing}
+%-----------------------
 \begin{document}
-\frontmatter
-%\listoftodos
-\input{frontstuff/frontstuff}
-\mainmatter
-\setlength{\parskip}{20pt} % changes space between paragraphs
-\renewcommand{\baselinestretch}{1.5}\normalsize
-\titlespacing*{\section}
-{0pt}{5pt plus 1pt minus 1pt}{5pt plus 1pt minus 1pt}
-\titlespacing*{\subsection}
-{0pt}{5pt plus 1pt minus 1pt}{5pt plus 1pt minus 1pt}
-\titlespacing*{\subsubsection}
-{0pt}{5pt plus 1pt minus 1pt}{5pt plus 1pt minus 1pt}
-\renewcommand*{\chapterheadendvskip}{%
-\vspace{0.725\baselineskip plus 0.115\baselineskip minus 0.192\baselineskip}%
-}
-\renewcommand*{\chapterheadstartvskip}{\vspace*{\baselineskip}}
-\input{sections/intro}
-\input{sections/background}
-\input{sections/review}
-\input{sections/outline}
-\input{sections/method}
-\input{sections/discussion}
-\input{sections/conclusion}
-\appendix
-\backmatter
-\bibliographystyle{IEEEtran}
-\bibliography{references/library}
+%-----------------------
+\input{title}
+\maketitle
+\clearpage
+%-----------------------
 \end{document}
+%-----------------------

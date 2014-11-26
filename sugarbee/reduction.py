@@ -44,7 +44,7 @@ def gmm_reduction(df, headers, gmms):
     gmm_abnormals = gmms[1]
 
     for di, d in df.iterrows() :
-        print str(di) + "/" + str(len(df))
+#        print str(di) + "/" + str(len(df))
         normal_score = 0
         abnormal_score = 0
 
