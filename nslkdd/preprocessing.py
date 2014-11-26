@@ -47,7 +47,6 @@ def generate_gmms(df, headers, n_initialization=10):
     """
     Using BIC, AIC values may be required for future work
     """
-
     gmms = [] # it is for normal data or abnormal data.
 
     """
@@ -59,19 +58,34 @@ def generate_gmms(df, headers, n_initialization=10):
         gmms_for_protocol = []
 
         for header_type in headers:
-            if header_type  in ['protocol_type', 'attack', 'difficulty'] :
+            if header_type  in ['protocol_type', 'attack', 'difficulty']:
                 continue
-            # gmm fitting
-            clf = mixture.GMM(n_components=5, covariance_type='full', 
-                n_init=n_initialization)
-            data_to_fit = df_for_protocol[header_type]
 
-            # If there is no data, it become None type.
-            if len(data_to_fit) != 0 :
-                clf.fit(df_for_protocol[header_type])
-            else :
-                clf = None
-            gmms_for_protocol.append(clf)
+            # pick the best clf which produces minimum bic among those four types
+            data_to_fit = df_for_protocol[header_type]
+            cov_types = ['spherical', 'tied', 'diag', 'full']
+            best_clf = None
+            lowest_bic = np.infty
+            if len(data_to_fit) != 0:
+                # If there is no data, it become None type.
+                print header_type
+                for cov_type in cov_types:
+                    try :
+                        # gmm fitting
+                        clf = mixture.GMM(n_components=5,
+                            covariance_type=cov_type,
+                            n_init=n_initialization)
+    
+                        clf.fit(data_to_fit)
+                        bic = clf.bic(data_to_fit)
+                        if bic < lowest_bic:
+                            best_clf = clf
+                            lowest_bic = bic
+                    except :
+                        print "     Warning! " + header_type + " w/" + cov_type + " has an error."
+                        pass
+                print lowest_bic
+            gmms_for_protocol.append(best_clf)
         gmms.append(gmms_for_protocol)
     return gmms
 
@@ -165,13 +179,17 @@ def get_preprocessed_training_data(datasize=None, regenerate=False, withfull=Fal
 
         print "preprocessing training data for 20 percent..."
         df = model.load_dataframe(datafile_20,headers,datasize=datasize)
+        print "descretization..."
         df_training_20 = discretize_elems(df, attacks)
+        print "gmm fitting..."
         gmms_training_20 = construct_gmms(df_training_20, headers)
 
         if withfull == True : 
             print "preprocessing training data total..."
             df = model.load_dataframe(datafile_full,headers,datasize=datasize)
+            print "descretization..."
             df_training_full = discretize_elems(df, attacks)
+            print "gmm fitting..."
             gmms_training_full = construct_gmms(df_training_full, headers)
         else :
             print "without full data"
