@@ -38,6 +38,9 @@ def get_score(gmm, value):
     print score
     return score
 
+important_headers = ['dst_host_srv_count','logged_in','dst_bytes','dst_host_same_src_port_rate','srv_count','flag','protocol_type','src_bytes','count','service'] #ON THE KDD'99 DATASET: STATISTICAL ANALYSIS FOR FEATURE SELECTION
+important_header_points = [0.39, 0.42, 0.43, 0.7, 0.72, 0.77, 1, 1.05, 1.15, 1.35] 
+
 def gmm_reduction(df, headers, gmms):
     proj = []
     gmm_normals = gmms[0]
@@ -60,16 +63,26 @@ def gmm_reduction(df, headers, gmms):
             val = d[header]
             gmm_normal_prtcl = gmm_normals_prtcl[hi]
             gmm_abnormal_prtcl = gmm_abnormals_prtcl[hi]
+            
             if gmm_normal_prtcl == None :
                 score = 0
             else :
                 score = gmm_normal_prtcl.score([val]).tolist()[0]
+                if header in important_headers :
+                    score = score * important_header_points[ important_headers.index(header) ]
+                else :
+                    score = score * 0.1
 #            score = get_score(gmm_normal_prtcl, val);
             normal_scores.append(score)
-            if gmm_normal_prtcl == None :
+
+            if gmm_abnormal_prtcl == None :
                 score = 0
             else :
                 score = gmm_abnormal_prtcl.score([val]).tolist()[0]
+                if header in important_headers :
+                    score = score * important_header_points[ important_headers.index(header) ]
+                else :
+                    score = score * 0.1
 #            score = get_score(gmm_abnormal_prtcl, val);
             abnormal_scores.append(score)
 

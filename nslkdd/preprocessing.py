@@ -57,7 +57,10 @@ def generate_gmms(df, headers, n_initialization=10):
         df_for_protocol = df[ df['protocol_type']==protocol_type ]
         gmms_for_protocol = []
 
+        important_headers = ['dst_host_srv_count','logged_in','dst_bytes','dst_host_same_src_port_rate','srv_count','flag','protocol_type','src_bytes','count','service'] #ON THE KDD'99 DATASET: STATISTICAL ANALYSIS FOR FEATURE SELECTION
+
         for header_type in headers:
+            print header_type
             if header_type  in ['protocol_type', 'attack', 'difficulty']:
                 continue
 
@@ -68,23 +71,27 @@ def generate_gmms(df, headers, n_initialization=10):
             lowest_bic = np.infty
             if len(data_to_fit) != 0:
                 # If there is no data, it become None type.
-                print header_type
                 for cov_type in cov_types:
                     try :
-                        # gmm fitting
-                        clf = mixture.GMM(n_components=5,
-                            covariance_type=cov_type,
-                            n_init=n_initialization)
-    
-                        clf.fit(data_to_fit)
-                        bic = clf.bic(data_to_fit)
-                        if bic < lowest_bic:
-                            best_clf = clf
-                            lowest_bic = bic
+                        for n_comp in [3,4,5,6,7,8,9]:
+                            # gmm fitting
+                            clf = mixture.GMM(n_components=n_comp,
+                                covariance_type=cov_type,
+                                n_init=n_initialization)
+                            clf.fit(data_to_fit)
+                            bic = clf.bic(data_to_fit)
+                            if bic < lowest_bic:
+                                best_clf = clf
+                                lowest_bic = bic
                     except :
-                        print "     Warning! " + header_type + " w/" + cov_type + " has an error."
-                        pass
+                        print "    Warning! " + header_type + " w/" + cov_type + " has an error."
                 print lowest_bic
+                if lowest_bic > -3000 :
+                    if header_type in important_headers :
+                        print "    Warning! this value is too big but I will use anyway"
+                        pass
+                    else :
+                        best_clf = None
             gmms_for_protocol.append(best_clf)
         gmms.append(gmms_for_protocol)
     return gmms

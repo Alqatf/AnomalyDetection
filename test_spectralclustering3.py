@@ -28,6 +28,9 @@ from autosp import predict_k
 from sklearn.cluster import SpectralClustering
 import colorhex
 
+plot_lim_max = 30
+plot_lim_min = -30
+
 def test_clustering(df, gmms, title="", save_to_file=False, point=None):
     df_train = copy.deepcopy(df)
     true_values = df_train["attack"].values.tolist()
@@ -51,8 +54,8 @@ def test_clustering(df, gmms, title="", save_to_file=False, point=None):
 
     plt.subplot(3, 1, 1)
     plt.subplots_adjust(wspace=0.4, hspace=0.4)
-    plt.xlim(-50, 100)
-    plt.ylim(-50, 100)
+    plt.xlim(plot_lim_min, plot_lim_max)
+    plt.ylim(plot_lim_min, plot_lim_max)
     plt.title("True labels")
 
     for i, p in enumerate(data_per_true_labels) :
@@ -127,8 +130,8 @@ def test_clustering(df, gmms, title="", save_to_file=False, point=None):
 
     plt.subplot(3, 1, 2) # normal
     plt.subplots_adjust(wspace=0.4, hspace=0.4)
-    plt.xlim(-50, 100)
-    plt.ylim(-50, 100)
+    plt.xlim(plot_lim_min, plot_lim_max)
+    plt.ylim(plot_lim_min, plot_lim_max)
     plt.title("Normal clustered")
 
     for i, p in enumerate(cproj):
@@ -137,8 +140,8 @@ def test_clustering(df, gmms, title="", save_to_file=False, point=None):
 
     plt.subplot(3, 1, 3) # abnormal
     plt.subplots_adjust(wspace=0.4, hspace=0.4)
-    plt.xlim(-50, 100)
-    plt.ylim(-50, 100)
+    plt.xlim(plot_lim_min, plot_lim_max)
+    plt.ylim(plot_lim_min, plot_lim_max)
     plt.title("Abnormal clustered")
 
     for i, p in enumerate(cproj):
@@ -197,7 +200,7 @@ if __name__ == '__main__':
     title = "training20_only"
     print "#################################################"
     print title
-#    test_clustering(df1, gmms, title=title, save_to_file=True)
+    test_clustering(df1, gmms, title=title, save_to_file=True)
 
     # with test-set
     dataset_description = "training20_test20"

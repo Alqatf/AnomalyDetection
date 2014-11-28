@@ -20,10 +20,11 @@ import matplotlib.pyplot as plt
 from matplotlib import gridspec
 import copy
 
+import colorhex
 from data import model
 import preprocessing
 
-def generate_realisation_plots(df, headers, min_sample=1000, path="", title="", gmms=None):
+def generate_realisation_plots(df, headers, path="", title="", gmms=None):
     min_sample = len(df)
 
     discretes = ['duration', 'protocol_type', 'service', 'flag', 'src_bytes', 'dst_bytes', 'land', 'wrong_fragment', 'urgent', 'hot', 'num_failed_logins', 'logged_in', 'num_compromised', 'root_shell', 'su_attemped', 'num_root', 'num_file_creation', 'num_shells', 'num_access_files', 'num_outbound_cmds', 'is_host_login', 'is_guest_login', 'count', 'srv_count', 'dst_host_count', 'dst_host_srv_count']
@@ -48,6 +49,8 @@ def generate_realisation_plots(df, headers, min_sample=1000, path="", title="", 
     
             # gmm fitting
             clf = gmms[gpi][hi]
+            if None == clf :
+                continue
     
             # show realisation
             plt.subplot(3, 1, 1)
@@ -67,7 +70,7 @@ def generate_realisation_plots(df, headers, min_sample=1000, path="", title="", 
                 binwidth = int(abs(maxval - minval + 1)) * 2
             else :
                 binwidth = 10 * 2
-            histdist = df_for_protocl.hist()
+            histdist = df_for_protocl.hist(bins=30)
     #        histdist = plt.hist(df_for_protocl, binwidth, normed=1, facecolor='b')
     
             # show GMM
@@ -81,7 +84,7 @@ def generate_realisation_plots(df, headers, min_sample=1000, path="", title="", 
     
             # gmm draw
             yss = [0]*len(xs)
-            colors = ['r','g','b','c','black']
+            colors = colorhex.codes
             for mi, _ in enumerate(clf.means_) :
                 m1 = clf.means_[mi]
                 c1 = clf.covars_[mi]
@@ -102,7 +105,9 @@ def generate_realisation_plots(df, headers, min_sample=1000, path="", title="", 
     
             # save and close
             fig.savefig("./plots/" + path + "/" + key+ "_prtcl_" + str(gpi) + "_" + title + "_" + path + ".png")
-            plt.close()
+            plt.cla() # http://stackoverflow.com/questions/8213522/matplotlib-clearing-a-plot-when-to-use-cla-clf-or-close/8228808#8228808
+            plt.clf()
+            plt.close('all')
 
 def draw_gmm(df, gmms, headers, path) :
     normal_gmm = gmms[0]
@@ -123,7 +128,7 @@ def draw_gmm(df, gmms, headers, path) :
     df_train.drop('difficulty',1,inplace=True) # remove useless 
     df_train.reset_index(drop=True)
     df_train.reset_index(drop=True)
-    generate_realisation_plots(df_train, headers,, path=path, title="normal", gmms=normal_gmm)
+    generate_realisation_plots(df_train, headers, path=path, title="normal", gmms=normal_gmm)
 
 if __name__ == '__main__':
     import sys
@@ -148,12 +153,12 @@ if __name__ == '__main__':
     # plot preparation
     df_training_20, df_training_full, gmms_20, gmms_full = preprocessing.get_preprocessed_training_data(datasize)
     draw_gmm(df_training_20, gmms_20, headers, "training20")
-    draw_gmm(df_training_full, gmms_full, headers, "trainingfull")
-
-    # plot preparation
-    df_test_plus, df_test_21, gmms_test_plus, gmms_test_21 = preprocessing.get_preprocessed_test_data(datasize)
-    draw_gmm(df_test_plus, gmms_test_plus, headers, "testplus")
-    draw_gmm(df_test_21, gmms_test_21, headers, "test21")
+#    draw_gmm(df_training_full, gmms_full, headers, "trainingfull")
+#
+#    # plot preparation
+#    df_test_plus, df_test_21, gmms_test_plus, gmms_test_21 = preprocessing.get_preprocessed_test_data(datasize)
+#    draw_gmm(df_test_plus, gmms_test_plus, headers, "testplus")
+#    draw_gmm(df_test_21, gmms_test_21, headers, "test21")
 
     elapsed = (time.time() - start)
     print "Plotting done (%s seconds)" % (elapsed)
