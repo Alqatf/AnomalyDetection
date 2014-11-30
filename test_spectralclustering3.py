@@ -50,14 +50,25 @@ def test_clustering(df, gmms, title="", save_to_file=False, point=None):
     for i, d in enumerate(cproj):
         data_per_true_labels[true_attack_types[i]].append(d)
 
-    fig, ax = plt.subplots()
-
-    plt.subplot(3, 1, 1)
+    fig, axarr = plt.subplots(3, 4, sharex='col', sharey='row')
     plt.subplots_adjust(wspace=0.4, hspace=0.4)
     plt.xlim(plot_lim_min, plot_lim_max)
     plt.ylim(plot_lim_min, plot_lim_max)
-    plt.title("True labels")
 
+    ax1 = axarr[0, 0]
+    ax2 = axarr[0, 1]
+    ax3 = axarr[0, 2]
+    ax4 = axarr[0, 3]
+    ax5 = axarr[1, 0]
+    ax6 = axarr[1, 1]
+    ax7 = axarr[1, 2]
+    ax8 = axarr[1, 3]
+    ax9 = axarr[2, 0]
+    ax10 = axarr[2, 1]
+    ax11 = axarr[2, 2]
+    ax12 = axarr[2, 3]
+
+    ax1.set_title("True labels")
     for i, p in enumerate(data_per_true_labels) :
         x = [t[0] for t in p]
         y = [t[1] for t in p]
@@ -80,13 +91,30 @@ def test_clustering(df, gmms, title="", save_to_file=False, point=None):
                 else :
                     colors.append('r')
 
-        plt.scatter(x, y, c=colors)
+        ax1.scatter(x, y, c=colors)
 
-#    plt.legend(attack_names, loc='best')
 
+##############################################################
+    ax2.set_title("True normal")
+    for i, p in enumerate(data_per_true_labels) :
+        x = [t[0] for t in p]
+        y = [t[1] for t in p]
+        x = np.array(x)
+        y = np.array(y)
+        if i == model.attack_normal:
+            ax2.scatter(x, y, c='g')
+##############################################################
+    ax3.set_title("True abnormal")
+    for i, p in enumerate(data_per_true_labels) :
+        x = [t[0] for t in p]
+        y = [t[1] for t in p]
+        x = np.array(x)
+        y = np.array(y)
+        if i != model.attack_normal:
+            ax3.scatter(x, y, c='r')
+##############################################################
 #    A = affinity.get_affinity_matrix(proj, metric_method=distance.dist, metric_param='euclidean', knn=8)
-    A = affinity.get_affinity_matrix(proj, 
-        metric_method=distance.cosdist, metric_param='manhattan', knn=8)
+    A = affinity.get_affinity_matrix(proj, metric_method=distance.cosdist, knn=8)
 #    D = affinity.get_degree_matrix(A)
 #    L = affinity.get_laplacian_matrix(A,D)
 #    X = solver.solve(L)
@@ -111,6 +139,10 @@ def test_clustering(df, gmms, title="", save_to_file=False, point=None):
     res = sc.labels_
 #    print "The results : "
 #    print res
+##############################################################
+"""
+what is this?
+"""
 
     true_attack_types = df["attack"].values.tolist()
 
@@ -122,31 +154,52 @@ def test_clustering(df, gmms, title="", save_to_file=False, point=None):
         else :
             clusters[ res[i] ] = clusters[ res[i] ] - 1
 
-#    plt.subplot(4, 1, 2)
-#    plt.subplots_adjust(wspace=0.4, hspace=0.4)
-#    plt.xlim(-50, 100)
-#    plt.ylim(-50, 100)
-#    plt.title("Spectral clustered")
-
-    plt.subplot(3, 1, 2) # normal
-    plt.subplots_adjust(wspace=0.4, hspace=0.4)
-    plt.xlim(plot_lim_min, plot_lim_max)
-    plt.ylim(plot_lim_min, plot_lim_max)
-    plt.title("Normal clustered")
-
+##############################################################
+    ax4.set_title("k-means")
+    for i, p in enumerate(cproj):
+        ax4.scatter(p[0], p[1], c=colorhex.codes[ res[i] ])
+##############################################################
+    ax5.set_title("Normal res")
     for i, p in enumerate(cproj):
         if clusters[ res[i]] >= 0 :
-            plt.scatter(p[0], p[1], c='b')
-
-    plt.subplot(3, 1, 3) # abnormal
-    plt.subplots_adjust(wspace=0.4, hspace=0.4)
-    plt.xlim(plot_lim_min, plot_lim_max)
-    plt.ylim(plot_lim_min, plot_lim_max)
-    plt.title("Abnormal clustered")
-
+            ax5.scatter(p[0], p[1], c='b')
+##############################################################
+    ax6.set_title("Abnormal res")
     for i, p in enumerate(cproj):
         if clusters[ res[i] ] < 0 :
-            plt.scatter(p[0], p[1], c='r')
+            ax6.scatter(p[0], p[1], c='r')
+##############################################################
+    print res
+    ax7.set_title("Cluster 1")
+    for i, p in enumerate(cproj):
+        if res[i] == 0 :
+            ax7.scatter(p[0], p[1], c='g')
+##############################################################
+    ax8.set_title("Cluster 2")
+    for i, p in enumerate(cproj):
+        if res[i] == 1 :
+            ax8.scatter(p[0], p[1], c='g')
+##############################################################
+    ax9.set_title("Cluster 3")
+    for i, p in enumerate(cproj):
+        if res[i] == 2 :
+            ax9.scatter(p[0], p[1], c='g')
+##############################################################
+    ax10.set_title("Cluster 4")
+    for i, p in enumerate(cproj):
+        if res[i] == 3 :
+            ax10.scatter(p[0], p[1], c='g')
+##############################################################
+    ax11.set_title("Cluster 5")
+    for i, p in enumerate(cproj):
+        if res[i] == 4 :
+            ax11.scatter(p[0], p[1], c='g')
+##############################################################
+    ax12.set_title("Cluster 6")
+    for i, p in enumerate(cproj):
+        if res[i] == 5 :
+            ax12.scatter(p[0], p[1], c='g')
+##############################################################
 
     # confusion matrix
     y_true = []

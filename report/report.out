@@ -2,5 +2,15 @@
 \BOOKMARK [1][-]{section.2}{Introduction}{}% 2
 \BOOKMARK [1][-]{section.3}{Related works}{}% 3
 \BOOKMARK [1][-]{section.4}{Methodology}{}% 4
-\BOOKMARK [1][-]{section.5}{Experiments}{}% 5
-\BOOKMARK [1][-]{section.6}{Conclusion}{}% 6
+\BOOKMARK [2][-]{subsection.4.1}{System overview}{section.4}% 5
+\BOOKMARK [2][-]{subsection.4.2}{Pre-processing}{section.4}% 6
+\BOOKMARK [3][-]{subsubsection.4.2.1}{Discretization}{subsection.4.2}% 7
+\BOOKMARK [2][-]{subsection.4.3}{Learning similarity function}{section.4}% 8
+\BOOKMARK [2][-]{subsection.4.4}{Measuring similarity}{section.4}% 9
+\BOOKMARK [2][-]{subsection.4.5}{Clustering network connections}{section.4}% 10
+\BOOKMARK [3][-]{subsubsection.4.5.1}{Affinity matrix computation}{subsection.4.5}% 11
+\BOOKMARK [3][-]{subsubsection.4.5.2}{Spectral clustering algorithm}{subsection.4.5}% 12
+\BOOKMARK [3][-]{subsubsection.4.5.3}{Choosing representative of clusters}{subsection.4.5}% 13
+\BOOKMARK [2][-]{subsection.4.6}{Detecting anomaly from clusters}{section.4}% 14
+\BOOKMARK [1][-]{section.5}{Experiments}{}% 15
+\BOOKMARK [1][-]{section.6}{Conclusion}{}% 16

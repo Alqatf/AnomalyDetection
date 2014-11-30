@@ -1,2 +1,51 @@
 \section{Methodology}
-Describe our approach to X
+\subsection{System overview}
+1. Distance matrix computation
+
+2. Clustering
+
+3. Outlier detection
+compare it with all the clusters to decide whether it belongs to a normal connection or a intrusion.
+
+Proposed system
+
+for training data
+
+dataset -> pre-processing -> em algorithm
+dataset -> pre-processing -> classification
+
+\subsection{Definition of anomaly}
+I therefore chose the unsupervised definition of 
+anomalies:
+frequently occurred patterns are normal
+and the pattern dissimiliar to the majority 
+of normal patterns in anomalous.
+
+\subsection{Pre-processing}
+\subsubsection{Discretization}
+without protocol, attack type, difficulty.
+categorical value - 
+big number - 
+
+\subsection{Learning similarity function}
+EM algorithm to learn the cost function.
+
+E-step
+M-step
+
+\subsection{Measuring similarity}
+based on weight, cos metric, 8-neighborhood
+distance based 
+
+\subsection{Clustering network connections}
+\subsubsection{Affinity matrix computation}
+Clustering network connections.
+
+\subsubsection{Spectral clustering algorithm}
+Normalized cut
+
+\subsubsection{Choosing representative of clusters}
+
+\subsection{Detecting anomaly from clusters}
+number of clusters : eigenvalue
+k-means
