@@ -27,6 +27,7 @@ import sugarbee.solver as solver
 
 from autosp import predict_k
 import colorhex
+import util
 
 plot_lim_max = 30
 plot_lim_min = -30
@@ -256,7 +257,8 @@ def test_clustering(df, gmms, title="", save_to_file=False, highlight_point=None
     print_confusion_matrix(true_attack_types, clusters, res)
 
     if save_to_file == True :
-        fig.savefig("./plots/results/"+title+".png")
+        path = util.make_today_folder('./results')
+        fig.savefig(path + "/" + title + ".png")
     else :
         plt.show()
     plt.close()
@@ -302,4 +304,3 @@ if __name__ == '__main__':
 
     elapsed = (time.time() - start)
     print "done in %s seconds" % (elapsed)
-
