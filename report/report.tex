@@ -29,6 +29,12 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage{mathtools}
 \usepackage{tikz}
+\graphicspath{{./}}
+\usepackage{paralist}
+\usepackage{mdframed} % figure box frame
+\usepackage{graphicx}
+
+
 \usetikzlibrary{matrix,arrows,decorations.pathmorphing}
 %-----------------------
 %\usepackage{./lib/header}
@@ -41,10 +47,12 @@
 %-----------------------
 \input{sections/intro}
 \input{sections/relatedwork}
+\newpage
 \input{sections/method}
-\input{sections/experiments}
-\input{sections/conclusions}
+%\input{sections/experiments}
+%\input{sections/conclusions}
 %-----------------------
+\newpage
 \input{references/thebibliography}
 %-----------------------
 \clearpage

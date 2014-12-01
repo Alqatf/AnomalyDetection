@@ -1,51 +1,59 @@
 \section{Methodology}
 \subsection{System overview}
-1. Distance matrix computation
-
-2. Clustering
-
-3. Outlier detection
-compare it with all the clusters to decide whether it belongs to a normal connection or a intrusion.
-
-Proposed system
-
-for training data
-
-dataset -> pre-processing -> em algorithm
-dataset -> pre-processing -> classification
+\begin{enumerate}
+\item Affinity matrix
+\item Clustering
+\item Outlier detection
+\end{enumerate}
 
 \subsection{Definition of anomaly}
-I therefore chose the unsupervised definition of 
-anomalies:
-frequently occurred patterns are normal
-and the pattern dissimiliar to the majority 
-of normal patterns in anomalous.
+I therefore chose the unsupervised definition of anomalies:
+\begin{itemize}
+\item frequently occurred patterns are normal
+\item the pattern dissimiliar to the majority of normal patterns in anomalous.
+\end{itemize}
 
-\subsection{Pre-processing}
-\subsubsection{Discretization}
-without protocol, attack type, difficulty.
-categorical value - 
-big number - 
+\subsection{Step 1. Affinity matrix}
+\subsubsection{Data pre-processing}
+\begin{itemize}
+\item categorical value to integer e.g.) service-type (ftp-data,http,etc).
+\item log of big number e.g.) duration, src-bytes.
+\end{itemize}
 
-\subsection{Learning similarity function}
-EM algorithm to learn the cost function.
+\subsubsection{Learning similarity}
+EM algorithms to learn similarity. Learned 234(=2 x 3 x 39) Gaussian mixture model in total.
+\begin{itemize}
+\item 2 : one for normal, one for abnormal.
+\item 3 : each per each protocol e.g.) udp, icmp, tcp.
+\item 39 : for all attributes.
+\end{itemize}
 
-E-step
-M-step
+\subsubsection{Measuring similarity}
+Gaussian mixture models from training set helps to measure those two similarity per each connection.
+\begin{itemize}
+\item Similarity to known normal behavior.
+\item Similarity to known abnormal behavior.
+\end{itemize}
 
-\subsection{Measuring similarity}
-based on weight, cos metric, 8-neighborhood
-distance based 
-
-\subsection{Clustering network connections}
 \subsubsection{Affinity matrix computation}
-Clustering network connections.
+The data points are associated with each other by pairwise similarity.
+\begin{itemize}
+\item Construct similarity matrix with distance metric.
+\item Construct affinity matrix from similarity matrix with 8-nearest neighbors algorithm.
+\end{itemize}
 
+\subsection{Step 2. Clustering}
+\subsubsection{Number of clusters prediction}
+Predict number of clusters based on the eigengap.
 \subsubsection{Spectral clustering algorithm}
-Normalized cut
+Normalized cut algorithm. \cite{jianbo00}
+\subsubsection{Representative of clusters}
+Clusters are represented by the mean and variance.
 
-\subsubsection{Choosing representative of clusters}
+\subsection{Step 3. Detecting anomaly from clusters}
+Distance based outlier detection is used.
+\begin{itemize}
+\item It do not require any prior knowledge.
+\item k-nearest neighbor outlier detection algorithm. \cite{knorr00}
+\end{itemize}
 
-\subsection{Detecting anomaly from clusters}
-number of clusters : eigenvalue
-k-means
