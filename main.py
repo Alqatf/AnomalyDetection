@@ -28,7 +28,9 @@ import sugarbee.solver as solver
 from autosp import predict_k
 import colorhex
 import util
+import logger
 
+today = util.make_today_folder('./results')
 plot_lim_max = 30
 plot_lim_min = -30
 
@@ -100,11 +102,11 @@ def print_confusion_matrix(true_values, clusters, res):
     s1 = m[0][0] + m[0][1]
     s2 = m[1][1] + m[1][0]
 
-    print m
-    print "true_positive : " + str(m[0][0]) + " (" + str(m[0][0]*1.0 / s1) + ")"
-    print "true_negative : " + str(m[1][1]) + " (" + str(m[1][1]*1.0 / s2) + ")"
-    print "false_positive : " + str(m[1][0]) + " (" + str(m[1][0]*1.0 / s2) + ")"
-    print "false_negative : " + str(m[0][1]) + " (" + str(m[0][1]*1.0 / s1) + ")"
+    logger.debug(m)
+    logger.debug("true_positive : " + str(m[0][0]) + " (" + str(m[0][0]*1.0 / s1) + ")")
+    logger.debug("true_negative : " + str(m[1][1]) + " (" + str(m[1][1]*1.0 / s2) + ")")
+    logger.debug("false_positive : " + str(m[1][0]) + " (" + str(m[1][0]*1.0 / s2) + ")")
+    logger.debug("false_negative : " + str(m[0][1]) + " (" + str(m[0][1]*1.0 / s1) + ")")
 
 def test_clustering(df, gmms, title="", save_to_file=False, highlight_point=None):
     df_train = copy.deepcopy(df)
@@ -128,20 +130,20 @@ def test_clustering(df, gmms, title="", save_to_file=False, highlight_point=None
 #    A = affinity.get_affinity_matrix(cproj, metric_method=distance.dist, metric_param='euclidean', knn=8)
 
     k = predict_k(A)
-    print "supposed k : " + str(k)
+    logger.debug("supposed k : " + str(k))
 
     lim = 10; #int(len(df) * 0.01)
     if k == 1 :
         k = lim
     if k > lim :
         k = lim
-    print "Total number of clusters : " + str(k)
+    logger.debug("Total number of clusters : " + str(k))
 
     sc = SpectralClustering(n_clusters=k,
                             affinity="precomputed",
                             assign_labels="kmeans").fit(A)
     res = sc.labels_
-    print res
+    logger.debug(res)
 
     # figure setting
     fig, axarr = plt.subplots(4, 4, sharex='col', sharey='row')
@@ -203,6 +205,13 @@ def test_clustering(df, gmms, title="", save_to_file=False, highlight_point=None
             ax6.scatter(p[0], p[1], c='r')
 
     ##############################################################
+    logger.debug("Cluster count")
+    counts = [0] * k
+    for _, c in enumerate(res):
+        counts[c] = counts[c] + 1
+    logger.debug(str(counts))
+
+    ##############################################################
     ax7.set_title("Cluster 1")
     for i, p in enumerate(cproj):
         if res[i] == 0 :
@@ -257,8 +266,7 @@ def test_clustering(df, gmms, title="", save_to_file=False, highlight_point=None
     print_confusion_matrix(true_attack_types, clusters, res)
 
     if save_to_file == True :
-        path = util.make_today_folder('./results')
-        fig.savefig(path + "/" + title + ".png")
+        fig.savefig(today + "/" + title + ".png")
     else :
         plt.show()
     plt.close()
@@ -279,12 +287,13 @@ if __name__ == '__main__':
     df_training_20, df_training_full, gmms_20, gmms_full = preprocessing.get_preprocessed_training_data()
     df_test_20, df_test_full, gmms_test_20, gmms_test_full = preprocessing.get_preprocessed_test_data()
 
+    logger.set_file(today + "/log.txt")
     # with training-set
     df1 = df_training_20[0:500]
     gmms = gmms_20
     title = "training20_only"
-    print "#################################################"
-    print title
+    logger.debug("#################################################")
+    logger.debug(title)
     test_clustering(df1, gmms, title=title, save_to_file=True)
 
     # with test-set
@@ -296,10 +305,10 @@ if __name__ == '__main__':
         df2 = df2[0:50]
         df = pd.concat([df1, df2])
         title = dataset_description + "_" + attack_type
-        print "#################################################"
-        print title
-        print len(df1)
-        print len(df2)
+        logger.debug("#################################################")
+        logger.debug(title)
+        logger.debug(str(len(df1)))
+        logger.debug(str(len(df2)))
         test_clustering(df, gmms, title=title, save_to_file=True, highlight_point=attack_type_index)
 
     elapsed = (time.time() - start)

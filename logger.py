@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+import util
 """ Level
 DEBUG   Detailed information, typically of interest only when diagnosing problems.
 INFO    Confirmation that things are working as expected.
@@ -23,7 +24,6 @@ def warning(txt):
     logging.warning(txt)
 
 if __name__ == '__main__':
-    import util
     path = util.make_today_folder('./results')
     set_file(path + "/log.txt")
     logging.debug("asfdsf")

@@ -3,7 +3,10 @@ from datetime import date
 
 def delete_file(path=None):
     if path != None:
-        os.remove(path)
+        try :
+            os.remove(path)
+        except OSError :
+            pass
 
 def make_today_folder(path="./"):
     path = path+'/'+today_to_string()
