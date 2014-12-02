@@ -7,11 +7,11 @@ print (__doc__)
 import numpy as np
 import copy
 
+import pandas as pd
 import matplotlib
 import matplotlib.mlab
 import matplotlib.pyplot as plt
 from matplotlib import gridspec
-import pandas as pd
 from sklearn.cluster import KMeans
 from sklearn.cluster import SpectralClustering
 from sklearn.metrics import confusion_matrix
@@ -37,27 +37,20 @@ plot_lim_min = -30
 def plot_true_labels(ax, data_per_true_labels, title="", highlight_point = None):
     ax.set_title("True labels")
     for i, p in enumerate(data_per_true_labels) :
-        x = [t[0] for t in p]
-        y = [t[1] for t in p]
-        x = np.array(x)
-        y = np.array(y)
-        colors = []
-        if highlight_point == None :
-            if i == model.attack_normal:
-                colors.append('g')
-            else :
-                colors.append('r')
-#            for _ in range(len(x)):
-#                colors.append(colorhex.codes[i])
-        else :
-            for _ in range(len(x)):
-                if i == highlight_point :
-                    colors.append(colorhex.codes[i])
-                elif i == model.attack_normal:
-                    colors.append('g')
-                else :
-                    colors.append('r')
+        x = np.array([t[0] for t in p])
+        y = np.array([t[1] for t in p])
+        if i == model.attack_normal:
+            colors = ['g'] * len(x)
+            ax.scatter(x, y, c=colors)
+        elif i != model.attack_normal and i != highlight_point:
+            colors = ['r'] * len(x)
+            ax.scatter(x, y, c=colors)
 
+    if highlight_point != None :
+        p = data_per_true_labels[highlight_point]
+        x = np.array([t[0] for t in p])
+        y = np.array([t[1] for t in p])
+        colors = ['b'] * len(x)
         ax.scatter(x, y, c=colors)
 
 def plot_normal_label(ax, data_per_true_labels, title=""):
@@ -80,7 +73,14 @@ def plot_abnormal_label(ax, data_per_true_labels, title=""):
         if i != model.attack_normal:
             ax.scatter(x, y, c='r')
 
-def print_confusion_matrix(true_values, clusters, res):
+def print_confusion_matrix(true_values, clusters, res, highlight_point=None):
+#""" Print confusion matrix in log file
+#Param :
+#true_values : true label per each dataset
+#clusters : classified as normal or not
+#res : result from kmeans
+    #highlight_point
+#"""
     # confusion matrix
     y_true = []
     y_pred = []
@@ -107,6 +107,35 @@ def print_confusion_matrix(true_values, clusters, res):
     logger.debug("true_negative : " + str(m[1][1]) + " (" + str(m[1][1]*1.0 / s2) + ")")
     logger.debug("false_positive : " + str(m[1][0]) + " (" + str(m[1][0]*1.0 / s2) + ")")
     logger.debug("false_negative : " + str(m[0][1]) + " (" + str(m[0][1]*1.0 / s1) + ")")
+
+    if highlight_point != None :
+        # confusion matrix
+        y_true = []
+        y_pred = []
+    
+        for i, v in enumerate(true_values) :
+            if v == highlight_point :
+                y_true.append(1)
+                if clusters[ res[i] ] >= 0 :
+                    y_pred.append(0)
+                else :
+                    y_pred.append(1)
+    
+        logger.debug("")
+        logger.debug("highlight")
+        try :
+            m = confusion_matrix(list(y_true), list(y_pred))
+            s1 = m[0][0] + m[0][1]
+            s2 = m[1][1] + m[1][0]
+            logger.debug(m)
+            logger.debug("true_positive : " + str(m[0][0]) + " (" + str(m[0][0]*1.0 / s1) + ")")
+            logger.debug("true_negative : " + str(m[1][1]) + " (" + str(m[1][1]*1.0 / s2) + ")")
+            logger.debug("false_positive : " + str(m[1][0]) + " (" + str(m[1][0]*1.0 / s2) + ")")
+            logger.debug("false_negative : " + str(m[0][1]) + " (" + str(m[0][1]*1.0 / s1) + ")")
+
+        except IndexError :
+            logger.debug(y_true)
+            logger.debug(y_pred)
 
 def test_clustering(df, gmms, title="", save_to_file=False, highlight_point=None):
     df_train = copy.deepcopy(df)
@@ -170,14 +199,14 @@ def test_clustering(df, gmms, title="", save_to_file=False, highlight_point=None
 
     ##############################################################
     # plot true labels
-    plot_true_labels(ax1, data_per_true_labels, "True labels")
+    plot_true_labels(ax1, data_per_true_labels, "True labels", highlight_point)
     plot_normal_label(ax2, data_per_true_labels, "True normals")
     plot_abnormal_label(ax3, data_per_true_labels, "True abnormal")
 
     ##############################################################
     # plot predicted labels
     """
-    As we already know training set labels, we can seperate normal data from "known" abnormal data and "unknown" abnormal data.
+    As we already know "normal" training set labels, we can seperate normal data from "known" abnormal data and "unknown" abnormal data.
     """
     clusters = [0] * k
     for i, p in enumerate(cproj):
@@ -196,7 +225,7 @@ def test_clustering(df, gmms, title="", save_to_file=False, highlight_point=None
     ax5.set_title("Normal res")
     for i, p in enumerate(cproj):
         if clusters[ res[i] ] >= 0 :
-            ax5.scatter(p[0], p[1], c='b')
+            ax5.scatter(p[0], p[1], c='g')
 
     ##############################################################
     ax6.set_title("Abnormal res")
@@ -263,9 +292,10 @@ def test_clustering(df, gmms, title="", save_to_file=False, highlight_point=None
             ax16.scatter(p[0], p[1], c='g')
     ##############################################################
 
-    print_confusion_matrix(true_attack_types, clusters, res)
+    print_confusion_matrix(true_attack_types, clusters, res, highlight_point)
 
     if save_to_file == True :
+        print title + " has been saved"
         fig.savefig(today + "/" + title + ".png")
     else :
         plt.show()
