@@ -1,59 +1,28 @@
-\section{Methodology}
-\subsection{System overview}
-\begin{enumerate}
-\item Affinity matrix
-\item Clustering
-\item Outlier detection
-\end{enumerate}
+\section{Connection Similarity}
+The problem of comparing network connection similarity has been an important problem. \cite{}
+After reviewing the families of proposed schemes, I indentified similarity and density approaches as the promising for the problem. 
+In Section~\ref{subsec:normalabnormalsimilarity}, I propose new approaches to measure similarity.
+In Section~\ref{subsec:densitysimilarity}, I describe density similarity measurement which is relied on the way of representatives of the clusters and threshold.
 
-\subsection{Definition of anomaly}
-I therefore chose the unsupervised definition of anomalies:
-\begin{itemize}
-\item frequently occurred patterns are normal
-\item the pattern dissimiliar to the majority of normal patterns in anomalous.
-\end{itemize}
+\subsection{Problem formulation}
+\label{subsec:problemformulation}
+Given dataset, we can estimate normal/abnormal mixture models, and density of normal connections from training set.
+Anomalies can be detected by comparing clusters which is computed by similarity score, or by checking density against threshold.
 
-\subsection{Step 1. Affinity matrix}
-\subsubsection{Data pre-processing}
-\begin{itemize}
-\item categorical value to integer e.g.) service-type (ftp-data,http,etc).
-\item log of big number e.g.) duration, src-bytes.
-\end{itemize}
+%\subsection{Requirement}
 
-\subsubsection{Learning similarity}
-EM algorithms to learn similarity. Learned 234(=2 x 3 x 39) Gaussian mixture model in total.
-\begin{itemize}
-\item 2 : one for normal, one for abnormal.
-\item 3 : each per each protocol e.g.) udp, icmp, tcp.
-\item 39 : for all attributes.
-\end{itemize}
+\subsection{Normal/Abnormal Similarity}
+\label{subsec:normalabnormalsimilarity}
+Two nodes are similar if their similarity to normal/abnormal mixture models are similar.
+Mixture models can be learned by EM algorithm, and compute the similarity score, log probability of each connections, under the model.
+The EM approach is guaranteed to converge to a local optimum on a given input.
+We define the similarity between two nodes using cosine distance of normal and abnormal similarity scores.
 
-\subsubsection{Measuring similarity}
-Gaussian mixture models from training set helps to measure those two similarity per each connection.
-\begin{itemize}
-\item Similarity to known normal behavior.
-\item Similarity to known abnormal behavior.
-\end{itemize}
+\begin{equation}
+    sim(V, V') = \frac{A \cdot B}{|A| |B|}
+\end{equation}
 
-\subsubsection{Affinity matrix computation}
-The data points are associated with each other by pairwise similarity.
-\begin{itemize}
-\item Construct similarity matrix with distance metric.
-\item Construct affinity matrix from similarity matrix with 8-nearest neighbors algorithm.
-\end{itemize}
-
-\subsection{Step 2. Clustering}
-\subsubsection{Number of clusters prediction}
-Predict number of clusters based on the eigengap.
-\subsubsection{Spectral clustering algorithm}
-Normalized cut algorithm. \cite{jianbo00}
-\subsubsection{Representative of clusters}
-Clusters are represented by the mean and variance.
-
-\subsection{Step 3. Detecting anomaly from clusters}
-Distance based outlier detection is used.
-\begin{itemize}
-\item It do not require any prior knowledge.
-\item k-nearest neighbor outlier detection algorithm. \cite{knorr00}
-\end{itemize}
-
+\subsection{Density Similarity}
+\label{subsec:densitysimilarity}
+A cluster is normal if its mean and variance to normal gaussian model is similar. 
+We can adjust threshold if false-positive or false-negative is high. 

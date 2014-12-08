@@ -1,16 +1,17 @@
 \BOOKMARK [1][-]{section.1}{Abstract}{}% 1
 \BOOKMARK [1][-]{section.2}{Introduction}{}% 2
 \BOOKMARK [1][-]{section.3}{Related works}{}% 3
-\BOOKMARK [1][-]{section.4}{Methodology}{}% 4
-\BOOKMARK [2][-]{subsection.4.1}{System overview}{section.4}% 5
-\BOOKMARK [2][-]{subsection.4.2}{Definition of anomaly}{section.4}% 6
-\BOOKMARK [2][-]{subsection.4.3}{Step 1. Affinity matrix}{section.4}% 7
-\BOOKMARK [3][-]{subsubsection.4.3.1}{Data pre-processing}{subsection.4.3}% 8
-\BOOKMARK [3][-]{subsubsection.4.3.2}{Learning similarity}{subsection.4.3}% 9
-\BOOKMARK [3][-]{subsubsection.4.3.3}{Measuring similarity}{subsection.4.3}% 10
-\BOOKMARK [3][-]{subsubsection.4.3.4}{Affinity matrix computation}{subsection.4.3}% 11
-\BOOKMARK [2][-]{subsection.4.4}{Step 2. Clustering}{section.4}% 12
-\BOOKMARK [3][-]{subsubsection.4.4.1}{Number of clusters prediction}{subsection.4.4}% 13
-\BOOKMARK [3][-]{subsubsection.4.4.2}{Spectral clustering algorithm}{subsection.4.4}% 14
-\BOOKMARK [3][-]{subsubsection.4.4.3}{Representative of clusters}{subsection.4.4}% 15
-\BOOKMARK [2][-]{subsection.4.5}{Step 3. Detecting anomaly from clusters}{section.4}% 16
+\BOOKMARK [1][-]{section.4}{Potential anomalies}{}% 4
+\BOOKMARK [1][-]{section.5}{Spectral clustering}{}% 5
+\BOOKMARK [2][-]{subsection.5.1}{graph Laplacian}{section.5}% 6
+\BOOKMARK [2][-]{subsection.5.2}{Algorithm}{section.5}% 7
+\BOOKMARK [1][-]{section.6}{Connection Similarity}{}% 8
+\BOOKMARK [2][-]{subsection.6.1}{Problem formulation}{section.6}% 9
+\BOOKMARK [2][-]{subsection.6.2}{Normal/Abnormal Similarity}{section.6}% 10
+\BOOKMARK [2][-]{subsection.6.3}{Density Similarity}{section.6}% 11
+\BOOKMARK [1][-]{section.7}{Experiments}{}% 12
+\BOOKMARK [2][-]{subsection.7.1}{Dataset and Setup}{section.7}% 13
+\BOOKMARK [2][-]{subsection.7.2}{Detecting Anomalies}{section.7}% 14
+\BOOKMARK [3][-]{subsubsection.7.2.1}{Known Anomalies}{subsection.7.2}% 15
+\BOOKMARK [3][-]{subsubsection.7.2.2}{Unknown Anomalies}{subsection.7.2}% 16
+\BOOKMARK [1][-]{section.8}{Conclusion}{}% 17

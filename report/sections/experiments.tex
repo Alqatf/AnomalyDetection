@@ -1,8 +1,74 @@
 \section{Experiments}
+I performed experiments to evaluate the performances.
 
-\begin{figure}
-\centering
-\includegraphics[width=0.5\textwidth,natwidth=300,natheight=300]{./same_srv_rate_prtcl_2_normal_training20.png}
-\caption[Nearest neighbor example]{Using a nearest neighbor approach, the data is classified by the average distances to the k closest points.}
-\end{figure}
+\subsection{Dataset and Setup}
+For experiments, I select KDD Data set. 
+KDDCUP'99 data set is widely used for network-based anomaly detection. New version of KDD data set, NSL-KDD which has advantages over the original data set, is used in this report as an effective benchmark.
+
+
+The processing steps of the appoach can be summerized as follows:
+1) Training data containing records of both normal and anomalous connections.
+2) The data are divided into different clusters for normal and anomalous connections using Spectral clustering algorithm.
+
+(Overview figure)
+\begin{enumerate}
+%\item Selection of raw data
+\item Data preprocessing
+\item Data transformation
+\item Affinity matrix computation
+\item Clustering
+\item Outlier detection
+\end{enumerate}
+
+
+%\subsection{Step 1. Affinity matrix}
+%\subsubsection{Data pre-processing}
+%\begin{itemize}
+%\item categorical value to integer e.g.) service-type (ftp-data,http,etc).
+%\item log of big number e.g.) duration, src-bytes.
+%\end{itemize}
+%
+%\subsubsection{Learning similarity}
+%EM algorithms to learn similarity. Learned 234(=2 x 3 x 39) Gaussian mixture model in total.
+%\begin{itemize}
+%\item 2 : one for normal, one for abnormal.
+%\item 3 : each per each protocol e.g.) udp, icmp, tcp.
+%\item 39 : for all attributes.
+%\end{itemize}
+%
+%\subsubsection{Measuring similarity}
+%Gaussian mixture models from training set helps to measure those two similarity per each connection.
+%\begin{itemize}
+%\item Similarity to known normal behavior.
+%\item Similarity to known abnormal behavior.
+%\end{itemize}
+%
+%\subsubsection{Affinity matrix computation}
+%The data points are associated with each other by pairwise similarity.
+%\begin{itemize}
+%\item Construct similarity matrix with distance metric.
+%\item Construct affinity matrix from similarity matrix with 8-nearest neighbors algorithm.
+%\end{itemize}
+%
+%\subsection{Step 2. Clustering}
+%\subsubsection{Number of clusters prediction}
+%Predict number of clusters based on the eigengap.
+%\subsubsection{Spectral clustering algorithm}
+%Normalized cut algorithm. \cite{jianbo00}
+%\subsubsection{Representative of clusters}
+%Clusters are represented by the mean and variance.
+%
+%\subsection{Step 3. Detecting anomaly from clusters}
+%Distance based outlier detection is used.
+%\begin{itemize}
+%\item It do not require any prior knowledge.
+%\item k-nearest neighbor outlier detection algorithm. \cite{knorr00}
+%\end{itemize}
+
+\subsection{Detecting Anomalies}
+
+\subsubsection{Known Anomalies}
+
+\subsubsection{Unknown Anomalies}
+
 

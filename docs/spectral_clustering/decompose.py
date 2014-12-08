@@ -27,4 +27,6 @@ L = D_hat * (D - W) * D_hat
 # Biclustering
 U, S, V = np.linalg.svd(L, full_matrices=True)
 target = np.argmax(np.absolute(np.diff(S)))
+print target
+print V
 print V.transpose()[:,target+1]
