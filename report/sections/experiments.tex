@@ -1,74 +1,86 @@
 \section{Experiments}
-I performed experiments to evaluate the performances.
+I performed experiments to evaluate the performances of similarity measures and algorithms in Section~\ref{sec:connectionsimilarity}.
+\newline
+In Section~\ref{subsec:datasetandsetup}, I describe the dataset that I used for the experiements.\newline
+In Section~\ref{subsec:detectinganomalies}, I evaluate how successful the algorithms are in detecting different types of anomalies.
 
 \subsection{Dataset and Setup}
+\label{subsec:datasetandsetup}
 For experiments, I select KDD Data set. 
-KDDCUP'99 data set is widely used for network-based anomaly detection. New version of KDD data set, NSL-KDD which has advantages over the original data set, is used in this report as an effective benchmark.
+KDDCUP'99 data set is widely used for network-based anomaly detection. 
+New version of KDD data set, NSL-KDD which has advantages over the original data set, is used in this report as an effective benchmark.
 
-
-The processing steps of the appoach can be summerized as follows:
-1) Training data containing records of both normal and anomalous connections.
-2) The data are divided into different clusters for normal and anomalous connections using Spectral clustering algorithm.
-
-(Overview figure)
-\begin{enumerate}
+\begin{figure}[htb2]
+\begin{center}
 %\item Selection of raw data
-\item Data preprocessing
-\item Data transformation
-\item Affinity matrix computation
-\item Clustering
-\item Outlier detection
-\end{enumerate}
+%\begin{inparaenum}[\itshape a\upshape)]
+%\item Data preprocessing
+%\item Data transformation
+%\item Affinity matrix computation
+%\item Clustering
+%\item Outlier detection
+%\end{inparaenum}
+\end{center}
+\caption{Overview of Intrusion Detection System}
+\label{fig:refSingleRobot1}
+\end{figure}
 
+\begin{figure}[htb2]
+\begin{center}
+\end{center}
+\caption{Similarity of normal and abnormal connections in training set} % I may show rest of data in appendix
+\label{fig:refSingleRobot1}
+\end{figure}
 
-%\subsection{Step 1. Affinity matrix}
+%\subsection{Computing affinity matrix}
+%%The processing steps of the approach can be summerized as follows:
+%%1) Training mixture model with training set containing records of both normal and anomalous connections.
+%%2) The data are divided into different clusters for normal and anomalous connections using Spectral clustering algorithm.
 %\subsubsection{Data pre-processing}
 %\begin{itemize}
 %\item categorical value to integer e.g.) service-type (ftp-data,http,etc).
 %\item log of big number e.g.) duration, src-bytes.
 %\end{itemize}
-%
-%\subsubsection{Learning similarity}
-%EM algorithms to learn similarity. Learned 234(=2 x 3 x 39) Gaussian mixture model in total.
-%\begin{itemize}
-%\item 2 : one for normal, one for abnormal.
-%\item 3 : each per each protocol e.g.) udp, icmp, tcp.
-%\item 39 : for all attributes.
-%\end{itemize}
-%
-%\subsubsection{Measuring similarity}
-%Gaussian mixture models from training set helps to measure those two similarity per each connection.
-%\begin{itemize}
-%\item Similarity to known normal behavior.
-%\item Similarity to known abnormal behavior.
-%\end{itemize}
-%
 %\subsubsection{Affinity matrix computation}
 %The data points are associated with each other by pairwise similarity.
 %\begin{itemize}
 %\item Construct similarity matrix with distance metric.
 %\item Construct affinity matrix from similarity matrix with 8-nearest neighbors algorithm.
 %\end{itemize}
-%
-%\subsection{Step 2. Clustering}
-%\subsubsection{Number of clusters prediction}
-%Predict number of clusters based on the eigengap.
-%\subsubsection{Spectral clustering algorithm}
-%Normalized cut algorithm. \cite{jianbo00}
-%\subsubsection{Representative of clusters}
-%Clusters are represented by the mean and variance.
-%
-%\subsection{Step 3. Detecting anomaly from clusters}
-%Distance based outlier detection is used.
-%\begin{itemize}
-%\item It do not require any prior knowledge.
-%\item k-nearest neighbor outlier detection algorithm. \cite{knorr00}
-%\end{itemize}
+%\subsection{Clustering}
+%%\subsubsection{Number of clusters prediction}
+%%Predict number of clusters based on the eigengap.
+%%\subsubsection{Spectral clustering algorithm}
+%%Normalized cut algorithm. \cite{jianbo00}
+%%\subsubsection{Representative of clusters}
+%%Clusters are represented by the mean and variance.
+%\subsection{Detecting anomaly from clusters}
+%%Distance based outlier detection is used.
+%%\begin{itemize}
+%%\item It do not require any prior knowledge.
+%%\item k-nearest neighbor outlier detection algorithm. \cite{knorr00}
+%%\end{itemize}
 
 \subsection{Detecting Anomalies}
+\label{subsec:detectinganomalies}
+In this section, I describe how the similarity measures can be used to detect point and collective anomalies.
 
 \subsubsection{Known Anomalies}
+We see that normal and abnormal connection similarity are sensitive to known anomaly. The similarity coputed by mixture models gives similarity scores that are used to find k nearest neighborhood.
+\begin{figure}[htb2]
+\begin{center}
+\end{center}
+\caption{Similarity of normal and abnormal connections in training set} % I may show rest of data in appendix
+\label{fig:refSingleRobot1}
+\end{figure}
 
 \subsubsection{Unknown Anomalies}
+We see that normal and abnormal connection similarity are also sensitive to most of unknown anomaly. However, we have four classes that is similar to normal connections. Connection density similarity measure is sensitive in this type of anomaly if it is above its threshold. However this approach does not work if the data points are insufficient to form high density.
 
+\begin{figure}[htb2]
+\begin{center}
+\end{center}
+\caption{Similarity to normal and abnormal connections in test set} % I may show rest of data in appendix
+\label{fig:refSingleRobot1}
+\end{figure}
 

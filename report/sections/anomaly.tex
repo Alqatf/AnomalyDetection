@@ -1,23 +1,45 @@
 \section{Potential anomalies}
+%\subsection{Definition of anomaly}
+A potential anomaly occurs when data point is not \begin{inparaenum}[\itshape a\upshape)]
+\item similar to known abnormal connections,
+\item dissimilar to known normal connections,
+\item or similar to known normal connections but with very higher density.
+\end{inparaenum}
 
+With this in mind, the unsupervised definition of anomalies is \begin{inparaenum}[\itshape a\upshape)]
+\item the pattern dissimiliar to the majority of normal patterns is anomalous, 
+\item and infrequently occurred density are normal.
+\end{inparaenum}
+
+%Point anomaly
+%Collective anomaly
 \begin{figure}[htb2]
 \begin{center}
-(figure)
+(similar to normal)
+(similar to abnormal)
+(similar to normal, but very high density)
 %\includegraphics[width=2.5in,angle=0]{}
 \end{center}
 \caption{Examples of anomalies that are potential anomalies}
 \label{fig:refSingleRobot1}
 \end{figure}
 
-%\subsection{Definition of anomaly}
-An anomaly occurs when the data does not \begin{inparaenum}[\itshape a\upshape)]
-\item similar to known abnormal connections,
-\item dissimilar to known normal connections,
-\item or similar to known normal connections but with very higher density.
-\end{inparaenum}
-
-With this in mind, I select the unsupervised definition of anomalies:
-First, the pattern dissimiliar to the majority of normal patterns is anomalous.
-Next, infrequently occurred density are normal
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{| l | l | p{5cm} |}
+\hline
+Type of Anomaly & Similar to & classes \\
+\hline
+Known anomalies & Abnormal model & guess-passwd, spy, ftp-write, nmap, back, multihop, rootkit, pod, portsweep, perl, ipsweep, teardrop, satan, loadmodule, buffer-overflow, normal, phf, warezmaster, imap, warezclient, land, neptune, smurf \\
+\hline
+Unknown anomalies & Abnormal model & processtable, named, udpstorm, sqlattack, ps, httptunnel, apache2, saint, mscan, xterm, worm, xlock, xsnoop \\
+\hline
+Unknown anomalies & Normal model & sendmail, mailbomb, snmpguess, snmpattack \\
+\hline
+\end{tabular}
+\end{center}
+\caption{Abnomal classes in NSL-KDD99}
+\label{fig:refSingleRobot1}
+\end{table}
 
 
