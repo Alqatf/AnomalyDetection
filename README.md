@@ -9,12 +9,3 @@ Dataset
 Special thanks to
 =================
 [grip](https://github.com/joeyespo/grip)
-
-
-TODO
-=====
-.. image:: https://travis-ci.org/zedoul/AnomalyDetection.svg?branch=master
-   :target: https://travis-ci.org/zedoul/AnomalyDetection
-
-.. image:: https://img.shields.io/coveralls/zedoul/AnomalyDetection.svg?
-   :target: https://coveralls.io/r/zedoul/AnomalyDetection
