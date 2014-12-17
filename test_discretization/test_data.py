@@ -55,10 +55,6 @@ def show_classes():
     dfs.append(model.load_dataframe(datafile_21,headers))
     dfs.append(model.load_dataframe(datafile_plus,headers))
 
-    # it shows every headers
-#    for di, df in enumerate(dfs[0]) :
-#        print df
-
     attacks = []
     for df in dfs :
         attacks.append( list(set(df['attack'])) )
@@ -69,7 +65,9 @@ def show_classes():
             pass
         else :
             only_in_test_data.append(i)
+    print attacks
     total_test_set = attacks[1] + only_in_test_data
+    # print attacks 
     print total_test_set
 
     # basic

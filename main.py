@@ -12,7 +12,6 @@ import matplotlib
 import matplotlib.mlab
 import matplotlib.pyplot as plt
 from matplotlib import gridspec
-from sklearn.cluster import KMeans
 from sklearn.cluster import SpectralClustering
 from sklearn.metrics import confusion_matrix
 
@@ -168,11 +167,34 @@ def test_clustering(df, gmms, title="", save_to_file=False, highlight_point=None
         k = lim
     logger.debug("Total number of clusters : " + str(k))
 
+    logger.debug(A)
     sc = SpectralClustering(n_clusters=k,
                             affinity="precomputed",
                             assign_labels="kmeans").fit(A)
     res = sc.labels_
     logger.debug(res)
+
+    # mean and variance of clusters
+    clusterx_s = []
+    clustery_s = []
+    for i in range(k) :
+        clusterx_s.append([])
+        clustery_s.append([])
+    for i, p in enumerate(cproj):
+        clusterx_s[ res[i] ].append(p[0])
+        clustery_s[ res[i] ].append(p[1])
+    means_x = [0] * k
+    means_y = [0] * k
+    vars_x = [0] * k
+    vars_y = [0] * k
+
+    for i in range(k):
+        means_x [i] = np.mean(clusterx_s[i])
+        means_y [i] = np.mean(clustery_s[i])
+        vars_x [i] = np.var(clusterx_s[i])
+        vars_y [i] = np.var(clustery_s[i])
+        t = str(i) + " = " + str(means_x[i]) + "," + str(means_y[i]) + " and " + str(vars_x[i]) + "," + str(vars_y[i])
+        logger.debug(t)
 
     # figure setting
     fig, axarr = plt.subplots(4, 4, sharex='col', sharey='row')
@@ -318,21 +340,30 @@ if __name__ == '__main__':
     df_test_20, df_test_full, gmms_test_20, gmms_test_full = preprocessing.get_preprocessed_test_data()
 
     logger.set_file(today + "/log.txt")
+
     # with training-set
-    df1 = df_training_20[0:500]
     gmms = gmms_20
+    df1 = df_training_20[0:500]
+
     title = "training20_only"
     logger.debug("#################################################")
     logger.debug(title)
     test_clustering(df1, gmms, title=title, save_to_file=True)
 
+#    title = "training20_normal_only"
+#    df1_normal = df1[ (df1["attack"] == model.attack_normal) ]
+#    df1_normal = df1_normal.reset_index(drop=True)
+#    logger.debug("#################################################")
+#    logger.debug(title)
+#    test_clustering(df1_normal, gmms, title=title, save_to_file=True)
+
     # with test-set
     dataset_description = "training20_test20"
     for attack_type_index, attack_type in enumerate(model.attack_types) :
-        if attack_type_index <= model.attack_normal :
+        if attack_type_index <= model.attack_normal : # why <= instead of !=
             continue
         df2 = df_by_attack_type(df_test_20, attack_type_index)
-        df2 = df2[0:50]
+        df2 = df2 #[0:50]
         df = pd.concat([df1, df2])
         title = dataset_description + "_" + attack_type
         logger.debug("#################################################")

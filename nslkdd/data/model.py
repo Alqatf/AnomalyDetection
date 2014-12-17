@@ -69,7 +69,7 @@ def discretize_flag_to_integer(df):
 def scale_bignums_to_log2(df,targets):
     for i in range(len(targets)):
         for j in range(df.shape[0]):
-                df[targets[i]].iloc[j]=int(math.log(1+df[targets[i]].iloc[j],2))
+                df[targets[i]].iloc[j]=float(math.log(1+df[targets[i]].iloc[j],2))
     df.iloc[0]
     return df
 
