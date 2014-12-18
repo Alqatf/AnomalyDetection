@@ -4,8 +4,10 @@ http://www.astroml.org/sklearn_tutorial/dimensionality_reduction.html
 """
 print (__doc__)
 
+import os
 import numpy as np
 import copy
+import cPickle as pickle
 
 import pandas as pd
 import matplotlib
@@ -33,108 +35,108 @@ today = util.make_today_folder('./results')
 plot_lim_max = 30
 plot_lim_min = -30
 
-def plot_true_labels(ax, data_per_true_labels, title="", highlight_point = None):
-    ax.set_title("True labels")
-    for i, p in enumerate(data_per_true_labels) :
-        x = np.array([t[0] for t in p])
-        y = np.array([t[1] for t in p])
-        if i == model.attack_normal:
-            colors = ['g'] * len(x)
-            ax.scatter(x, y, c=colors)
-        elif i != model.attack_normal and i != highlight_point:
-            colors = ['r'] * len(x)
-            ax.scatter(x, y, c=colors)
-
-    if highlight_point != None :
-        p = data_per_true_labels[highlight_point]
-        x = np.array([t[0] for t in p])
-        y = np.array([t[1] for t in p])
-        colors = ['b'] * len(x)
-        ax.scatter(x, y, c=colors)
-
-def plot_normal_label(ax, data_per_true_labels, title=""):
-    ax.set_title(title)
-    for i, p in enumerate(data_per_true_labels) :
-        x = [t[0] for t in p]
-        y = [t[1] for t in p]
-        x = np.array(x)
-        y = np.array(y)
-        if i == model.attack_normal:
-            ax.scatter(x, y, c='g')
-
-def plot_abnormal_label(ax, data_per_true_labels, title=""):
-    ax.set_title(title)
-    for i, p in enumerate(data_per_true_labels) :
-        x = [t[0] for t in p]
-        y = [t[1] for t in p]
-        x = np.array(x)
-        y = np.array(y)
-        if i != model.attack_normal:
-            ax.scatter(x, y, c='r')
-
-def print_confusion_matrix(true_values, clusters, res, highlight_point=None):
-#""" Print confusion matrix in log file
-#Param :
-#true_values : true label per each dataset
-#clusters : classified as normal or not
-#res : result from kmeans
-    #highlight_point
-#"""
-    # confusion matrix
-    y_true = []
-    y_pred = []
-
-    for i in true_values :
-        if i == model.attack_normal :
-            y_true.append(0)
-        else :
-            y_true.append(1)
-
-    for i in res :
-        if clusters[i] >= 0 :
-            y_pred.append(0)
-        else :
-            y_pred.append(1)
-
-    m = confusion_matrix(list(y_true), list(y_pred))
-
-    s1 = m[0][0] + m[0][1]
-    s2 = m[1][1] + m[1][0]
-
-    logger.debug(m)
-    logger.debug("true_positive : " + str(m[0][0]) + " (" + str(m[0][0]*1.0 / s1) + ")")
-    logger.debug("true_negative : " + str(m[1][1]) + " (" + str(m[1][1]*1.0 / s2) + ")")
-    logger.debug("false_positive : " + str(m[1][0]) + " (" + str(m[1][0]*1.0 / s2) + ")")
-    logger.debug("false_negative : " + str(m[0][1]) + " (" + str(m[0][1]*1.0 / s1) + ")")
-
-    if highlight_point != None :
-        # confusion matrix
-        y_true = []
-        y_pred = []
-    
-        for i, v in enumerate(true_values) :
-            if v == highlight_point :
-                y_true.append(1)
-                if clusters[ res[i] ] >= 0 :
-                    y_pred.append(0)
-                else :
-                    y_pred.append(1)
-    
-        logger.debug("")
-        logger.debug("highlight")
-        try :
-            m = confusion_matrix(list(y_true), list(y_pred))
-            s1 = m[0][0] + m[0][1]
-            s2 = m[1][1] + m[1][0]
-            logger.debug(m)
-            logger.debug("true_positive : " + str(m[0][0]) + " (" + str(m[0][0]*1.0 / s1) + ")")
-            logger.debug("true_negative : " + str(m[1][1]) + " (" + str(m[1][1]*1.0 / s2) + ")")
-            logger.debug("false_positive : " + str(m[1][0]) + " (" + str(m[1][0]*1.0 / s2) + ")")
-            logger.debug("false_negative : " + str(m[0][1]) + " (" + str(m[0][1]*1.0 / s1) + ")")
-
-        except IndexError :
-            logger.debug(y_true)
-            logger.debug(y_pred)
+#def plot_true_labels(ax, data_per_true_labels, title="", highlight_point = None):
+#    ax.set_title("True labels")
+#    for i, p in enumerate(data_per_true_labels) :
+#        x = np.array([t[0] for t in p])
+#        y = np.array([t[1] for t in p])
+#        if i == model.attack_normal:
+#            colors = ['g'] * len(x)
+#            ax.scatter(x, y, c=colors)
+#        elif i != model.attack_normal and i != highlight_point:
+#            colors = ['r'] * len(x)
+#            ax.scatter(x, y, c=colors)
+#
+#    if highlight_point != None :
+#        p = data_per_true_labels[highlight_point]
+#        x = np.array([t[0] for t in p])
+#        y = np.array([t[1] for t in p])
+#        colors = ['b'] * len(x)
+#        ax.scatter(x, y, c=colors)
+#
+#def plot_normal_label(ax, data_per_true_labels, title=""):
+#    ax.set_title(title)
+#    for i, p in enumerate(data_per_true_labels) :
+#        x = [t[0] for t in p]
+#        y = [t[1] for t in p]
+#        x = np.array(x)
+#        y = np.array(y)
+#        if i == model.attack_normal:
+#            ax.scatter(x, y, c='g')
+#
+#def plot_abnormal_label(ax, data_per_true_labels, title=""):
+#    ax.set_title(title)
+#    for i, p in enumerate(data_per_true_labels) :
+#        x = [t[0] for t in p]
+#        y = [t[1] for t in p]
+#        x = np.array(x)
+#        y = np.array(y)
+#        if i != model.attack_normal:
+#            ax.scatter(x, y, c='r')
+#
+#def print_confusion_matrix(true_values, clusters, res, highlight_point=None):
+##""" Print confusion matrix in log file
+##Param :
+##true_values : true label per each dataset
+##clusters : classified as normal or not
+##res : result from kmeans
+#    #highlight_point
+##"""
+#    # confusion matrix
+#    y_true = []
+#    y_pred = []
+#
+#    for i in true_values :
+#        if i == model.attack_normal :
+#            y_true.append(0)
+#        else :
+#            y_true.append(1)
+#
+#    for i in res :
+#        if clusters[i] >= 0 :
+#            y_pred.append(0)
+#        else :
+#            y_pred.append(1)
+#
+#    m = confusion_matrix(list(y_true), list(y_pred))
+#
+#    s1 = m[0][0] + m[0][1]
+#    s2 = m[1][1] + m[1][0]
+#
+#    logger.debug(m)
+#    logger.debug("true_positive : " + str(m[0][0]) + " (" + str(m[0][0]*1.0 / s1) + ")")
+#    logger.debug("true_negative : " + str(m[1][1]) + " (" + str(m[1][1]*1.0 / s2) + ")")
+#    logger.debug("false_positive : " + str(m[1][0]) + " (" + str(m[1][0]*1.0 / s2) + ")")
+#    logger.debug("false_negative : " + str(m[0][1]) + " (" + str(m[0][1]*1.0 / s1) + ")")
+#
+#    if highlight_point != None :
+#        # confusion matrix
+#        y_true = []
+#        y_pred = []
+#    
+#        for i, v in enumerate(true_values) :
+#            if v == highlight_point :
+#                y_true.append(1)
+#                if clusters[ res[i] ] >= 0 :
+#                    y_pred.append(0)
+#                else :
+#                    y_pred.append(1)
+#    
+#        logger.debug("")
+#        logger.debug("highlight")
+#        try :
+#            m = confusion_matrix(list(y_true), list(y_pred))
+#            s1 = m[0][0] + m[0][1]
+#            s2 = m[1][1] + m[1][0]
+#            logger.debug(m)
+#            logger.debug("true_positive : " + str(m[0][0]) + " (" + str(m[0][0]*1.0 / s1) + ")")
+#            logger.debug("true_negative : " + str(m[1][1]) + " (" + str(m[1][1]*1.0 / s2) + ")")
+#            logger.debug("false_positive : " + str(m[1][0]) + " (" + str(m[1][0]*1.0 / s2) + ")")
+#            logger.debug("false_negative : " + str(m[0][1]) + " (" + str(m[0][1]*1.0 / s1) + ")")
+#
+#        except IndexError :
+#            logger.debug(y_true)
+#            logger.debug(y_pred)
 
 def test_clustering(df, gmms, title="", save_to_file=False, highlight_point=None):
     df_train = copy.deepcopy(df)
@@ -174,154 +176,166 @@ def test_clustering(df, gmms, title="", save_to_file=False, highlight_point=None
     res = sc.labels_
     logger.debug(res)
 
-    # mean and variance of clusters
-    clusterx_s = []
-    clustery_s = []
-    for i in range(k) :
-        clusterx_s.append([])
-        clustery_s.append([])
-    for i, p in enumerate(cproj):
-        clusterx_s[ res[i] ].append(p[0])
-        clustery_s[ res[i] ].append(p[1])
-    means_x = [0] * k
-    means_y = [0] * k
-    vars_x = [0] * k
-    vars_y = [0] * k
+    workpath = os.path.dirname(os.path.abspath(__file__))
 
-    for i in range(k):
-        means_x [i] = np.mean(clusterx_s[i])
-        means_y [i] = np.mean(clustery_s[i])
-        vars_x [i] = np.var(clusterx_s[i])
-        vars_y [i] = np.var(clustery_s[i])
-        t = str(i) + " = " + str(means_x[i]) + "," + str(means_y[i]) + " and " + str(vars_x[i]) + "," + str(vars_y[i])
-        logger.debug(t)
+    print "save to file..."
+    with open(today + "/" + title + '_cproj.pkl','wb') as output:
+        pickle.dump(cproj, output -1)
+    with open(workpath + '/./' + title + '_res.pkl','wb') as output:
+        pickle.dump(res, output, -1)
+    with open(workpath + '/./' + title + '_df.pkl','wb') as output:
+        pickle.dump(df, output, -1)
+    with open(workpath + '/./' + title + '_highlight_point.pkl','wb') as output:
+        pickle.dump(highlight_point, output, -1)
 
-    # figure setting
-    fig, axarr = plt.subplots(4, 4, sharex='col', sharey='row')
-    plt.subplots_adjust(wspace=0.4, hspace=0.4)
-    plt.xlim(plot_lim_min, plot_lim_max)
-    plt.ylim(plot_lim_min, plot_lim_max)
-
-    ax1 = axarr[0, 0]
-    ax2 = axarr[0, 1]
-    ax3 = axarr[0, 2]
-    ax4 = axarr[0, 3]
-    ax5 = axarr[1, 0]
-    ax6 = axarr[1, 1]
-    ax7 = axarr[1, 2]
-    ax8 = axarr[1, 3]
-    ax9 = axarr[2, 0]
-    ax10 = axarr[2, 1]
-    ax11 = axarr[2, 2]
-    ax12 = axarr[2, 3]
-    ax13 = axarr[3, 0]
-    ax14 = axarr[3, 1]
-    ax15 = axarr[3, 2]
-    ax16 = axarr[3, 3]
-
-    ##############################################################
-    # plot true labels
-    plot_true_labels(ax1, data_per_true_labels, "True labels", highlight_point)
-    plot_normal_label(ax2, data_per_true_labels, "True normals")
-    plot_abnormal_label(ax3, data_per_true_labels, "True abnormal")
-
-    ##############################################################
-    # plot predicted labels
-    """
-    As we already know "normal" training set labels, we can seperate normal data from "known" abnormal data and "unknown" abnormal data.
-    """
-    clusters = [0] * k
-    for i, p in enumerate(cproj):
-        true_label = true_attack_types[i]
-        if true_label == model.attack_normal :
-            clusters[ res[i] ] = clusters[ res[i] ] + 1
-        else :
-            clusters[ res[i] ] = clusters[ res[i] ] - 1
-
-    ##############################################################
-    ax4.set_title("k-means")
-    for i, p in enumerate(cproj):
-        ax4.scatter(p[0], p[1], c=colorhex.codes[ res[i] ])
-
-    ##############################################################
-    ax5.set_title("Normal res")
-    for i, p in enumerate(cproj):
-        if clusters[ res[i] ] >= 0 :
-            ax5.scatter(p[0], p[1], c='g')
-
-    ##############################################################
-    ax6.set_title("Abnormal res")
-    for i, p in enumerate(cproj):
-        if clusters[ res[i] ] < 0 :
-            ax6.scatter(p[0], p[1], c='r')
-
-    ##############################################################
-    logger.debug("Cluster count")
-    counts = [0] * k
-    for _, c in enumerate(res):
-        counts[c] = counts[c] + 1
-    logger.debug(str(counts))
-
-    ##############################################################
-    ax7.set_title("Cluster 1")
-    for i, p in enumerate(cproj):
-        if res[i] == 0 :
-            ax7.scatter(p[0], p[1], c='g')
-    ##############################################################
-    ax8.set_title("Cluster 2")
-    for i, p in enumerate(cproj):
-        if res[i] == 1 :
-            ax8.scatter(p[0], p[1], c='g')
-    ##############################################################
-    ax9.set_title("Cluster 3")
-    for i, p in enumerate(cproj):
-        if res[i] == 2 :
-            ax9.scatter(p[0], p[1], c='g')
-    ##############################################################
-    ax10.set_title("Cluster 4")
-    for i, p in enumerate(cproj):
-        if res[i] == 3 :
-            ax10.scatter(p[0], p[1], c='g')
-    ##############################################################
-    ax11.set_title("Cluster 5")
-    for i, p in enumerate(cproj):
-        if res[i] == 4 :
-            ax11.scatter(p[0], p[1], c='g')
-    ##############################################################
-    ax12.set_title("Cluster 6")
-    for i, p in enumerate(cproj):
-        if res[i] == 5 :
-            ax12.scatter(p[0], p[1], c='g')
-    ##############################################################
-    ax13.set_title("Cluster 7")
-    for i, p in enumerate(cproj):
-        if res[i] == 6 :
-            ax13.scatter(p[0], p[1], c='g')
-    ##############################################################
-    ax14.set_title("Cluster 8")
-    for i, p in enumerate(cproj):
-        if res[i] == 7 :
-            ax14.scatter(p[0], p[1], c='g')
-    ##############################################################
-    ax15.set_title("Cluster 9")
-    for i, p in enumerate(cproj):
-        if res[i] == 8 :
-            ax15.scatter(p[0], p[1], c='g')
-    ##############################################################
-    ax16.set_title("Cluster 10")
-    for i, p in enumerate(cproj):
-        if res[i] == 9 :
-            ax16.scatter(p[0], p[1], c='g')
-    ##############################################################
-
-    print_confusion_matrix(true_attack_types, clusters, res, highlight_point)
-
-    if save_to_file == True :
-        print title + " has been saved"
-        fig.savefig(today + "/" + title + ".png")
-    else :
-        plt.show()
-    plt.close()
+#    # mean and variance of clusters
+#    clusterx_s = []
+#    clustery_s = []
+#    for i in range(k) :
+#        clusterx_s.append([])
+#        clustery_s.append([])
+#    for i, p in enumerate(cproj):
+#        clusterx_s[ res[i] ].append(p[0])
+#        clustery_s[ res[i] ].append(p[1])
+#    means_x = [0] * k
+#    means_y = [0] * k
+#    vars_x = [0] * k
+#    vars_y = [0] * k
+#
+#    for i in range(k):
+#        means_x [i] = np.mean(clusterx_s[i])
+#        means_y [i] = np.mean(clustery_s[i])
+#        vars_x [i] = np.var(clusterx_s[i])
+#        vars_y [i] = np.var(clustery_s[i])
+#        t = str(i) + " = " + str(means_x[i]) + "," + str(means_y[i]) + " and " + str(vars_x[i]) + "," + str(vars_y[i])
+#        logger.debug(t)
+#
+#    # figure setting
+#    fig, axarr = plt.subplots(4, 4, sharex='col', sharey='row')
+#    plt.subplots_adjust(wspace=0.4, hspace=0.4)
+#    plt.xlim(plot_lim_min, plot_lim_max)
+#    plt.ylim(plot_lim_min, plot_lim_max)
+#
+#    ax1 = axarr[0, 0]
+#    ax2 = axarr[0, 1]
+#    ax3 = axarr[0, 2]
+#    ax4 = axarr[0, 3]
+#    ax5 = axarr[1, 0]
+#    ax6 = axarr[1, 1]
+#    ax7 = axarr[1, 2]
+#    ax8 = axarr[1, 3]
+#    ax9 = axarr[2, 0]
+#    ax10 = axarr[2, 1]
+#    ax11 = axarr[2, 2]
+#    ax12 = axarr[2, 3]
+#    ax13 = axarr[3, 0]
+#    ax14 = axarr[3, 1]
+#    ax15 = axarr[3, 2]
+#    ax16 = axarr[3, 3]
+#
+#    ##############################################################
+#    # plot true labels
+#    plot_true_labels(ax1, data_per_true_labels, "True labels", highlight_point)
+#    plot_normal_label(ax2, data_per_true_labels, "True normals")
+#    plot_abnormal_label(ax3, data_per_true_labels, "True abnormal")
+#
+#    ##############################################################
+#    # plot predicted labels
+#    """
+#    As we already know "normal" training set labels, we can seperate normal data from "known" abnormal data and "unknown" abnormal data.
+#    """
+#    clusters = [0] * k
+#    for i, p in enumerate(cproj):
+#        true_label = true_attack_types[i]
+#        if true_label == model.attack_normal :
+#            clusters[ res[i] ] = clusters[ res[i] ] + 1
+#        else :
+#            clusters[ res[i] ] = clusters[ res[i] ] - 1
+#
+#    ##############################################################
+#    ax4.set_title("k-means")
+#    for i, p in enumerate(cproj):
+#        ax4.scatter(p[0], p[1], c=colorhex.codes[ res[i] ])
+#
+#    ##############################################################
+#    ax5.set_title("Normal res")
+#    for i, p in enumerate(cproj):
+#        if clusters[ res[i] ] >= 0 :
+#            ax5.scatter(p[0], p[1], c='g')
+#
+#    ##############################################################
+#    ax6.set_title("Abnormal res")
+#    for i, p in enumerate(cproj):
+#        if clusters[ res[i] ] < 0 :
+#            ax6.scatter(p[0], p[1], c='r')
+#
+#    ##############################################################
+#    logger.debug("Cluster count")
+#    counts = [0] * k
+#    for _, c in enumerate(res):
+#        counts[c] = counts[c] + 1
+#    logger.debug(str(counts))
+#
+#    ##############################################################
+#    ax7.set_title("Cluster 1")
+#    for i, p in enumerate(cproj):
+#        if res[i] == 0 :
+#            ax7.scatter(p[0], p[1], c='g')
+#    ##############################################################
+#    ax8.set_title("Cluster 2")
+#    for i, p in enumerate(cproj):
+#        if res[i] == 1 :
+#            ax8.scatter(p[0], p[1], c='g')
+#    ##############################################################
+#    ax9.set_title("Cluster 3")
+#    for i, p in enumerate(cproj):
+#        if res[i] == 2 :
+#            ax9.scatter(p[0], p[1], c='g')
+#    ##############################################################
+#    ax10.set_title("Cluster 4")
+#    for i, p in enumerate(cproj):
+#        if res[i] == 3 :
+#            ax10.scatter(p[0], p[1], c='g')
+#    ##############################################################
+#    ax11.set_title("Cluster 5")
+#    for i, p in enumerate(cproj):
+#        if res[i] == 4 :
+#            ax11.scatter(p[0], p[1], c='g')
+#    ##############################################################
+#    ax12.set_title("Cluster 6")
+#    for i, p in enumerate(cproj):
+#        if res[i] == 5 :
+#            ax12.scatter(p[0], p[1], c='g')
+#    ##############################################################
+#    ax13.set_title("Cluster 7")
+#    for i, p in enumerate(cproj):
+#        if res[i] == 6 :
+#            ax13.scatter(p[0], p[1], c='g')
+#    ##############################################################
+#    ax14.set_title("Cluster 8")
+#    for i, p in enumerate(cproj):
+#        if res[i] == 7 :
+#            ax14.scatter(p[0], p[1], c='g')
+#    ##############################################################
+#    ax15.set_title("Cluster 9")
+#    for i, p in enumerate(cproj):
+#        if res[i] == 8 :
+#            ax15.scatter(p[0], p[1], c='g')
+#    ##############################################################
+#    ax16.set_title("Cluster 10")
+#    for i, p in enumerate(cproj):
+#        if res[i] == 9 :
+#            ax16.scatter(p[0], p[1], c='g')
+#    ##############################################################
+#
+#    print_confusion_matrix(true_attack_types, clusters, res, highlight_point)
+#
+#    if save_to_file == True :
+#        print title + " has been saved"
+#        fig.savefig(today + "/" + title + ".png")
+#    else :
+#        plt.show()
+#    plt.close()
 
 if __name__ == '__main__':
     """ Anomaly detection with spectral clustering algorithm.

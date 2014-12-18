@@ -1,5 +1,5 @@
 """
-It usually takes about 8296 seconds (2 hours 20 minutes).
+It usually takes about 29,180 seconds (8 hours).
 """
 
 import os
@@ -60,7 +60,7 @@ def generate_gmms(df, headers, n_initialization=10):
         important_headers = ['dst_host_srv_count','logged_in','dst_bytes','dst_host_same_src_port_rate','srv_count','flag','protocol_type','src_bytes','count','service'] #ON THE KDD'99 DATASET: STATISTICAL ANALYSIS FOR FEATURE SELECTION
 
         for header_type in headers:
-            print header_type
+#            print header_type
             if header_type  in ['protocol_type', 'attack', 'difficulty']:
                 continue
 
@@ -84,11 +84,12 @@ def generate_gmms(df, headers, n_initialization=10):
                                 best_clf = clf
                                 lowest_bic = bic
                     except :
-                        print "    Warning! " + header_type + " w/" + cov_type + " has an error."
-                print lowest_bic
+#                        print "    Warning! " + header_type + " w/" + cov_type + " has an error."
+                        pass
+#                print lowest_bic
                 if lowest_bic > -3000 :
                     if header_type in important_headers :
-                        print "    Warning! this value is too big but I will use anyway"
+#                        print "    Warning! this value is too big but I will use anyway"
                         pass
                     else :
                         best_clf = None

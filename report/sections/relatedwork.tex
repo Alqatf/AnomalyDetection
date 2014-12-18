@@ -1,45 +1,29 @@
 \section{Related works}
 % What is different approaches/alternative to NIDS has there been before?
-Semi-supervised or unsupervised approaches are preferred in Anomaly Detection\cite{chandola09} because labeled data corresponding to normal behaviour is available while labels for intrusions are not and insufficient. 
-Different approaches to network intrusion detection systems, such as \begin{inparaenum}[\itshape a\upshape)] \item statistical profiling using histogram, \item mixture of models, \item neural networks, \item support vector machines, and \item rule-based system\end{inparaenum}. NSL-KDD99 Dataset is mainly used in this subject\cite{tavallaee09}. 
-The relevance of each feature in the data set is also studied\cite{olusola10} \cite{kayacik05}. 
+Semi-supervised or unsupervised approaches are preferred in intrusion detection\cite{chandola09} because it can handle imbalanced datasets.
+Clustering analysis is an important tool for those approaches so also been studied in context of network anomaly detection. 
+These approaches to network intrusion detection systems are mostly either distance-based\cite{knorr00}\cite{ramaswamy00} or density-based methods\cite{breuning00}{aggarwal01}. 
 
 % In what way they differ from each other
-The rule-learning engine RIPPER and ToolDiag is applied to the training data with feature labeled as normal or intrusion and generate rules for classification. 
-Minnesota Intrusion Detection System selected LOF detection method. 
-Also fuzzy based methods are proposed.
-%Density based approaches are used in wide area such as LOF
+However distance-based or density-based methods are hard to be easily generalized in multi-dimensional data because the neighborhood can be arbitrary. 
+A major drawback to clustering algorithm is that anomalies which should not belong to any cluster can be assigned to a larger cluster. 
+% because clustering algorithm force every instance to be assigned to a cluster. 
+Also it is subjective to choose a number of clusters or neighborhood in advance, so not applicable to the case of dynamic intrusion detection. 
 
-%% In what way they differ from what we do here
-%I assumes the data 
-%to decide k value.
+One of the strategies in order to solve intractable the optimization problem is a eigenvalue decomposition and graph cut algorithm. 
+However the naive graph cut algorithm is NP-hard problem and noise-sensitive. 
+To diminish those weaknesses, normalized cut\cite{jianbo00} is proposed. 
+It solves NP-hard problem by approximate solution.
+Spectral clustering according to Jordan and Francis \cite{jordan04} and Ng, Jordan and Weiss \cite{ng01} proposed a new algorithm for spectral clustering with objective function with different normalized terms that minimize the error.
+Dhillon et al. \cite{dhillon04}, and Ding and He \cite{cding04} showed objective function is equivalent to weighted kernel k-means algorithm.
+
+% In what way they differ from what we do here
+The advantages of spectral clustering is it only requires pairwise similarity of data points. 
+However mostly it is used in the spatial analysis such as image segmentation. 
+In this report, I use spectral clustering algorithm for intrusion detection. 
 %I uses histogram and mixture models to measure its similarity.
 
 % Why is our approach better than what has done before. does it solve a partly new aspect of the problem or does it simply perform better
-In this report, I use spectral clustering algorithm for intrusion detection. 
-The advantages of spectral clustering is it only requires pairwise similarity of data points. 
-
-\begin{table}[h]
-\begin{center}
-\begin{tabular}{| l | p{5cm} | p{5cm} |}
-\hline
-Technique Used & References \\
-\hline
-Statistical Profiling &   \\
-\hline
-Rule learning &   \\
-\hline
-Bayesian Networks &    \\
-\hline
-Mixture of Models &    \\
-\hline
-Clustering &    \\
-\hline
-Spectral anlysis &    \\
-\hline
-\end{tabular}
-\end{center}
-\caption{Intrusion detection approaches}
-\label{fig:refSingleRobot1}
-\end{table}
+I use NSL-KDD99 Dataset for the report. 
+It is mainly used in this subject\cite{tavallaee09} and its relevance of each feature in the data set is also studied\cite{olusola10} \cite{kayacik05}. 
 
