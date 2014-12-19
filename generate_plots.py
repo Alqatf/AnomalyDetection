@@ -9,7 +9,7 @@ import copy
 import cPickle as pickle
 
 import matplotlib
-import matplotlib.mlab
+import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
 from matplotlib import gridspec
 
@@ -22,8 +22,10 @@ import colorhex
 import util
 
 today = util.make_today_folder('./results')
-plot_lim_max = 30
-plot_lim_min = -30
+today = "./results/2014-12-18/"
+
+plot_lim_max = 21
+plot_lim_min = -21
 
 def plot_true_labels(ax, data_per_true_labels, title="", highlight_point = None):
     ax.set_title("True labels")
@@ -190,14 +192,7 @@ def gen_plot(cproj, res, df, highlight_point):
     fig.savefig(today + "/" + title + ".png")
     plt.close()
 
-if __name__ == '__main__':
-    """ Anomaly detection with spectral clustering algorithm.
-    First training set only, to see what would happen with only known classes
-    Next with test set, to see what would happen with only unknown classes
-    """
-    import time
-    start = time.time()
-
+def gen_plots():
     headers, attacks = preprocessing.get_header_data()
 
     dataset_description = "training20_only"
@@ -212,6 +207,92 @@ if __name__ == '__main__':
         title = dataset_description + "_" + attack_type
         cproj, res, df, highlight_point = get_data(title)
         gen_plot(cproj, res, df, highlight_point)
+
+def test():
+
+    headers, attacks = preprocessing.get_header_data()
+    dataset_description = "training20_only"
+    title = dataset_description
+    cproj, res, df, highlight_point = get_data(title)
+
+    fig, axarr = plt.subplots(1, 1, sharex='col', sharey='row')
+    plt.subplots_adjust(wspace=0.4, hspace=0.4)
+    plt.xlim(plot_lim_min, plot_lim_max)
+    plt.ylim(plot_lim_min, plot_lim_max)
+    ax = axarr
+    ax.set_title("plot")
+
+    data_per_true_labels = []
+    for i in range( len(attacks) ):
+        data_per_true_labels.append([])
+    true_attack_types = df["attack"].values.tolist()
+    for i, d in enumerate(cproj):
+        data_per_true_labels[true_attack_types[i]].append(d)
+
+    for i, p in enumerate(data_per_true_labels) :
+        x = np.array([t[0] for t in p])
+        y = np.array([t[1] for t in p])
+        if i == model.attack_normal:
+            from sklearn.cluster import KMeans
+            data = p
+            h = .02
+            estimator = KMeans(init='k-means++', n_clusters=3)
+            estimator.fit(data)
+            centroids = estimator.cluster_centers_
+
+            x_min, x_max = min(x) + 1, max(x) - 1
+            y_min, y_max = min(y) + 1, max(y) - 1
+            xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
+            Z = estimator.predict(np.c_[xx.ravel(), yy.ravel()])
+            Z = Z.reshape(xx.shape)
+#            plt.figure(1)
+#            plt.clf()
+
+            plt.imshow(Z, interpolation='nearest',
+            extent=(xx.min(), xx.max(), yy.min(), yy.max()),
+            cmap=plt.cm.Paired,
+            aspect='auto', origin='lower')
+            plt.imshow(Z, interpolation='nearest',
+                       extent=(xx.min(), xx.max(), yy.min(), yy.max()),
+                       cmap=plt.cm.Paired,
+                       aspect='auto', origin='lower')
+            plt.scatter(centroids[:, 0], centroids[:, 1],
+                        marker='x', s=169, linewidths=3,
+                        color='w', zorder=10)
+
+            colors = ['g'] * len(x)
+            ax.scatter(x, y, c=colors)
+            ax.scatter(np.mean(x), np.mean(y), c='r')
+            ax.scatter(np.median(x), np.median(y), c='b')
+            delta = 0.025
+            X = np.arange(plot_lim_min, plot_lim_max, delta)
+            Y = np.arange(plot_lim_min, plot_lim_max, delta)
+            X,Y = np.meshgrid(X,Y)
+            Z = mlab.bivariate_normal(X, Y, np.std(x), np.std(y), np.mean(x), np.mean(y))
+            plt.contour(X,Y,Z)
+
+#    for i, r in df.iterrows() :
+#        if r['attack']
+#    for i, p in enumerate(cproj):
+#        if res[i] == 8 :
+#            ax1.scatter(p[0], p[1], c='g')
+
+#    plt.xticks(())
+#    plt.yticks(())
+
+    plt.show()
+    plt.close()
+
+if __name__ == '__main__':
+    """ Anomaly detection with spectral clustering algorithm.
+    First training set only, to see what would happen with only known classes
+    Next with test set, to see what would happen with only unknown classes
+    """
+    import time
+    start = time.time()
+
+    # gen_plots()
+    test()
 
     elapsed = (time.time() - start)
     print "done in %s seconds" % (elapsed)
