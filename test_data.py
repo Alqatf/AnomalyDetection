@@ -55,6 +55,14 @@ def show_classes():
     dfs.append(model.load_dataframe(datafile_21,headers))
     dfs.append(model.load_dataframe(datafile_plus,headers))
 
+
+    df = dfs[0]
+    df = df.iloc[[1,3],:]
+    print df
+
+    exit()
+
+
     # it shows every headers
 #    for di, df in enumerate(dfs[0]) :
 #        print df

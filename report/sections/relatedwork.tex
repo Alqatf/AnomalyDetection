@@ -1,4 +1,4 @@
-\section{Related works}
+\section{Related Work}
 % What is different approaches/alternative to NIDS has there been before?
 Semi-supervised or unsupervised approaches are preferred in intrusion detection\cite{chandola09} because it can handle imbalanced datasets.
 Clustering analysis is an important tool for those approaches so also been studied in context of network anomaly detection. 
@@ -17,6 +17,8 @@ It solves NP-hard problem by approximate solution.
 Spectral clustering according to Jordan and Francis \cite{jordan04} and Ng, Jordan and Weiss \cite{ng01} proposed a new algorithm for spectral clustering with objective function with different normalized terms that minimize the error.
 Dhillon et al. \cite{dhillon04}, and Ding and He \cite{cding04} showed objective function is equivalent to weighted kernel k-means algorithm.
 
+They only consider divide into two class. but it is weak at noise. So there is multiclass approach. \cite{jianbo03}
+
 % In what way they differ from what we do here
 The advantages of spectral clustering is it only requires pairwise similarity of data points. 
 However mostly it is used in the spatial analysis such as image segmentation. 
@@ -26,4 +28,4 @@ In this report, I use spectral clustering algorithm for intrusion detection.
 % Why is our approach better than what has done before. does it solve a partly new aspect of the problem or does it simply perform better
 I use NSL-KDD99 Dataset for the report. 
 It is mainly used in this subject\cite{tavallaee09} and its relevance of each feature in the data set is also studied\cite{olusola10} \cite{kayacik05}. 
-
+semi-supervised approach

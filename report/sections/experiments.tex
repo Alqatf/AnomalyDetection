@@ -6,9 +6,10 @@ In Section~\ref{subsec:detectinganomalies}, I evaluate how successful the algori
 
 \subsection{Dataset and Setup}
 \label{subsec:datasetandsetup}
-For experiments, I select KDD Data set. 
-KDDCUP'99 data set is widely used for network-based anomaly detection. 
-New version of KDD data set, NSL-KDD which has advantages over the original data set, is used in this report as an effective benchmark.
+For experiments, I select the NSL-KDD dataset. 
+It is a up-to-date version of KDD dataset which is widely used for network-based intrusion detection. 
+Since the NSL-KDD dataset solves issues in the original data set, I use the data set in this report as an effective benchmark. 
+% All source code is on the Internet. 
 
 \begin{figure}[htb2]
 \begin{center}
@@ -61,12 +62,22 @@ New version of KDD data set, NSL-KDD which has advantages over the original data
 %%\item k-nearest neighbor outlier detection algorithm. \cite{knorr00}
 %%\end{itemize}
 
+In order for spectral anaysis, we need to make a sparse affinity matrix from training set. 
+We can compute a sparse affinity matrix from a pairwise similarity matrix. 
+A new approach to construct a pairwise similarity matrix is that compares their probability in pairwise not its attributes directly. 
+To calculate the probability for data point, mixure models for each classes and attributes are used. 
+The EM approach is guaranteed to converge to a local optimum on given input. 
+The experiment suggest that such local optimum can effectively seperate different connections and most of unknown classes. (Figure) 
+After we have a pairwise similarity matrix, one way to convert similarity matrix to a sparse affinity matrix is that dealing with the affinities for $k$ nearest neighborhood only, and set all other values for current data point to zero. 
+I choose the $k = 8$ because it is common in other practices. 
+
 \subsection{Detecting Anomalies}
 \label{subsec:detectinganomalies}
-In this section, I describe how the similarity measures can be used to detect point and collective anomalies.
+In this section, I describe how the a sparse affinity matrix can be used to detect point and collective anomalies.
 
 \subsubsection{Known Anomalies}
-We see that normal and abnormal connection similarity are sensitive to known anomaly. The similarity coputed by mixture models gives similarity scores that are used to find k nearest neighborhood.
+We see that normal and abnormal connections similarity are sensitive to known anomalies. 
+% The similarity coputed by mixture models gives similarity scores that are used to find k nearest neighborhood.
 \begin{figure}[htb2]
 \begin{center}
 \end{center}
@@ -75,7 +86,10 @@ We see that normal and abnormal connection similarity are sensitive to known ano
 \end{figure}
 
 \subsubsection{Unknown Anomalies}
-We see that normal and abnormal connection similarity are also sensitive to most of unknown anomaly. However, we have four classes that is similar to normal connections. Connection density similarity measure is sensitive in this type of anomaly if it is above its threshold. However this approach does not work if the data points are insufficient to form high density.
+We see that normal and abnormal connection similarity are also sensitive to most of unknown anomaly. 
+However, we have four classes that is similar to normal connections. 
+Connection density similarity measure is sensitive in this type of anomaly if it is above its threshold. 
+However this approach does not work if the data points are insufficient to form high density.
 
 \begin{figure}[htb2]
 \begin{center}
@@ -84,3 +98,8 @@ We see that normal and abnormal connection similarity are also sensitive to most
 \label{fig:refSingleRobot1}
 \end{figure}
 
+For clustering, there is two ways to do it.
+First is k-cluster and the other is one by one. I followed both way but one-by-one is sometimes really bad.
+
+Some case eigengap works otherwise it does not work. Therefore I pick some case.
+So noise really matters. Especially newly added data can be considered as noise. of course some of them are not.

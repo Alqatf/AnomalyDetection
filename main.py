@@ -12,6 +12,7 @@ import cPickle as pickle
 import pandas as pd
 from sklearn.cluster import SpectralClustering
 from sklearn.metrics import confusion_matrix
+import matplotlib.mlab as mlab
 
 import nslkdd.preprocessing as preprocessing
 import nslkdd.data.model as model
@@ -27,10 +28,34 @@ import util
 import logger
 
 today = util.make_today_folder('./results')
-plot_lim_max = 30
-plot_lim_min = -30
+k = 12
+num_clusters = k * 2
+plot_lim_max = 21
+plot_lim_min = -21
 
-def print_confusion_matrix(true_values, clusters, res, highlight_point=None):
+def check_abnormal_with_density(meanx, meany, stdx, stdy, target_sz):
+    normal_sz = 264
+    target_sz = target_sz
+    X = np.arange(plot_lim_min, plot_lim_max, 0.1)
+    Y = np.arange(plot_lim_min, plot_lim_max, 0.1)
+
+    mX, mY = np.meshgrid(X, Y)
+    normal_dist = mlab.bivariate_normal(mX, mY, 4.38, 6.5, 15, -11)
+    target_dist = mlab.bivariate_normal(mX, mY, stdx, stdy, meanx, meany)
+
+#    normal_dist = normal_dist*(normal_sz/float(normal_sz+target_sz))
+#    target_dist = target_dist*(target_sz/float(target_sz+target_sz))
+
+    s = 0
+    for x in range(len(X)) :
+        for y in range(len(Y)):
+            det = target_dist[x,y] - normal_dist[x,y]
+            if det > 0:
+                s = s + det
+    return s
+
+def print_confusion_matrix(true_values, clusters, res, highlight_point,
+        clusters_xmean, clusters_ymean, clusters_xstd, clusters_ystd) :
 #""" Print confusion matrix in log file
 #Param :
 #true_values : true label per each dataset
@@ -69,7 +94,6 @@ def print_confusion_matrix(true_values, clusters, res, highlight_point=None):
         # confusion matrix
         y_true = []
         y_pred = []
-    
         for i, v in enumerate(true_values) :
             if v == highlight_point :
                 y_true.append(1)
@@ -77,7 +101,6 @@ def print_confusion_matrix(true_values, clusters, res, highlight_point=None):
                     y_pred.append(0)
                 else :
                     y_pred.append(1)
-    
         logger.debug("")
         logger.debug("highlight")
         try :
@@ -95,6 +118,7 @@ def print_confusion_matrix(true_values, clusters, res, highlight_point=None):
             logger.debug(y_pred)
 
 def test_clustering(df, gmms, title="", save_to_file=False, highlight_point=None):
+    # preprocessing
     df_train = copy.deepcopy(df)
     df_train.drop('attack',1,inplace=True)
     df_train.drop('difficulty',1,inplace=True)
@@ -113,16 +137,15 @@ def test_clustering(df, gmms, title="", save_to_file=False, highlight_point=None
         data_per_true_labels[true_attack_types[i]].append(d)
 
     A = affinity.get_affinity_matrix(cproj, metric_method=distance.cosdist, knn=8)
-#    A = affinity.get_affinity_matrix(cproj, metric_method=distance.dist, metric_param='euclidean', knn=8)
 
     k = predict_k(A)
     logger.debug("supposed k : " + str(k))
 
-    lim = 10; #int(len(df) * 0.01)
-    if k == 1 :
-        k = lim
-    if k > lim :
-        k = lim
+    lim = int(len(df) * 0.01)
+    lim = 12
+#    if lim < 3 or lim > 10 :
+#        lim = 10
+    k = lim
     logger.debug("Total number of clusters : " + str(k))
 
     logger.debug(A)
@@ -130,26 +153,64 @@ def test_clustering(df, gmms, title="", save_to_file=False, highlight_point=None
                             affinity="precomputed",
                             assign_labels="kmeans").fit(A)
     res = sc.labels_
-#    logger.debug(res)
+    logger.debug(res)
 
+    # cluster data set
     clusters = [0] * k
+    clusters_data = []
+    clusters_xmean = [-1] * k
+    clusters_ymean = [-1] * k
+    clusters_xstd = [-1] * k
+    clusters_ystd = [-1] * k
+    for i in range(k) :
+        clusters_data.append([])
     for i, p in enumerate(cproj):
         true_label = true_attack_types[i]
         if true_label == model.attack_normal :
             clusters[ res[i] ] = clusters[ res[i] ] + 1
         else :
             clusters[ res[i] ] = clusters[ res[i] ] - 1
+        clusters_data[ res[i] ].append(p)
 
-    workpath = os.path.dirname(os.path.abspath(__file__))
+    # cluster recheck with density
+    for i, cluster in enumerate(clusters) :
+        p = clusters_data[i]
+        x = np.array([t[0] for t in p])
+        y = np.array([t[1] for t in p])
+        clusters_xmean[i] = np.mean(x)
+        clusters_ymean[i] = np.mean(y)
+        clusters_xstd[i] = np.std(x)
+        clusters_ystd[i] = np.std(y)
 
-    print_confusion_matrix(true_attack_types, clusters, res, highlight_point)
+    ds = []
+    for i, cluster in enumerate(clusters) :
+        if cluster > 0 :
+            d = check_abnormal_with_density(clusters_xmean[i],
+                clusters_ymean[i],
+                clusters_xstd[i],
+                clusters_ystd[i],
+                len(clusters_data[i]))
+            ds.append(d)
+            if 0 > d:
+                clusters[i] = -99999
+        else :
+            ds.append(None)
+    logger.debug("ds")
+    logger.debug(ds)
 
-    logger.debug("Cluster count")
+    # report
+    print_confusion_matrix(true_attack_types, clusters, res, highlight_point,
+        clusters_xmean, clusters_ymean, clusters_xstd, clusters_ystd)
+
+    logger.debug("Clusters")
+    logger.debug(clusters)
     counts = [0] * k
     for _, c in enumerate(res):
         counts[c] = counts[c] + 1
+    logger.debug("Cluster datacount")
     logger.debug(str(counts))
 
+    # save to file
     print "save to file..." + title
     with open(today + "/" + title + '_cproj.pkl','wb') as output:
         pickle.dump(cproj, output, -1)
@@ -157,6 +218,14 @@ def test_clustering(df, gmms, title="", save_to_file=False, highlight_point=None
         pickle.dump(res, output, -1)
     with open(today + '/./' + title + '_df.pkl','wb') as output:
         pickle.dump(df, output, -1)
+    with open(today + "/" + title + '_clusters_xmean.pkl','wb') as output:
+        pickle.dump(clusters_xmean, output, -1)
+    with open(today + "/" + title + '_clusters_ymean.pkl','wb') as output:
+        pickle.dump(clusters_ymean, output, -1)
+    with open(today + "/" + title + '_clusters_xstd.pkl','wb') as output:
+        pickle.dump(clusters_xstd, output, -1)
+    with open(today + "/" + title + '_clusters_ystd.pkl','wb') as output:
+        pickle.dump(clusters_ystd, output, -1)
     with open(today + '/./' + title + '_highlight_point.pkl','wb') as output:
         pickle.dump(highlight_point, output, -1)
 
@@ -185,7 +254,7 @@ if __name__ == '__main__':
     title = "training20_only"
     logger.debug("#################################################")
     logger.debug(title)
-    test_clustering(df1, gmms, title=title, save_to_file=True)
+    test_clustering(df1, gmms, title=title, save_to_file=True, highlight_point=None)
 
     # with test-set
     dataset_description = "training20_test20"
@@ -193,7 +262,7 @@ if __name__ == '__main__':
         if attack_type_index == model.attack_normal : # why <= instead of ==
             continue
         df2 = df_by_attack_type(df_test_20, attack_type_index)
-        df2 = df2 #[0:50]
+        df2 = df2[0:100]
         df = pd.concat([df1, df2])
         title = dataset_description + "_" + attack_type
         logger.debug("#################################################")
@@ -203,4 +272,4 @@ if __name__ == '__main__':
         test_clustering(df, gmms, title=title, save_to_file=True, highlight_point=attack_type_index)
 
     elapsed = (time.time() - start)
-    print "done in %s seconds" % (elapsed)
+    logger.debug("done in %s seconds" % (elapsed))

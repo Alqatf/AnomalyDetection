@@ -42,7 +42,7 @@ if __name__ == '__main__':
     df_training_20, df_training_full, gmms_20, gmms_full = preprocessing.get_preprocessed_training_data()
 #    df_test_20, df_test_full, gmms_test_20, gmms_test_full = preprocessing.get_preprocessed_test_data()
 
-    logger.set_file(today + "/log.txt")
+    logger.set_file(today + "/log_rep.txt")
     # with training-set
     df1 = df_training_20
     gmms = gmms_20
