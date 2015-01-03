@@ -2,20 +2,24 @@
 %Summarize the entire report. 
 %(Summarize the entire report)
 Spectral approach for intrusion detection is presented. 
-
-It shows this similarity measurement approach is very effective both unseen known type of anomalies and unseen unknown type of anomalies. 
-
-%The proposed algorithm has the same detection performace as (sth), but it is (sth) efficient.
-%Expereimental results on NSL-KDD data set indicate that (sth) 
-%The fact that the number of "" does not depend on the 
-%However, its performance ""
-%Due to limitations of existing "", the proposed (sth) is not applicable when the data have (sth).
+The unsupervised definition of anomalies used in the report is 
+\begin{inparaenum}[\itshape a\upshape)]
+\item the pattern dissimiliar to the majority of normal patterns, 
+\item and infrequently occurred density.
+\end{inparaenum}
+Graph Laplacian captures those patterns well from the data tranported by EM algorithm. 
+Experimental results on NSL-KDD data set indicate that similarity measurement approach is very effective both unseen known type of anomalies and unseen unknown type of anomalies. 
+The number of cluster does not always best from its eigengap when the data have considerable noises. 
+So one-to-one clustering is not applicable because of the limitation of eigensolver's sensitivity. 
+%limitations of eigensolver's sensitivity, one-to-one clustering is not applicable when the data have considerable noises.
+The proposed algorithm with multiclass spectral clustering has better detection performance than that of one-to-one spectral clustering. 
+%However, multiclass spectral clustering's performance is good on those situation. %the number of cluster is fixed. 
 %The approximated k-NN might improve the applicability.
-So multiclass spectral clustering is recommended. 
+%The proposed algorithm has the same detection performace as (sth), but it is (sth) efficient.
 
 % (Future work)
 %% Outline what needs to/can be done in the future.
-Future work on robust multi-class approach is needed. 
+Future work on more robust multi-class approach is needed. 
 More specifically, it would be interesting to design an algorithm with robust eigensolver, where the most noise will have the highest influence on the clustering performance. 
 In addtion, an extension of density sensitive similarity function is also worth considering. 
 %(salability, sensitivity, coverage)

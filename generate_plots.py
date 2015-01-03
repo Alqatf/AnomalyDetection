@@ -92,6 +92,10 @@ def gen_plot(cproj, res, df, highlight_point, title):
     plt.subplots_adjust(wspace=0.4, hspace=0.4)
     plt.xlim(plot_lim_min, plot_lim_max)
     plt.ylim(plot_lim_min, plot_lim_max)
+#    plt.xlabel('interval')
+#    plt.ylabel('log(probability) + k')
+#    plt.title('Convergence plot')
+#    plt.grid(True)
 
     data_per_true_labels = []
     for i in range( len(attacks) ):
@@ -227,6 +231,49 @@ def gen_plot(cproj, res, df, highlight_point, title):
     print title + " has been saved"
     fig.savefig(today + "/" + title + ".png")
     plt.close()
+
+    fig, ax = plt.subplots(1, 1, sharex='col', sharey='row')
+    plt.subplots_adjust(wspace=0.4, hspace=0.4)
+    plt.xlim(plot_lim_min, plot_lim_max)
+    plt.ylim(plot_lim_min, plot_lim_max)
+    for i, p in enumerate(data_per_true_labels) :
+        x = np.array([t[0] for t in p])
+        y = np.array([t[1] for t in p])
+        if i == model.attack_normal:
+            colors = ['g'] * len(x)
+            ax.scatter(x, y, c=colors)
+        elif i != model.attack_normal and i != highlight_point:
+            colors = ['r'] * len(x)
+            ax.scatter(x, y, c=colors)
+    if highlight_point != None :
+        p = data_per_true_labels[highlight_point]
+        x = np.array([t[0] for t in p])
+        y = np.array([t[1] for t in p])
+        colors = ['b'] * len(x)
+        ax.scatter(x, y, c=colors)
+    plt.xlabel('Similarity score to normal')
+    plt.ylabel('Similarity score to abnormal')
+    plt.title('True labels')
+    plt.grid(True)
+    fig.savefig(today + "/" + title + "_true_.png")
+    plt.close()
+
+    fig, ax = plt.subplots(1, 1, sharex='col', sharey='row')
+    plt.subplots_adjust(wspace=0.4, hspace=0.4)
+    plt.xlim(plot_lim_min, plot_lim_max)
+    plt.ylim(plot_lim_min, plot_lim_max)
+    for i, p in enumerate(cproj):
+        if clusters[ res[i] ] >= 0 :
+            ax.scatter(p[0], p[1], c='g')
+        else :
+            ax.scatter(p[0], p[1], c='r')
+    plt.xlabel('Similarity score to normal')
+    plt.ylabel('Similarity score to abnormal')
+    plt.title('Prediected labels')
+    plt.grid(True)
+    fig.savefig(today + "/" + title + "_prediction_.png")
+    plt.close()
+
 
 def gen_plots():
     dataset_description = "training20_only"

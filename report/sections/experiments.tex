@@ -16,14 +16,15 @@ Also its relevance of each feature in the data set is also studied\cite{olusola1
 
 \begin{figure}[htb2]
 \begin{center}
+%\begin{inparaenum}[\itshape a\upshape)]
+%\item data preprocessing
+%\item data transformation
+%\item affinity matrix computation
+%\item clustering
+%\item outlier detection
+%\end{inparaenum}
+\includegraphics[width=5.5in,angle=0]{./sections/Fayyad96kdd-process.eps}
 \end{center}
-\begin{inparaenum}[\itshape a\upshape)]
-\item data preprocessing
-\item data transformation
-\item affinity matrix computation
-\item clustering
-\item outlier detection
-\end{inparaenum}
 \caption{Overview of Intrusion Detection System}
 \label{fig:refSingleRobot1}
 \end{figure}
@@ -38,8 +39,10 @@ With those components, we measure a score for each attributes, and those scores 
 The experiment suggest that such local optimum can effectively seperate different connections and most of unknown classes. 
 \begin{figure}[htb2]
 \begin{center}
+\includegraphics[width=3.5in,angle=0]{./sections/training20_only_true_.eps}
 \end{center}
-\caption{Similarity of normal and abnormal connections in test set. The left figure shows data points including known anomalies and the right known type of anomalies shows data points including unknown type of anomalies.} % I may show rest of data in appendix
+\caption{Similarity of normal and abnormal connections in training set.}
+% The left figure shows data points including known anomalies and the right known type of anomalies shows data points including unknown type of anomalies.} % I may show rest of data in appendix
 \label{fig:refSingleRobot1}
 \end{figure}
 
@@ -90,6 +93,8 @@ It shows how similarity measure captures the effect of an known anomaly.
 
 \begin{figure}[htb2]
 \begin{center}
+\subfloat[Predicted labels]{\includegraphics[width=3.5in,angle=0]{./sections/training20_test20_back_prediction_.eps}}
+\subfloat[True labels]{\includegraphics[width=3.5in,angle=0]{./sections/training20_test20_back_true_.eps}}
 \end{center}
 \caption{Similarity of normal and abnormal connections in training set} % I may show rest of data in appendix
 \label{fig:refSingleRobot1}
@@ -157,8 +162,11 @@ So with those prior knowledge we can use spectral approach to find abnormal clus
 However we can not detect anomalies which are too few to form enough density such as snmpguess or snmpgetattack class. 
 \begin{figure}[htb2]
 \begin{center}
+\subfloat[Predicted labels]{\includegraphics[width=3.5in,angle=0]{./sections/training20_test20_mailbomb_prediction_.eps}}
+\subfloat[True labels]{\includegraphics[width=3.5in,angle=0]{./sections/training20_test20_mailbomb_true_.eps}}
 \end{center}
 \caption{Density based intrusion detection result for unknown anomalies.} % I may show rest of data in appendix
 \label{fig:refSingleRobot1}
 \end{figure}
+
 
