@@ -40,11 +40,18 @@ def check_abnormal_with_density(meanx, meany, stdx, stdy, target_sz):
     Y = np.arange(plot_lim_min, plot_lim_max, 0.1)
 
     mX, mY = np.meshgrid(X, Y)
-    normal_dist = mlab.bivariate_normal(mX, mY, 4.38, 6.5, 15, -11)
+    n1 = mlab.bivariate_normal(mX, mY, 2.15, 0.89, 15.31, -6.5)
+    n2 = mlab.bivariate_normal(mX, mY, 3.16, 3.21, 18, -17.5)
+    n3 = mlab.bivariate_normal(mX, mY, 1.79, 1, 17.5, -11.3)
+    n4 = mlab.bivariate_normal(mX, mY, 3.6, 2.5, 16, -11.4)
+    n5 = mlab.bivariate_normal(mX, mY, 3.4, 2.6, 14, -18)
+    n6 = mlab.bivariate_normal(mX, mY, 3.65, 4.85, 11, 4.7)
+    n7 = mlab.bivariate_normal(mX, mY, 1.85, 1.45, 15.8, -13)
+    normal_dist = n1 + n2 + n3 + n4 + n5 + n6 + n7
     target_dist = mlab.bivariate_normal(mX, mY, stdx, stdy, meanx, meany)
 
-#    normal_dist = normal_dist*(normal_sz/float(normal_sz+target_sz))
-#    target_dist = target_dist*(target_sz/float(target_sz+target_sz))
+    normal_dist = normal_dist*(normal_sz/float(normal_sz+target_sz))
+    target_dist = target_dist*(target_sz/float(target_sz+target_sz))
 
     s = 0
     for x in range(len(X)) :
