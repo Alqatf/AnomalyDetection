@@ -55,18 +55,22 @@ def check_abnormal_with_density(meanx, meany, stdx, stdy, target_sz):
     print meany
 
     normal_dist = normal_dist*(normal_sz/float(normal_sz+target_sz))
-    target_dist = target_dist*(target_sz/float(target_sz+target_sz))
+    target_dist = 0.5*target_dist*(target_sz/float(target_sz+target_sz))
 
-    fig = plt.figure()
-    ax = fig.gca(projection='3d')
-    surf = ax.plot_surface(mX, mY, target_dist, rstride=1, cstride=1, cmap=plt.get_cmap('coolwarm'), linewidth=0, antialiased=True)
-    fig.colorbar(surf, shrink=0.5, aspect=5)
-    plt.show()
+#    fig = plt.figure()
+#    ax = fig.gca(projection='3d')
+#    surf = ax.plot_surface(mX, mY, target_dist, rstride=1, cstride=1, cmap=plt.get_cmap('coolwarm'), linewidth=0, antialiased=True)
+#    fig.colorbar(surf, shrink=0.5, aspect=5)
+#    ax.set_xlabel('Similarity score to normal')
+#    ax.set_ylabel('Similarity score to abnormal')
+#    plt.show()
 
     fig = plt.figure()
     ax = fig.gca(projection='3d')
     surf = ax.plot_surface(mX, mY, normal_dist, rstride=1, cstride=1, cmap=plt.get_cmap('coolwarm'), linewidth=0, antialiased=True)
     fig.colorbar(surf, shrink=0.5, aspect=5)
+    ax.set_xlabel('Similarity score to normal')
+    ax.set_ylabel('Similarity score to abnormal')
     plt.show()
 
 #    print normal_dist

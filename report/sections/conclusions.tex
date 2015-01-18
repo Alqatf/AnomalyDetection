@@ -4,15 +4,13 @@
 Spectral approach for intrusion detection is presented. 
 The unsupervised definition of anomalies used in the report is 
 \begin{inparaenum}[\itshape a\upshape)]
-\item the pattern dissimiliar to the majority of normal patterns, 
+\item the pattern similiar to the majority of abnormal patterns or dissimiliar to the majority of normal patterns, 
 \item and infrequently occurred density.
 \end{inparaenum}
-Graph Laplacian captures those patterns well from the data tranported by EM algorithm. 
-Experimental results on NSL-KDD data set indicate that similarity measurement approach is very effective both unseen known type of anomalies and unseen unknown type of anomalies. 
-The number of cluster does not always best from its eigengap when the data have considerable noises. 
-So one-to-one clustering is not applicable because of the limitation of eigensolver's sensitivity. 
+Graph Laplacian captures those patterns well from the data tranported by mixture models. 
+Experimental results on the NSL-KDD data set indicate that similarity measurement approach is very effective both unseen known type of anomalies and unseen unknown type of anomalies. 
 %limitations of eigensolver's sensitivity, one-to-one clustering is not applicable when the data have considerable noises.
-The proposed algorithm with multiclass spectral clustering has better detection performance than that of one-to-one spectral clustering. 
+The proposed algorithm with multiclass spectral clustering has better detection performance than that of one-to-one spectral clustering but density based approach is not very effective. 
 %However, multiclass spectral clustering's performance is good on those situation. %the number of cluster is fixed. 
 %The approximated k-NN might improve the applicability.
 %The proposed algorithm has the same detection performace as (sth), but it is (sth) efficient.

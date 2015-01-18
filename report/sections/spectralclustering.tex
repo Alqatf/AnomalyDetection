@@ -18,10 +18,10 @@ Higher weights imply greater similarity.
 \subsection{Algorithm}
 After we compute graph Laplacian matrix, we can decompose the matrix. 
 In spectral approach, we need to find the eigenvalues and eigenvectors of Laplacian matrix to do this. 
-After we find them, we can build embedded space from the eigenvectors corresponding to the $k$ eigenvalues given by eigengap algorithm. :w
+After we find them, we can build embedded space from the eigenvectors corresponding to the $k$ eigenvalues given by eigengap algorithm. 
 However, eigengap does not work if there is too many noises. 
 We can check whether the result of eigengap $k$ is too big or not.
-After that, we can apply known outlier detection techniques\cite{knorr00} to the reduced $n \times k$ space to produce $k$ clusters. 
+After that, we can apply known outlier detection techniques \cite{knorr00} to the reduced $n \times k$ space to produce $k$ clusters. 
 \begin{figure}[ht]
 \begin{mdframed}
 \begin{enumerate}
@@ -36,15 +36,16 @@ After that, we can apply known outlier detection techniques\cite{knorr00} to the
 \caption{Normalized spectral clustering according to Shi}
 \end{figure}
 
-\begin{figure}[htb2]
-\begin{center}
-\end{center}
-\caption{Example of Spectral Clustering}
-\label{fig:refSingleRobot1}
-\end{figure}
+%\begin{figure}[htb2]
+%\begin{center}
+%\end{center}
+%\caption{Example of Spectral Clustering}
+%\label{fig:refSingleRobot1}
+%\end{figure}
 
 For clustering method, there is two ways to do it. 
-First is $k$-class clustering\cite{jianbo03} and the other is one by one iteratively until it makes $k$ clusters. 
+First is a $k$-class clustering \cite{jianbo03} and the other is one by one iteratively until it makes $k$ clusters. 
 The problem of latter one is that it is too weak for a noise. 
-Therefore I follow multi-class approach. 
+Also the number of cluster $k$ from its eigengap does not always best when the data have considerable noises. 
+Therefore I follow multi-class approach since iterated one-to-one clustering is not applicable. %in this problem because of the limitation of eigensolver's sensitivity. 
 % I followed both way but one-by-one is sometimes really bad.

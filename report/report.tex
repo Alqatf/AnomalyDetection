@@ -34,8 +34,8 @@
 \usepackage{paralist}
 \usepackage{mdframed} % figure box frame
 \usepackage{subfig}
-
-
+\usepackage{setspace}
+\usepackage[font=small,labelfont=bf]{caption}
 \usetikzlibrary{matrix,arrows,decorations.pathmorphing}
 %-----------------------
 %\usepackage{./lib/header}
@@ -46,12 +46,9 @@
 \maketitle
 \input{frontstuff/frontstuff}
 \input{sections/intro}
-%-----------------------
-\newpage
 \input{sections/relatedwork}
-\newpage
 \input{sections/anomaly}
-\newpage
+%-----------------------
 \input{sections/spectralclustering}
 %-----------------------
 \newpage
@@ -62,7 +59,6 @@
 \newpage
 \input{sections/conclusions}
 %-----------------------
-\newpage
 \input{references/thebibliography}
 %-----------------------
 \clearpage

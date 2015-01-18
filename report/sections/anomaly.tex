@@ -1,41 +1,42 @@
 \section{Potential anomalies}
-A potential anomaly occurs when data point is not \begin{inparaenum}[\itshape a\upshape)]
-\item similar to known abnormal connections,
-\item dissimilar to known normal connections,
-\item or similar to known normal connections but with very higher density.
+A potential anomaly occurs when data point is \begin{inparaenum}[\itshape a\upshape)]
+\item known anomalies which is similar to known abnormalies, %dissimilar to normal connections,
+\item unknown anomalies which is similar to known abnormalies, %or dissimilar to normal connections,
+\item or unknown anomalies which is similar to known normal behaviours but with very higher density.
 \end{inparaenum} 
 
+Since a goal of this paper is an intrusion detection, I will give examples of this types of anomalies from the NSL-KDD dataset \cite{tavallaee09}. 
+The dataset is for building an intrusion detection task to detect network anomalies which is possible network attacks. 
+It contains $21$ known anomalies, and $13$ unknown anomalies. 
+It also contains four more unknown anomalies, but they are similar to normal data points.
+A detail of the dataset is specified in~\ref{subsec:datasetandsetup}. 
 
-
-
-
-%Point anomaly
-%Collective anomaly
-\begin{figure}[htb2]
-\begin{center}
-(similar to normal)
-(similar to abnormal)
-(similar to normal, but very high density)
-%\includegraphics[width=2.5in,angle=0]{}
-\end{center}
-\caption{Examples of anomalies that are potential anomalies}
-\label{fig:refSingleRobot1}
-\end{figure}
-
+%%Point anomaly
+%%Collective anomaly
+%\begin{figure}[htb2]
+%\begin{center}
+%(similar to normal)
+%(similar to abnormal)
+%(similar to normal, but very high density)
+%%\includegraphics[width=2.5in,angle=0]{}
+%\end{center}
+%\caption{Examples of anomalies that are potential anomalies}
+%\label{fig:refSingleRobot1}
+%\end{figure}
 \begin{table}[h]
 \begin{center}
 \begin{tabular}{| l | l | p{5cm} |}
 \hline
-Type of Anomaly & Similar to & classes \\
+Type of Anomaly & Similar to & Classes in NSL-KDD \\
 \hline
-Known anomalies & Abnormal model & guess-passwd, spy, ftp-write, nmap, back, multihop, rootkit, pod, portsweep, perl, ipsweep, teardrop, satan, loadmodule, buffer-overflow, phf, warezmaster, imap, warezclient, land, neptune, smurf \\ %21
+Known anomalies & Known anomalies & guess-passwd, spy, ftp-write, nmap, back, multihop, rootkit, pod, portsweep, perl, ipsweep, teardrop, satan, loadmodule, buffer-overflow, phf, warezmaster, imap, warezclient, land, neptune, smurf \\ %21
 \hline
-Unknown anomalies & Abnormal model & processtable, named, udpstorm, sqlattack, ps, httptunnel, apache2, saint, mscan, xterm, worm, xlock, xsnoop \\ %13
+Unknown anomalies & Known anomalies & processtable, named, udpstorm, sqlattack, ps, httptunnel, apache2, saint, mscan, xterm, worm, xlock, xsnoop \\ %13
 \hline
-Unknown anomalies & Normal model & sendmail, mailbomb, snmpguess, snmpattack \\ % 4
+Unknown anomalies & Normal behaviours & sendmail, mailbomb, snmpguess, snmpattack \\ % 4
 \hline
 \end{tabular}
 \end{center}
-\caption{Abnomal classes in NSL-KDD99}
-\label{fig:refSingleRobot1}
+\caption{Abnomal classes in the NSL-KDD99}
+\label{fig:anomalyclasses}
 \end{table}

@@ -29,7 +29,6 @@ import logger
 
 today = util.make_today_folder('./results')
 k = 12
-num_clusters = k * 2
 plot_lim_max = 21
 plot_lim_min = -21
 
@@ -148,10 +147,11 @@ def test_clustering(df, gmms, title="", save_to_file=False, highlight_point=None
     k = predict_k(A)
     logger.debug("supposed k : " + str(k))
 
-    lim = int(len(df) * 0.01)
-    lim = 12
+#    lim = int(len(df) * 0.01)
+#    lim = 12
 #    if lim < 3 or lim > 10 :
 #        lim = 10
+    lim = int( len(proj) * 12/500.0  )
     k = lim
     logger.debug("Total number of clusters : " + str(k))
 
@@ -256,7 +256,7 @@ if __name__ == '__main__':
 
     # with training-set
     gmms = gmms_20
-    df1 = df_training_20[0:500]
+    df1 = df_training_20[0:2000]
 
     title = "training20_only"
     logger.debug("#################################################")

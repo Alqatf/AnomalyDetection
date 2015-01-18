@@ -24,6 +24,7 @@ import util
 import logger
 
 today = util.make_today_folder('./results')
+#today = "./results/2015-01-08"
 
 plot_lim_max = 21
 plot_lim_min = -21
@@ -44,7 +45,7 @@ def plot_true_labels(ax, data_per_true_labels, title="", highlight_point = None)
         p = data_per_true_labels[highlight_point]
         x = np.array([t[0] for t in p])
         y = np.array([t[1] for t in p])
-        colors = ['b'] * len(x)
+        colors = ['y'] * len(x)
         ax.scatter(x, y, c=colors)
 
 def plot_normal_label(ax, data_per_true_labels, title=""):
@@ -105,7 +106,7 @@ def gen_plot(cproj, res, df, highlight_point, title):
     for i, d in enumerate(cproj):
         data_per_true_labels[true_attack_types[i]].append(d)
 
-    k = 12
+    k = int( len(cproj) * 12/500.0)
     clusters = [0] * k
     cluster_xs = []
     cluster_ys = []
@@ -249,7 +250,7 @@ def gen_plot(cproj, res, df, highlight_point, title):
         p = data_per_true_labels[highlight_point]
         x = np.array([t[0] for t in p])
         y = np.array([t[1] for t in p])
-        colors = ['b'] * len(x)
+        colors = ['y'] * len(x)
         ax.scatter(x, y, c=colors)
     plt.xlabel('Similarity score to normal')
     plt.ylabel('Similarity score to abnormal')

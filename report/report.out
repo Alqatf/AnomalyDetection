@@ -4,9 +4,9 @@
 \BOOKMARK [1][-]{section.4}{Spectral clustering}{}% 4
 \BOOKMARK [2][-]{subsection.4.1}{graph Laplacian}{section.4}% 5
 \BOOKMARK [2][-]{subsection.4.2}{Algorithm}{section.4}% 6
-\BOOKMARK [1][-]{section.5}{Connection Similarity}{}% 7
+\BOOKMARK [1][-]{section.5}{Network Connection Similarity}{}% 7
 \BOOKMARK [2][-]{subsection.5.1}{Problem Formulation}{section.5}% 8
-\BOOKMARK [2][-]{subsection.5.2}{Normal and Abnormal Connection Similarity}{section.5}% 9
+\BOOKMARK [2][-]{subsection.5.2}{Normal and Abnormal Network Connection Similarity}{section.5}% 9
 \BOOKMARK [2][-]{subsection.5.3}{Connection Density Similarity}{section.5}% 10
 \BOOKMARK [1][-]{section.6}{Experiments}{}% 11
 \BOOKMARK [2][-]{subsection.6.1}{Dataset and Setup}{section.6}% 12
