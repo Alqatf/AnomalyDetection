@@ -1,45 +1,70 @@
 \section{Spectral clustering}
 % Basic
-Spectral clustering algorithm is the graph cut algorithm involves taking top eigenvectors of an affinity matrix, which is transformed by calculating the similarity between objects in dataset, and then use graph cut that is an efficient approximation algorithm. 
-
-I follow Shi's normalized cut approach \cite{jianbo03}. 
-
+Spectral clustering algorithm is a graph-based clustering algorithm. 
+It treats data points are represented as vertices, and constructs an affinity matrix after measuring pairwise similarity and distance between points to form edges. 
+After that, it takes top eigenvectors of an eigenvectors of an affinity matrix, and then use graph cut algorithm to form clusters. 
+I follow Shi's normalized cut algorithm \cite{jianbo03}. 
 The assuptions to the methods are that \begin{inparaenum}[\itshape a\upshape)]
+%It involves taking top eigenvectors of an affinity matrix, which is transformed by calculating the similarity between objects in dataset, and then use graph cut algorithm. 
 \item minimizing normalized cut is equivalent to minimizing the probability that a random walk on the graph.
 \item the larger the gap between $\lambda_{k}$ and $\lambda_{k+1}$, the closer the piecewise-constant eigenvectors will be.
 \end{inparaenum}
+In this section, I describe a detail of spectral clustering algorithm. 
+Most of them can be found in \cite{ulrike07}. 
 
-\subsection{graph Laplacian}
+%\subsection{Normalized Laplacian Matrix}
 Spectral clustering algorithms attemp to find $k$ subsets of vertices which have the property that vertices within a cluster are similar to each other than to vertices in other clusters. 
-In order to find sets, spectral clustering makes the unnormalized Laplacian $n \times n$ matrix $L$. 
-$L = D - W$ where $D$ is the diagonal degree matrix $d_{ii}$ is the detree of vertex $i$ defined as $d_{ii} = \sum_{j=1}^n$ and $W$ is the weighted adjacency matrix, such that $W_{ii} = 0$ and $w_{ij}$ is the weight of the edge between $v_i \in V$ and $v_j \in V$.
-Note that we are assuming that the graph is undirect which makes $W$ and $L$ symmetric and the weight of an edge is a non-negative measure of similiarity between the two vertices. 
+In order to find subsets, spectral clustering algorithm needs the normalized Laplacian $n \times n$ matrix $L$. 
+
+Let $A$ is the affinity matrix $n \times n$ dimensions. It is defined as 
+\begin{equation}
+A_{i,j} = \left\{ 
+  \begin{array}{l l}
+    sim(x_i, x_j) & \quad \text{for $x_j$ is in neighbourhood of $x_i$}\\
+    0 & \quad \text{otherwise}
+  \end{array} \right.
+\end{equation}
+%This means $A_{i,j}$ is the pairwise similarity only if they are neighbourhood. 
+Note that we are assuming that the graph is undirect which makes $A$ symmetric and the weight of an edge is a non-negative measure of similiarity between the two vertices. 
 Higher weights imply greater similarity. 
 
-\subsection{Algorithm}
-After we compute graph Laplacian matrix, we can decompose the matrix. 
-In spectral approach, we need to find the eigenvalues and eigenvectors of Laplacian matrix to do this. 
-After we find them, we can build embedded space from the eigenvectors corresponding to the $k$ eigenvalues given by eigengap algorithm. 
-However, eigengap does not work if there is too many noises. 
-We can check whether the result of eigengap $k$ is too big or not by threshold.
-After that, we can apply known outlier detection techniques \cite{knorr00} to the reduced $n \times k$ space to produce $k$ clusters. 
+Let $D$ be the diagonal degree matrix $n \times n$ dimensions where $d_{i,i} = \sum_{i} A_{i,j}$ 
+and $W$ be the weighted adjacency matrix, such that $W_{i,i} = 0$ and $w_{i,j}$ is the weight of the edge between $v_i \in V$ and $v_j \in V$. 
+Then we can get normalized Laplacian matrix $L$ as 
+\begin{equation}
+L = D^{-1/2} A D^{-1/2} - W
+\end{equation}
+%where $D$ is the diagonal degree matrix $d_{ii}$ is the detree of vertex $i$ defined as $d_{ii} = \sum_{j=1}^n$ and $W$ is the weighted adjacency matrix, such that $W_{ii} = 0$ and $w_{ij}$ is the weight of the edge between $v_i \in V$ and $v_j \in V$. 
+
+%\subsection{Algorithm}
+The way spectral approach works by building embedded space from the eigenvectors corresponding to the $k$ eigenvalues given by eigengap algorithm. 
+From $L$, we can get the eigenvalues and eigenvectors of Laplacian matrix, and we can apply known outlier detection techniques \cite{knorr00} to the reduced $n \times k$ space to produce $k$ clusters. 
+%we need to find the eigenvalues and eigenvectors of Laplacian matrix to decompose do this. 
+%After we compute normalized graph Laplacian matrix, we can decompose the matrix. 
+%After we find them, we can build embedded space from the eigenvectors corresponding to the $k$ eigenvalues given by eigengap algorithm. 
+%After that, we can apply known outlier detection techniques \cite{knorr00} to the reduced $n \times k$ space to produce $k$ clusters. 
 \begin{figure}[ht]
 \begin{mdframed}
 \begin{enumerate}
 \item[Input] : Similarity matrix $S \in R^{n \times n}$, number $k$ of clusters. \\
-\item[Step 1] : Construct the unnormalized graph Laplacian $L = D - W$, using the weighted $n \times n$ adjacency matrix $W$, where $w_{ij}$ is a function of $S_{ij}$ that gives non-negative weights. \\
+\item[Step 1] : Construct the normalized graph Laplacian $L = D^{-1/2} A D^{-1/2} - W$, using the weighted $n \times n$ adjacency matrix $W$, where $w_{ij}$ is a function of $S_{ij}$ that gives non-negative weights. \\
 \item[Step 2] : Find the $k$ eigenvectors $u_1, \cdots, u_k$ corresponding to the smallest $k$ eigenvalues that solve the generalized eigenvector problem $L u = \lambda D u$ \\
 \item[Step 3] : Let $U = R^{n \times k}$ be the matrix containing the eigenvectors $u_i$ as columns, and let $y_i \in R^k$ be the $i$th row of $U$.\\
 \item[Step 4] : Cluster the points $(y_i)_{i=1,\cdots,n}$ in $R^k$ using $k$-means clustering into clusters $C_1,\cdots,C_k$.\\
 \item[Output] : clusters $A_1, \cdots, A_k$ where $A_k - {v_j|y_j \in C_i}$
 \end{enumerate}
 \end{mdframed}
-\caption{Normalized spectral clustering according to Shi}
+\caption{Overview of spectral clustering algorithm according to Shi}
 \end{figure}
 
-For clustering method, there is two ways to do it. 
-First is a $k$-class clustering \cite{jianbo03} and the other is one by one iteratively until it makes $k$ clusters. 
-The problem of latter one is that it is too weak for a noise. 
-Also the number of cluster $k$ from its eigengap does not always best when the data have considerable noises. 
-Therefore I follow multi-class approach since iterated one-to-one clustering is not applicable. %in this problem because of the limitation of eigensolver's sensitivity. 
+There are three issues, first of all, eigengap algorithm does not pick $v$ value correctly if there is too many noises. 
+We can check whether the result of eigengap $k$ is fine or not by threshold. 
+Second, we need to define similarity function. 
+I describe how to train similarity score function in section~\ref{subsec:normalabnormalsimilarity}, and third, we need to choice clustering method over embedded space. 
+I follow $k$-class clustering approach because I found recursive bipartite approach is not applicable for real data which has lots of noise. 
+%For clustering method, there is two ways to do it. 
+%First is a $k$-class clustering \cite{jianbo03} and the other is one by one iteratively until it makes $k$ clusters. 
+%The problem of latter one is that it is too weak for a noise. 
+%Also the number of cluster $k$ from its eigengap does not always best when the data have considerable noises. 
+%Therefore I follow multi-class approach since iterated one-to-one clustering is not applicable. %in this problem because of the limitation of eigensolver's sensitivity. 
 % I followed both way but one-by-one is sometimes really bad.

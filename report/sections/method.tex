@@ -1,7 +1,7 @@
 \section{Network Connection Similarity}
 \label{sec:connectionsimilarity}
 A network connection is a connection between computers in the Internet to transmit and receive data. 
-Its connection data created by host computer is important to monitor of a network status.
+Connection data created by host computer is important to monitor of a network status.
 Network connection similarity helps to measure the similarity between network connections, and is essential to construct clusters. 
 %, and requires comparison methods that helps to measure the similarity between network connections. 
 %Network connection similairy methods provide how the data points are similar each other and is essential to construct clusters. 
@@ -11,13 +11,12 @@ After reviewing the families of proposed schemes, I indentified similarity and d
 %so the problem of comparing similarity has been an important problem. %\cite{}
 \newline
 In Section~\ref{subsec:problemformulation}, I describe the problem.\newline
-In Section~\ref{subsec:normalabnormalsimilarity}, I propose new approaches to train similarity function.\newline
+In Section~\ref{subsec:normalabnormalsimilarity}, I propose new approaches to train similarity cost function.\newline
 In Section~\ref{subsec:densitysimilarity}, I describe density similarity measurement which is relied on the way of representatives of the clusters and threshold.\newline
 %In Section~\ref{subsec:learningsimilarity}, I describe how the algorithm learn mixture models with training set.\newline
-
 \subsection{Problem Formulation}
 \label{subsec:problemformulation}
-Given dataset, we can learn normal and abnormal mixture models in order to measure similarity, and estimate a density of normal connections from training set.
+Given dataset about network connection data, we can learn normal and abnormal mixture models in order to measure similarity score, and estimate a density of normal connections from training set.
 Anomalies can be detected by cluster algorithm based on affinity matrix which is computed by similarity score, or by comparing density of clusters against threshold.
 
 \subsection{Normal and Abnormal Network Connection Similarity}
