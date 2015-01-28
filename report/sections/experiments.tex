@@ -6,10 +6,10 @@ In Section~\ref{subsec:detectinganomalies}, I evaluate how successful the algori
 
 \subsection{Dataset and Setup}
 \label{subsec:datasetandsetup}
-KDD 99 dataset is mainly used for network-based intrusion detection algorithm evaluation \cite{tavallaee09}. 
-I select the NSL-KDD dataset which is an up-to-date version of KDD dataset. 
-Since the NSL-KDD dataset solves issues in the original data set, I use the data set in this report as an effective benchmark. 
-Its relevance of each feature in the data set is also studied \cite{olusola10} \cite{kayacik05}. 
+The KDD 99 dataset is mainly used for a network-based intrusion detection algorithm evaluation \cite{tavallaee09}. 
+I select the NSL-KDD dataset, which is an up-to-date version of the KDD 99 dataset, as an effective benchmark. 
+% Since the NSL-KDD dataset solves issues in the KDD 99 dataset, I use the dataset as an effective benchmark. 
+Its relevance of each feature in the dataset is also studied \cite{olusola10} \cite{kayacik05}. 
 % All source code is on the Internet. 
 % I use NSL-KDD99 Dataset for the report. 
 % semi-supervised approach
@@ -29,14 +29,14 @@ Its relevance of each feature in the data set is also studied \cite{olusola10} \
 \label{fig:refSingleRobot1}
 \end{figure}
 The intrusion detection system should find specific kinds of abnomal traffic e.g. a denial of service (DoS) attack. 
-It should check if these new sets of mornitoring data show similar properties as the orignal data or not as well. 
-I construct the system similar to knowledge discovery system \cite{fayyad96} because it is widely used among intrusion detection systems. 
-A new approach to construct a pairwise similarity matrix is that compares their probability in pairwise not its attributes directly. 
-For this, the system includes gaussian mixture models (GMM) for attributes and classes to calculate the probability for data point as I stated before. 
+It should check if these new sets of monitoring network traffic show similar properties as the orignal data or not as well. 
+I construct the system similar to the knowledge discovery system \cite{fayyad96} because it is widely used among intrusion detection systems. 
+A new approach to construct a pairwise similarity matrix is that it compares their probability in pairwise not its attributes directly. 
+For this, the system includes gaussian mixture models for attributes and classes to calculate the probability for data point as I stated before. 
 %The EM approach is used to fit those models and is guaranteed to converge to a local optimum on given input. 
 With those components, we measure a score for each attributes, and those scores are weighted based on their importance in the dataset \cite{kayacik05}.
 %to get 2D data where x-axis is a score for normal connection similarity and y-axis is a score for known abnormal connection similarity. 
-The experiment suggest that such local optimum can effectively seperate different connections and most of unknown classes. 
+The experiment suggests that such local optimum can effectively seperate different connections and most of unknown classes. 
 %\begin{figure}[htb2]
 %\begin{center}
 %\includegraphics[width=3.5in,angle=0]{./sections/training20_only_true_.eps}
@@ -49,7 +49,7 @@ The experiment suggest that such local optimum can effectively seperate differen
 %In order for spectral anaysis, we need to make a sparse affinity matrix from transported data. 
 %We can compute a sparse affinity matrix from a pairwise similarity matrix. 
 After we have a pairwise similarity matrix, one way to convert similarity matrix to a sparse affinity matrix is that dealing with the affinities for $k$ nearest neighborhood, and set all other values for current data point to zero. 
-I choose the $k = 8$ because it is commonly used in spectral clustering algorithms. 
+I choose $k = 8$ because it is commonly used in spectral clustering approaches. 
 
 % Altho require non-convex boundaries,
 %\subsection{Computing affinity matrix}
@@ -83,11 +83,11 @@ I choose the $k = 8$ because it is commonly used in spectral clustering algorith
 
 \subsection{Detecting Anomalies}
 \label{subsec:detectinganomalies}
-In this section, I describe how the a sparse affinity matrix can be used to detect point and collective anomalies. 
+In this section, I describe how a sparse affinity matrix can be used to detect point and collective anomalies. 
 In the following experiments, I divide experiments for known anomalies and unknown anomalies. 
 
 \subsubsection{Known Anomalies}
-We can see that trained normal and abnormal similarity functions are sensitive to known anomalies in testset - their scores are similar to known anomalies and dissimilar to known normal connections. 
+We can see that trained normal and abnormal similarity functions are sensitive to known anomalies in the testset - their scores are similar to known anomalies and dissimilar to known normal connections. 
 %normal and abnormal connections similarity are sensitive to known anomalies. 
 It shows how much trained similarity functions capture the effects of an known anomalies. 
 % The similarity coputed by mixture models gives similarity scores that are used to find k nearest neighborhood.
@@ -100,7 +100,7 @@ However this approach does not work if the number of intrusions are insufficient
 \subfloat[Predicted labels]{\includegraphics[width=3.0in,angle=0]{./sections/training20_test20_back_prediction_.eps}}
 \subfloat[True labels]{\includegraphics[width=3.0in,angle=0]{./sections/training20_test20_back_true_.eps}}
 \end{center}
-\caption{Anomaly detection for known anomalies. Red:Known and seen abnormal connections, Green:Known and seen normal connections, Blue:Intrusion "back" which is a known anomaly but in trainingset.} % I may show rest of data in appendix
+\caption{Anomaly detection for known anomalies. Red:Known and seen abnormal connections, Green:Known and seen normal connections, Blue:Intrusion "back" which is a known anomaly but in the testset.} % I may show rest of data in appendix
 \label{fig:refSingleRobot1}
 
 \end{figure}
@@ -110,7 +110,7 @@ However this approach does not work if the number of intrusions are insufficient
 \scalebox{0.7}{
 \begin{tabular}{| l | l | p{2cm} || l | l | p{2cm} |}
 \hline
-Type of Anomaly & Number & $\%$ correct & Type of Anomaly & Number & $\%$correct \\
+Type of Anomaly & Number & $\%$ correct & Type of Anomaly & Number & $\%$ correct \\
 \hline
 guess passwd & 1231 & 94.91 & ftp write & 3 & 66.66 \\
 \hline
@@ -169,10 +169,10 @@ neptune & 1579 & 89.23 & smurf & 627 & 95.33  \\
 \newpage
 \subsubsection{Unknown Anomalies}
 We see that normal and abnormal connection similarity are also sensitive to most of unknown anomaly. 
-However, we have four classes that is similar to normal connections. 
+However, we have four classes that are similar to normal connections. 
 Connection density similarity measure is sensitive in this type of anomaly if it is above its threshold. 
 
-13 out of 17 unknown anomalies such as processtable class are similar to known anomalies. 
+13 out of 17 unknown anomalies such as "processtable" class are similar to known anomalies. 
 Therefore we can detect them with exactly same way what it have done to known anomalies. 
 Those results are good as known anomalies. 
 
@@ -181,7 +181,7 @@ Those results are good as known anomalies.
 \scalebox{0.7}{
 \begin{tabular}{| l | l | p{2cm} || l | l | p{2cm} |}
 \hline
-Type of Anomaly & Number & $\%$ correct & Type of Anomaly & Number & $\%$correct \\
+Type of Anomaly & Number & $\%$ correct & Type of Anomaly & Number & $\%$ correct \\
 \hline
 processtable & 685 & 95.64 & named & 17 & 88  \\
 \hline
@@ -200,13 +200,13 @@ xsnoop & 4 & 0  \\
 \end{tabular}
 }
 \end{center}
-\caption{Unknown anomalies that is similar to known anomalies detection rate}
+\caption{Unknown anomalies that is similar to the known anomalies detection rate}
 \label{fig:refSingleRobot1}
 \end{table}
 
-However 4 out of 17 are close to normal connections in training set. 
+However 4 out of 17 are close to the normal connections in the trainingset. 
 In that case, a cluster resulted by spectral clustering is denser than normal case can be detected by density based algorithm if we compare with mixture density generated by normal connections only. 
-So with those prior knowledge we can use spectral approach to find abnormal clusters which is originally classified as normal connection. 
+So with those prior knowledge we can use a spectral approach to find abnormal clusters which is originally classified as normal clusters. 
 
 \begin{figure}[htb2]
 \begin{center}
@@ -218,7 +218,7 @@ So with those prior knowledge we can use spectral approach to find abnormal clus
 \label{fig:refSingleRobot1}
 \end{figure}
 
-The performance of density approach is not as good as previous one, and we can see that it is not able to detect sendmail class which is too few to form enough density. 
+The performance of density approach is not as good as previous one, and we can see that it is not able to detect "sendmail" class which is too few to form enough density. 
 \begin{table}[h]
 \begin{center}
 \scalebox{0.7}{

@@ -3,17 +3,17 @@
 Spectral clustering algorithm is a graph-based clustering algorithm. 
 It treats data points are represented as vertices, and constructs an affinity matrix after measuring pairwise similarity and distance between points to form edges. 
 After that, it takes top eigenvectors of an eigenvectors of an affinity matrix, and then use graph cut algorithm to form clusters. 
-I follow Shi's normalized cut algorithm \cite{jianbo03}. 
+In our implementation, we follow Shi's normalized cut algorithm \cite{jianbo03}. 
 The assuptions to the methods are that \begin{inparaenum}[\itshape a\upshape)]
 %It involves taking top eigenvectors of an affinity matrix, which is transformed by calculating the similarity between objects in dataset, and then use graph cut algorithm. 
 \item minimizing normalized cut is equivalent to minimizing the probability that a random walk on the graph.
 \item the larger the gap between $\lambda_{k}$ and $\lambda_{k+1}$, the closer the piecewise-constant eigenvectors will be.
 \end{inparaenum}
-In this section, I describe a detail of spectral clustering algorithm. 
+In this section, I describe the detail of the spectral clustering algorithm. 
 Most of them can be found in \cite{ulrike07}. 
 
 %\subsection{Normalized Laplacian Matrix}
-Spectral clustering algorithms attemp to find $k$ subsets of vertices which have the property that vertices within a cluster are similar to each other than to vertices in other clusters. 
+Spectral clustering algorithms attempt to find $k$ subsets of vertices which have the property that vertices within a cluster are similar to each other than to vertices in other clusters. 
 In order to find subsets, spectral clustering algorithm needs the normalized Laplacian $n \times n$ matrix $L$. 
 
 Let $A$ is the affinity matrix $n \times n$ dimensions. It is defined as 
@@ -37,7 +37,7 @@ L = D^{-1/2} A D^{-1/2} - W
 %where $D$ is the diagonal degree matrix $d_{ii}$ is the detree of vertex $i$ defined as $d_{ii} = \sum_{j=1}^n$ and $W$ is the weighted adjacency matrix, such that $W_{ii} = 0$ and $w_{ij}$ is the weight of the edge between $v_i \in V$ and $v_j \in V$. 
 
 %\subsection{Algorithm}
-The way spectral approach works by building embedded space from the eigenvectors corresponding to the $k$ eigenvalues given by eigengap algorithm. 
+The way the spectral approach works by building embedded space from the eigenvectors corresponding to the $k$ eigenvalues given by eigengap algorithm. 
 From $L$, we can get the eigenvalues and eigenvectors of Laplacian matrix, and we can apply known outlier detection techniques \cite{knorr00} to the reduced $n \times k$ space to produce $k$ clusters. 
 %we need to find the eigenvalues and eigenvectors of Laplacian matrix to decompose do this. 
 %After we compute normalized graph Laplacian matrix, we can decompose the matrix. 
@@ -57,10 +57,12 @@ From $L$, we can get the eigenvalues and eigenvectors of Laplacian matrix, and w
 \caption{Overview of spectral clustering algorithm according to Shi}
 \end{figure}
 
-There are three issues, first of all, eigengap algorithm does not pick $v$ value correctly if there is too many noises. 
+There are three issues. 
+First of all, eigengap algorithm does not pick $v$ value correctly if there is too many noises. 
 We can check whether the result of eigengap $k$ is fine or not by threshold. 
-Second, we need to define similarity function. 
-I describe how to train similarity score function in section~\ref{subsec:normalabnormalsimilarity}, and third, we need to choice clustering method over embedded space. 
+Secondly, we need to define similarity function. 
+I describe how to train similarity score function in section~\ref{subsec:normalabnormalsimilarity}. 
+Thirdly, we need to choice clustering method over embedded space. 
 I follow $k$-class clustering approach because I found recursive bipartite approach is not applicable for real data which has lots of noise. 
 %For clustering method, there is two ways to do it. 
 %First is a $k$-class clustering \cite{jianbo03} and the other is one by one iteratively until it makes $k$ clusters. 

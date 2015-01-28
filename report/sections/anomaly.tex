@@ -1,14 +1,16 @@
 \section{Potential anomalies}
 A potential anomaly occurs when a data point is \begin{inparaenum}[\itshape a\upshape)]
-\item is similar to known abnormalies, %dissimilar to normal connections,
-\item or is similar to known normal behaviours but within unexpectedly high density.
+\item is similar to known anormalies %dissimilar to normal connections,
+or 
+\item is similar to known normal behaviours but within unexpectedly high density.
 %\item known anomalies which is similar to known abnormalies, %dissimilar to normal connections,
 %\item unknown anomalies which is similar to known abnormalies, %or dissimilar to normal connections,
 %\item or unknown anomalies which is similar to known normal behaviours but with very higher density.
 \end{inparaenum} 
 
-Since a goal of this paper is an intrusion detection, I will give examples of this types of anomalies from the NSL-KDD dataset \cite{tavallaee09}. 
-The dataset is for building an intrusion detection task to detect network anomalies which is possible network attacks. 
+The goal of this report is detection of intrusions on a computer system. 
+We here give examples of this types of anomalies from the NSL-KDD dataset \cite{tavallaee09}. 
+The dataset is for building an intrusion detection task to detect network anomalies which are possible network attacks. 
 It contains $21$ known anomalies, and $13$ unknown anomalies. 
 It also contains four more unknown anomalies, but they are similar to normal data points.
 A detail of the dataset is specified in~\ref{subsec:datasetandsetup}. 
@@ -29,7 +31,7 @@ A detail of the dataset is specified in~\ref{subsec:datasetandsetup}.
 \begin{center}
 \begin{tabular}{| l | l | p{5cm} |}
 \hline
-Type of Anomaly & Similar to & Classes in NSL-KDD \\
+Type of Anomaly & Similar to & Abnormal classes in the NSL-KDD dataset \\
 \hline
 Known anomalies & Known anomalies & guess-passwd, spy, ftp-write, nmap, back, multihop, rootkit, pod, portsweep, perl, ipsweep, teardrop, satan, loadmodule, buffer-overflow, phf, warezmaster, imap, warezclient, land, neptune, smurf \\ %21
 \hline
@@ -39,6 +41,6 @@ Unknown anomalies & Normal behaviours & sendmail, mailbomb, snmpguess, snmpattac
 \hline
 \end{tabular}
 \end{center}
-\caption{Abnomal classes in the NSL-KDD99}
+\caption{Abnomal classes in the NSL-KDD dataset}
 \label{fig:anomalyclasses}
 \end{table}
