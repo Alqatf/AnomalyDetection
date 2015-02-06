@@ -4,7 +4,7 @@ Spectral clustering algorithm is a graph-based clustering algorithm.
 It treats data points are represented as vertices, and constructs an affinity matrix after measuring pairwise similarity and distance between points to form edges. 
 After that, it takes top eigenvectors of an eigenvectors of an affinity matrix, and then use graph cut algorithm to form clusters. 
 In our implementation, we follow Shi's normalized cut algorithm \cite{jianbo03}. 
-The assuptions to the methods are that \begin{inparaenum}[\itshape a\upshape)]
+The assumptions to the methods are that \begin{inparaenum}[\itshape a\upshape)]
 %It involves taking top eigenvectors of an affinity matrix, which is transformed by calculating the similarity between objects in dataset, and then use graph cut algorithm. 
 \item minimizing normalized cut is equivalent to minimizing the probability that a random walk on the graph.
 \item the larger the gap between $\lambda_{k}$ and $\lambda_{k+1}$, the closer the piecewise-constant eigenvectors will be.
@@ -27,6 +27,7 @@ A_{i,j} = \left\{
 %This means $A_{i,j}$ is the pairwise similarity only if they are neighbourhood. 
 Note that we are assuming that the graph is undirect which makes $A$ symmetric and the weight of an edge is a non-negative measure of similiarity between the two vertices. 
 Higher weights imply greater similarity. 
+In the paper, I use cosine similarity for similarity function $sim$. It is discussed in Section~\ref{subsec:normalabnormalsimilarity}. 
 
 Let $D$ be the diagonal degree matrix $n \times n$ dimensions where $d_{i,i} = \sum_{i} A_{i,j}$ 
 and $W$ be the weighted adjacency matrix, such that $W_{i,i} = 0$ and $w_{i,j}$ is the weight of the edge between $v_i \in V$ and $v_j \in V$. 
@@ -47,7 +48,8 @@ From $L$, we can get the eigenvalues and eigenvectors of Laplacian matrix, and w
 \begin{mdframed}
 \begin{enumerate}
 \item[Input] : Similarity matrix $S \in R^{n \times n}$, number $k$ of clusters. \\
-\item[Step 1] : Construct the normalized graph Laplacian $L = D^{-1/2} A D^{-1/2} - W$, using the weighted $n \times n$ adjacency matrix $W$, where $w_{ij}$ is a function of $S_{ij}$ that gives non-negative weights. \\
+\item[Step 1] : Construct the normalized graph Laplacian $L = D^{-1/2} A D^{-1/2} - W$.
+%Construct the normalized graph Laplacian $L = D^{-1/2} A D^{-1/2} - W$, using the weighted $n \times n$ adjacency matrix $W$, where $w_{ij}$ is a function of $S_{ij}$ that gives non-negative weights. \\
 \item[Step 2] : Find the $k$ eigenvectors $u_1, \cdots, u_k$ corresponding to the smallest $k$ eigenvalues that solve the generalized eigenvector problem $L u = \lambda D u$ \\
 \item[Step 3] : Let $U = R^{n \times k}$ be the matrix containing the eigenvectors $u_i$ as columns, and let $y_i \in R^k$ be the $i$th row of $U$.\\
 \item[Step 4] : Cluster the points $(y_i)_{i=1,\cdots,n}$ in $R^k$ using $k$-means clustering into clusters $C_1,\cdots,C_k$.\\

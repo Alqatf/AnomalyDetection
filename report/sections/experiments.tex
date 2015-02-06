@@ -2,6 +2,7 @@
 I performed experiments to evaluate the performances of similarity measures and algorithms in Section~\ref{sec:connectionsimilarity}.
 \newline
 In Section~\ref{subsec:datasetandsetup}, I describe the dataset that I used for the experiements.\newline
+In Section~\ref{subsec:preprocessing}, I describe data pre-processing over the dataset.\newline
 In Section~\ref{subsec:detectinganomalies}, I evaluate how successful the algorithms are in detecting different types of anomalies.
 
 \subsection{Dataset and Setup}
@@ -80,6 +81,34 @@ I choose $k = 8$ because it is commonly used in spectral clustering approaches.
 %%\item It do not require any prior knowledge.
 %%\item k-nearest neighbor outlier detection algorithm. \cite{knorr00}
 %%\end{itemize}
+
+\subsection{Data Pre-processing}
+\label{subsec:preprocessing}
+A set of network connections $D_{\text{train}}$ and $D_{\text{test}}$ can be extracted from the NSL-KDD dataset. 
+Each connection $D_i = (y, (\theta_{1}, \cdots, \theta_{39}))$ consists of a class label \\ 
+$y \in Y=\{\text{normal},\text{anomaly}_1,\cdots,\text{anomaly}_{34}\}$ and a feature attributes $(\lambda_1,\cdots,\lambda_{39})$. 
+
+$D_{\text{train}}$ has 22 types of known anomaly and $D_{\text{test}}$ has 39 types of known and unknown anomaly which can be seen in Table~\ref{fig:anomalyclasses}. 
+Three of feature attributes are categorical values and ten of them are large numbers which requires data-preprocessing. 
+Those of three are converted from categorical values into interger values. 
+Preprocessing work applies log probability on large numbers $\hat{\lambda_{j}} = \log (\lambda_{j})$ where $j$ is an index of large number attributes. 
+Each attributes' probability density can be learned by EM algorithm that can be used to calculate a log-likelihood score as it stated in Section~\ref{subsec:normalabnormalsimilarity}
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{| l | p{10cm} |}
+\hline
+Type of Attributes & Attributes Names \\
+\hline
+Categorical values & attack, service, flag \\
+\hline
+Large numbers & duration, src-bytes, dst-bytes, num-root, num-compromised, num-file-creations, count, srv-count, dst-host-count, dst-host-srv-count
+\\
+\hline
+\end{tabular}
+\end{center}
+\caption{Preprocessing work required attributes in the NSL-KDD dataset}
+\label{fig:preprocessing}
+\end{table}
 
 \subsection{Detecting Anomalies}
 \label{subsec:detectinganomalies}

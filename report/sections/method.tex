@@ -16,8 +16,9 @@ In Section~\ref{subsec:densitysimilarity}, I describe density similarity measure
 %In Section~\ref{subsec:learningsimilarity}, I describe how the algorithm learn mixture models with training set.\newline
 \subsection{Problem Formulation}
 \label{subsec:problemformulation}
-Given dataset about network connection data, we can learn normal and abnormal mixture models in order to measure similarity score, and estimate a density of normal connections from training set.
-Anomalies can be detected by cluster algorithm based on affinity matrix which is computed by similarity score, or by comparing density of clusters against threshold.
+Given training set about network connection data, we can learn normal and abnormal mixture models in order to measure similarity score, and estimate a density of normal connections from training set.
+Anomalies can be detected by cluster algorithm based on affinity matrix which is computed by similarity score, or by comparing density of clusters against threshold. 
+The aim of the algorithm is to detect a set of anomalies and is not to classify them into types of anomalies. 
 
 \subsection{Normal and Abnormal Network Connection Similarity}
 \label{subsec:normalabnormalsimilarity}
