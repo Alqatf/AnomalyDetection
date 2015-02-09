@@ -269,7 +269,7 @@ if __name__ == '__main__':
         if attack_type_index == model.attack_normal : # why <= instead of ==
             continue
         df2 = df_by_attack_type(df_test_20, attack_type_index)
-        df2 = df2[0:100]
+#        df2 = df2[0:100]
         df = pd.concat([df1, df2])
         title = dataset_description + "_" + attack_type
         logger.debug("#################################################")

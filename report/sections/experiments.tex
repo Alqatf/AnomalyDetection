@@ -1,7 +1,7 @@
 \section{Experiments}
 I performed experiments to evaluate the performances of similarity measures and algorithms in Section~\ref{sec:connectionsimilarity}.
 \newline
-In Section~\ref{subsec:datasetandsetup}, I describe the dataset that I used for the experiements.\newline
+In Section~\ref{subsec:datasetandsetup}, I describe the dataset that I used for the experiments.\newline
 In Section~\ref{subsec:preprocessing}, I describe data pre-processing over the dataset.\newline
 In Section~\ref{subsec:detectinganomalies}, I evaluate how successful the algorithms are in detecting different types of anomalies.
 
@@ -29,15 +29,15 @@ Its relevance of each feature in the dataset is also studied \cite{olusola10} \c
 \caption{Overview of Knowledge Discovery System}
 \label{fig:refSingleRobot1}
 \end{figure}
-The intrusion detection system should find specific kinds of abnomal traffic e.g. a denial of service (DoS) attack. 
-It should check if these new sets of monitoring network traffic show similar properties as the orignal data or not as well. 
+The intrusion detection system should find specific kinds of abnormal traffic e.g. a denial of service (DoS) attack. 
+It should check if these new sets of monitoring network traffic show similar properties as the original data or not as well. 
 I construct the system similar to the knowledge discovery system \cite{fayyad96} because it is widely used among intrusion detection systems. 
 A new approach to construct a pairwise similarity matrix is that it compares their probability in pairwise not its attributes directly. 
 For this, the system includes gaussian mixture models for attributes and classes to calculate the probability for data point as I stated before. 
 %The EM approach is used to fit those models and is guaranteed to converge to a local optimum on given input. 
 With those components, we measure a score for each attributes, and those scores are weighted based on their importance in the dataset \cite{kayacik05}.
 %to get 2D data where x-axis is a score for normal connection similarity and y-axis is a score for known abnormal connection similarity. 
-The experiment suggests that such local optimum can effectively seperate different connections and most of unknown classes. 
+The experiment suggests that such local optimum can effectively separate different connections and most of unknown classes. 
 %\begin{figure}[htb2]
 %\begin{center}
 %\includegraphics[width=3.5in,angle=0]{./sections/training20_only_true_.eps}
@@ -84,13 +84,13 @@ I choose $k = 8$ because it is commonly used in spectral clustering approaches.
 
 \subsection{Data Pre-processing}
 \label{subsec:preprocessing}
-A set of network connections $D_{\text{train}}$ and $D_{\text{test}}$ can be extracted from the NSL-KDD dataset. 
+A set of network connections $D_{\text{train}=(d_1, \cdots, d_{25192})}$ and $D_{\text{test}=(d_1, \cdots, d_{11850})}$ can be extracted from the NSL-KDD dataset. 
 Each connection $D_i = (y, (\theta_{1}, \cdots, \theta_{39}))$ consists of a class label \\ 
 $y \in Y=\{\text{normal},\text{anomaly}_1,\cdots,\text{anomaly}_{34}\}$ and a feature attributes $(\lambda_1,\cdots,\lambda_{39})$. 
 
 $D_{\text{train}}$ has 22 types of known anomaly and $D_{\text{test}}$ has 39 types of known and unknown anomaly which can be seen in Table~\ref{fig:anomalyclasses}. 
 Three of feature attributes are categorical values and ten of them are large numbers which requires data-preprocessing. 
-Those of three are converted from categorical values into interger values. 
+Those of three are converted from categorical values into integer values. 
 Preprocessing work applies log probability on large numbers $\hat{\lambda_{j}} = \log (\lambda_{j})$ where $j$ is an index of large number attributes. 
 Each attributes' probability density can be learned by EM algorithm that can be used to calculate a log-likelihood score as it stated in Section~\ref{subsec:normalabnormalsimilarity}
 \begin{table}[h]
@@ -99,14 +99,15 @@ Each attributes' probability density can be learned by EM algorithm that can be 
 \hline
 Type of Attributes & Attributes Names \\
 \hline
-Categorical values & attack, service, flag \\
+Categorical values (3) & attack, service, flag \\
 \hline
-Large numbers & duration, src-bytes, dst-bytes, num-root, num-compromised, num-file-creations, count, srv-count, dst-host-count, dst-host-srv-count
-\\
+Large numbers (10) & duration, src-bytes, dst-bytes, num-root, num-compromised, num-file-creations, count, srv-count, dst-host-count, dst-host-srv-count \\
+\hline
+Others (26) & land, wrong-fragment, urgent, hot, num-failed-logins, logged-in,su-compromised, root-sheel, su-attempted, num-shells, num-access-files, num-outbound-cmds, is-host-login, is-guest-login, serror-rate, srv-serror-rate, rerror-rate, same-srv-rate, diff-srv-rate, srv-diff-host-rate, dst-host-same-srv-rate, dst-host-diff-srv-rate, dst-host-serror-rate, dst-host-srv-serror-rate, dst-host-rerror-rate, dst-host-srv-rerror-rate \\
 \hline
 \end{tabular}
 \end{center}
-\caption{Preprocessing work required attributes in the NSL-KDD dataset}
+\caption{39 attributes in the NSL-KDD dataset. Preprocessing work required on categorical values or large numbers.}
 \label{fig:preprocessing}
 \end{table}
 
@@ -208,21 +209,33 @@ Those results are good as known anomalies.
 \begin{table}[h]
 \begin{center}
 \scalebox{0.7}{
-\begin{tabular}{| l | l | p{2cm} || l | l | p{2cm} |}
+\begin{tabular}{| l | l | l | l | l | l | p{5cm} |}
 \hline
-Type of Anomaly & Number & $\%$ correct & Type of Anomaly & Number & $\%$ correct \\
+Type of Anomaly & Number & $\%$ correct \\
 \hline
-processtable & 685 & 95.64 & named & 17 & 88  \\
+processtable & 685 & 1011 & 1022 & 40 & 27 & 95.64 \\ 
 \hline
-udpstorm & 2 & 100 & sqlattack & 2 & 100  \\
+named & 17 & 1021 & 924 & 55 & 17 & 88\\
 \hline
-ps & 15 & 100 & httptunnel & 133 & 81  \\
+udpstorm & 2 & 1026 & 914 & 50 & 12 & 100 \\
 \hline
-apache2 & 737 & 97.7 & saint & 309 & 98  \\
+sqlattack & 2 & 1021 & 907 & 57 & 17 & 100  \\
 \hline
-mscan & 996 & 97.42 & xterm & 13 & 100  \\
+ps & 15 & 1024 & 902 & 75 & 14 & 100 \\
 \hline
-worm & 2 & 0 & xclock & 9 & 88.88  \\
+httptunnel & 133 & 1029 & 970 & 92 & 9 & 81  \\
+\hline
+apache2 & 737 & 1011 & 1021 & 41 & 27 & 97.7 \\
+\hline
+saint & 309 & 98 \\
+\hline
+mscan & 996 & 97.42 \\
+\hline
+xterm & 13 & 100  \\
+\hline
+worm & 2 & 0 \\
+\hline
+xclock & 9 & 88.88  \\
 \hline
 xsnoop & 4 & 0  \\
 \hline
@@ -233,7 +246,7 @@ xsnoop & 4 & 0  \\
 \label{fig:refSingleRobot1}
 \end{table}
 
-However 4 out of 17 are close to the normal connections in the trainingset. 
+However 4 out of 17 are close to the normal connections in the training set. 
 In that case, a cluster resulted by spectral clustering is denser than normal case can be detected by density based algorithm if we compare with mixture density generated by normal connections only. 
 So with those prior knowledge we can use a spectral approach to find abnormal clusters which is originally classified as normal clusters. 
 
@@ -251,13 +264,17 @@ The performance of density approach is not as good as previous one, and we can s
 \begin{table}[h]
 \begin{center}
 \scalebox{0.7}{
-\begin{tabular}{| l | l | p{2cm} || l | l | p{2cm} |}
+\begin{tabular}{| l | l | l | l | l | l | p{5cm} |}
 \hline
-Type of Anomaly & Number & $\%$ correct & Type of Anomaly & Number & $\%$correct \\
+Type of Anomaly & Number & TP & TN & FP & FN & Detection rate ($\%$ correct) \\
 \hline
-snmpguess & 331 & 55.5 & snmpgetattack & 178 & 58.9  \\
+snmpguess & 331 & 995 & 969 & 93 & 43 & 184/331 (55.5) \\ 
 \hline
-mailbomb & 293 & 24.7 & sendmail & 14 & 0  \\
+snmpgetattack & 978 & 986 & 178 & 84 & 52 & 105/178 (58.9) \\
+\hline
+mailbomb & 293 & 1019 & 907 & 155 & 19 & 72/293 (24.7) \\
+\hline
+sendmail & 14 & 1021 & 907 & 69 & 17 & 0/14 (0)  \\
 \hline
 \end{tabular}
 }

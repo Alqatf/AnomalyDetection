@@ -5,7 +5,7 @@ Connection data created by host computers is important to monitor of a network s
 Network connection similarity helps to measure the similarity between network connections, and is essential to construct clusters. 
 %, and requires comparison methods that helps to measure the similarity between network connections. 
 %Network connection similairy methods provide how the data points are similar each other and is essential to construct clusters. 
-After reviewing the families of proposed schemes, I indentified similarity and density approaches as a promising approach to solve the problem.
+After reviewing the families of proposed schemes, I identified similarity and density approaches as a promising approach to solve the problem.
 %In this report, we are gonig to measure similarity between network connections. 
 %Since there is not only one normal state, I generated mixture models for normal connections for each protocols and attributes.
 %so the problem of comparing similarity has been an important problem. %\cite{}
@@ -24,10 +24,16 @@ The aim of the algorithm is to detect a set of anomalies and is not to classify 
 \label{subsec:normalabnormalsimilarity}
 Two nodes are similar if their similarity to normal and abnormal mixture models are similar. 
 Mixture models can be learned by EM algorithm, and it is guaranteed to converge to a local optimum on a given input. 
-They compute the similarity score, log probability of each connections, under the model. 
+% They compute the similarity score, log probability of each connections, under the model. 
 In order to define the similarity between two nodes, I found cosine distance of normal and abnormal similarity scores shows better performance. 
-As a result I have mixture modesl seperately for 23 known classes, three protocols and 39 attributes. 
+As a result I have mixture models for 23 known classes, three protocols (TCP/IP, ICMP, UDP) and 39 attributes. 
 Each attributes have different correlation to the result \cite{olusola10}\cite{kayacik05}, so I give different weights on them.
+The log-likelihood function of GMM in this case is :
+
+\begin{equation}
+    \ln p(x \mid \pi, \mu, \Sigma) = \ln (\sum_{k=1}^K \pi_k N(x \mid \mu_k, \Sigma_k)) \text{ where } x \text{ is a network connection.}
+\end{equation}
+
 %Learned $234(=2 \times 3 \times 39)$ Gaussian mixture models in total.
 %\begin{itemize}
 %\item 2 : one for normal, one for abnormal.
