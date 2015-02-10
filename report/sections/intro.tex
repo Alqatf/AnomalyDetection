@@ -1,23 +1,24 @@
 \section{Introduction}
 % What is NIDS?
 Network intrusion detection refers to the detection of malicious activity in computer system. 
-An intrusion is different from the normal behavior of the system, and hence anomaly detection techniques are applicable in the intrusion detection domain \cite{chandola09}.
+An intrusion is different from the normal behaviour of the system, and hence anomaly detection techniques are applicable in the intrusion detection domain \cite{chandola09}.
 
 % Why it is important?
 Network intrusion detection system (NIDS) is important in a computer security perspective. 
 It is one of the most common external and internal discovery methods in industry, and only quick and automated detection method that company can do \cite{verizon14}. 
-% Anomaly detection refers to the problem of finding patterns in data that do not conform to expected behavior \cite{chandola09}. 
+% Anomaly detection refers to the problem of finding patterns in data that do not conform to expected behaviour \cite{chandola09}. 
 %The importance of anomaly detection is due to the fact that anomalies in data translate to significant actionable information in a wide variety of application domains \cite{chandola09}. 
 
 % Why it is hard to solve?
-It is hard to detect intrusion because the training data for an anomaly detection system are very asymmetric with very few and very diverse observed anomalies and a much larger set of normal cases. 
+It is hard to detect intrusions because the training data for an anomaly detection system are very asymmetric with few and diverse observed anomalies and a much larger set of normal cases. 
 %simply by examining dataset. 
-Collective anomalies are hard to find and intrusion anomalies looks close to normal behavior to evade the existing detection solutions \cite{chandola09}. 
-Moreover, the detection of new attacks which show an unprecedented behavior is also hard. 
+Collective anomalies are hard to find and intrusion anomalies looks close to normal behaviour to evade the existing detection solutions \cite{chandola09}. 
+The detection of new attacks which show an unprecedented behaviour is also hard. 
 A metric that is too sensitive to differences will yield many false alarms. 
-Similarly a metric that is not sensitive enough will yield many missed detections.
-Normal user behaviours can be arbitrary and various because labeled data corresponding to normal behaviour is fully available while labels for intrusions are rare but dangerous. 
+Similarly a metric that is not sensitive enough will yield many missed detections. 
+Normal user behaviours can be arbitrary and various because labeled data corresponding to normal behaviour is fully available while labels for intrusions are rare or not available at all. 
+
 % What would be covered?
-In this report, I will study the problem of intrusion detection using a spectral approach. 
+In this report, I will study the problem of intrusion detection using a spectral approach to detect known and unknown anomalies, especially collective anomalies, with few parametric assumptions. 
 % Such intrusions represent significant deviations from "normal" patterns in the spectral approach. 
 %Some example of such deviations are as follows : 

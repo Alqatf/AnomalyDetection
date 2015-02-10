@@ -1,7 +1,7 @@
 \section{Related Work}
 % What is different approaches/alternative to NIDS has there been before?
 Semi-supervised or unsupervised approaches are preferred in intrusion detection \cite{chandola09} because it can handle imbalanced datasets.
-Clustering analysis is an important tool for those approaches so also been studied in context of network anomaly detection. 
+Clustering analysis is an important tool for those approaches so also studied in the context of network anomaly detection. 
 These approaches to network intrusion detection systems can be divided into two methods - distance-based \cite{knorr00}\cite{ramaswamy00} and density-based methods \cite{breuning00}\cite{aggarwal01}. 
 
 % In what way they differ from each other
@@ -11,21 +11,23 @@ A major drawback to clustering algorithm is that anomalies which should not belo
 Also it is subjective to choose a number of clusters or neighborhood in advance, so not applicable to the case of dynamic intrusion detection. 
 
 One of the strategies in order to find an approximative solution to the intractable optimization problem is a eigenvalue decomposition and graph cut algorithm. 
-However the naive graph cut algorithm is NP-hard problem and noise-sensitive. 
+It is called a spectral clustering as well. 
+The naive graph cut algorithm is NP-hard problem and noise-sensitive. 
 To diminish those weaknesses, normalized cut \cite{jianbo00} is proposed. 
 It solves NP-hard problem by approximate solution.
 Spectral clustering according to Jordan and Francis \cite{jordan04} and Ng, Jordan and Weiss \cite{ng01} proposed a new algorithm for spectral clustering with objective function with different normalized terms that minimize the error.
 Dhillon et al. \cite{dhillon04}, and Ding and He \cite{cding04} showed that the objective function is equivalent to weighted kernel k-means algorithm.
-They only consider divide into two class and it is weak at noise. 
+However since all of them only try to divide data points into two classes, it is weak at noise.
+So it may applicable to image data but not applicable to real network connection data. 
+Mostly spectral clustering is used in the spatial analysis such as image segmentation and their performances are generally good especially for non-convex clustering problem. 
 % Although its performance is generally good, it is weak at noise. 
-So there is multiclass approach \cite{jianbo03}. 
 
 % In what way they differ from what we do here
 % Why is our approach better than what has done before. does it solve a partly new aspect of the problem or does it simply perform better
-However mostly it is used in the spatial analysis such as image segmentation while their performance is generally good especially for non-convex clustering problem. 
 In this report, I will design the intrusion detection system in spectral approach. 
-It will measure pairwise similarity of data points like the other spectral clustering. 
-In order to use normal behaviour data in the setting I will utilize the EM approach to automatically learn the similarity score functions and density function before the clustering. 
+We can bring a multiclass spectral clustering \cite{jianbo03} to alleviate noise problem. 
+It will measure pairwise similarity of data points. %like the other spectral clustering. 
+I will utilize the EM approach to automatically learn the similarity score functions and density function for normal network connections. %before the clustering. 
 This semi-supervised learning ensures that it is useful for the case of normal behaviours, and easy to bring prior knowledge. 
 %that multi-lcass spectral clustering with EM algorithm and density estimation. 
 %Although spectral clustering only requires pairwise similarity of data points, I use semi-supervised way of learning. 

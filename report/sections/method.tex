@@ -16,24 +16,43 @@ In Section~\ref{subsec:densitysimilarity}, I describe density similarity measure
 %In Section~\ref{subsec:learningsimilarity}, I describe how the algorithm learn mixture models with training set.\newline
 \subsection{Problem Formulation}
 \label{subsec:problemformulation}
-Given training set about network connection data, we can learn normal and abnormal mixture models in order to measure similarity score, and estimate a density of normal connections from training set.
+Given network connection data, we can learn normal and abnormal mixture models in order to measure similarity score and estimate a density of normal connections. 
 Anomalies can be detected by cluster algorithm based on affinity matrix which is computed by similarity score, or by comparing density of clusters against threshold. 
 The aim of the algorithm is to detect a set of anomalies and is not to classify them into types of anomalies. 
 
 \subsection{Normal and Abnormal Network Connection Similarity}
 \label{subsec:normalabnormalsimilarity}
 Two nodes are similar if their similarity to normal and abnormal mixture models are similar. 
-Mixture models can be learned by EM algorithm, and it is guaranteed to converge to a local optimum on a given input. 
 % They compute the similarity score, log probability of each connections, under the model. 
-In order to define the similarity between two nodes, I found cosine distance of normal and abnormal similarity scores shows better performance. 
-As a result I have mixture models for 23 known classes, three protocols (TCP/IP, ICMP, UDP) and 39 attributes. 
-Each attributes have different correlation to the result \cite{olusola10}\cite{kayacik05}, so I give different weights on them.
-The log-likelihood function of GMM in this case is :
+I found that cosine similarity shows better performance when to measure the similarity between two nodes $\hat{x_i}$ and $\hat{x_j}$. 
+A node in this paper is defined as $\hat{x_i} = (s_{\text{normal}}, s_{\text{abnormal}})$ transported from 39-dimensional data point $x_i$. 
+A normal or abnormal score $s$ is defined as follows:
 
 \begin{equation}
-    \ln p(x \mid \pi, \mu, \Sigma) = \ln (\sum_{k=1}^K \pi_k N(x \mid \mu_k, \Sigma_k)) \text{ where } x \text{ is a network connection.}
+    s = \sum_{i=1}^{39} w_i \theta_i \text{ where $\theta_i$ is a log-likelihood and $w_i$ is a weight of $x$'s $i$th attribute.} 
 \end{equation}
 
+%The similarity for given data point $x$ that is a normal or abnormal score $s = \sum_{i=1}^{39} w_i \theta_i$ 
+To do this, we need to have mixture models for two classes - normal and abnormal, three protocols - TCP/IP, ICMP, UDP and 39 attributes as in Table~\ref{fig:preprocessing}. 
+As a result the total number of mixture models that is required is 234 ($= 2 \cdot 3 \cdot 39$).
+Mixture models can be learned from the training set by EM algorithm, and it is guaranteed to converge to a local optimum on a given input. 
+The log-likelihood function of a GMM in this case is :
+
+\begin{equation}
+    \theta_i = \ln p(z_i \mid \pi, \mu, \Sigma) = \ln (\sum_{k=1}^K \pi_k N(z_i \mid \mu_k, \Sigma_k)) \text{ where $z_i$ is $x$'s $i$th attribute.}
+\end{equation}
+
+%where $\theta_i$ is a log-likelihood probability calculated from a mixture model $m_i$ of all 39 attributes. 
+The log-likelihoods $\theta_1, \cdots, \theta_{39}$ are going to be weighted by $w_1, \cdots, w_{39}$ based on attribute's importance \cite{kayacik05}. 
+%Each attribute has different correlation to the result \cite{olusola10}\cite{kayacik05}, so I give a different weight $w_i$ on them. 
+%Also $(\theta_1, \cdots, \theta_{39})$ is called a score vector $v$. 
+So a score $s$ is simply a weighted-sum of all the elements of a score vector $v = (\theta_1, \cdots, \theta_{39})$. 
+
+%As a result, we convert every 39-dimensional data point $x_i$ to 2-dimensional data point $\hat{x_i} = (s_{\text{normal}}, s_{\text{abnormal}})$ in the dataset. 
+%So we are going to have nodes $X = (\hat{x_1}, \cdots, \hat{x_n})$. 
+As a result, we are going to have a set of nodes $X = (\hat{x_1}, \cdots, \hat{x_n})$, and we can measure pairwise similarity between $\hat{x_i}$ and $\hat{x_j}$ by cosine similarity function. 
+%is going to be used to measure pairwise similarity 
+%and it is going to be used to measure cosine similarity. 
 %Learned $234(=2 \times 3 \times 39)$ Gaussian mixture models in total.
 %\begin{itemize}
 %\item 2 : one for normal, one for abnormal.
@@ -47,9 +66,9 @@ The log-likelihood function of GMM in this case is :
 
 \subsection{Connection Density Similarity}
 \label{subsec:densitysimilarity}
-A cluster is abnormal if its density differs from density of known normal connections even though the cluster is similar to normal behaviour \cite{ester96}. 
+A cluster is abnormal if its density differs from a density of known normal connections even though the cluster is similar to normal behaviour \cite{ester96}. 
 For anomaly detection, only density of each cluster is compared with the density of known normal connections. 
-If the density of a cluster is higher than a supposed density in the region, the cluster is classified as an anomaly. 
+If the density of one cluster is higher than a supposed density in the region, data points in the cluster are classified as anomalies. 
 So it allows detecting unknown anomalies which is similar to known normal connections. 
 In contrast to the known normal and abnormal connection similarity, it does not need to use known anomalies that appear in the training set. 
 %This is illustrated in (Figure) where one cluster over the distribution and threshold. 
@@ -65,4 +84,3 @@ We can also define threshold and adjust threshold if false-positive or false-neg
 %\item Similarity to known normal behavior.
 %\item Similarity to known abnormal behavior.
 %\end{itemize}
-

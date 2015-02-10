@@ -24,7 +24,7 @@ import util
 import logger
 
 today = util.make_today_folder('./results')
-#today = "./results/2015-01-08"
+today = "./results/2015-02-09"
 
 plot_lim_max = 21
 plot_lim_min = -21

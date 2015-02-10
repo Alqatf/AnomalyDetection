@@ -7,8 +7,8 @@ In Section~\ref{subsec:detectinganomalies}, I evaluate how successful the algori
 
 \subsection{Dataset and Setup}
 \label{subsec:datasetandsetup}
-The KDD 99 dataset is mainly used for a network-based intrusion detection algorithm evaluation \cite{tavallaee09}. 
-I select the NSL-KDD dataset, which is an up-to-date version of the KDD 99 dataset, as an effective benchmark. 
+The KDD 99 dataset is mainly used for a network-based intrusion detection algorithm evaluation. 
+I select the NSL-KDD dataset \cite{tavallaee09}, an up-to-date version of the KDD 99 dataset, as an effective benchmark. 
 % Since the NSL-KDD dataset solves issues in the KDD 99 dataset, I use the dataset as an effective benchmark. 
 Its relevance of each feature in the dataset is also studied \cite{olusola10} \cite{kayacik05}. 
 % All source code is on the Internet. 
@@ -30,12 +30,12 @@ Its relevance of each feature in the dataset is also studied \cite{olusola10} \c
 \label{fig:refSingleRobot1}
 \end{figure}
 The intrusion detection system should find specific kinds of abnormal traffic e.g. a denial of service (DoS) attack. 
-It should check if these new sets of monitoring network traffic show similar properties as the original data or not as well. 
+Moreover it should check if these new sets of monitoring network traffic show similar properties as the original data or not. 
 I construct the system similar to the knowledge discovery system \cite{fayyad96} because it is widely used among intrusion detection systems. 
-A new approach to construct a pairwise similarity matrix is that it compares their probability in pairwise not its attributes directly. 
-For this, the system includes gaussian mixture models for attributes and classes to calculate the probability for data point as I stated before. 
+A proposed approach to construct a pairwise similarity matrix is that it utilizes cosine similarity between score vectors of two data points as in Section~\ref{subsec:normalabnormalsimilarity}. 
+In order to achieve this, the system includes GMM of attributes, protocols and classes. %to construct a vector consists of log-likelihood scores for a data point. 
 %The EM approach is used to fit those models and is guaranteed to converge to a local optimum on given input. 
-With those components, we measure a score for each attributes, and those scores are weighted based on their importance in the dataset \cite{kayacik05}.
+%With those components, we can make a score vector for a data point and those scores are weighted based on their importance in the dataset \cite{kayacik05}.
 %to get 2D data where x-axis is a score for normal connection similarity and y-axis is a score for known abnormal connection similarity. 
 The experiment suggests that such local optimum can effectively separate different connections and most of unknown classes. 
 %\begin{figure}[htb2]
@@ -85,14 +85,16 @@ I choose $k = 8$ because it is commonly used in spectral clustering approaches.
 \subsection{Data Pre-processing}
 \label{subsec:preprocessing}
 A set of network connections $D_{\text{train}=(d_1, \cdots, d_{25192})}$ and $D_{\text{test}=(d_1, \cdots, d_{11850})}$ can be extracted from the NSL-KDD dataset. 
-Each connection $D_i = (y, (\theta_{1}, \cdots, \theta_{39}))$ consists of a class label \\ 
-$y \in Y=\{\text{normal},\text{anomaly}_1,\cdots,\text{anomaly}_{34}\}$ and a feature attributes $(\lambda_1,\cdots,\lambda_{39})$. 
+Each connection $x_i = (y, (\lambda_{1}, \cdots, \lambda_{39}))$ consists of a class label \\ 
+$y \in Y=\{\text{normal},\text{anomaly}_1,\cdots,\text{anomaly}_{34}\}$ and an attribute vector $(\lambda_1,\cdots,\lambda_{39})$. 
 
 $D_{\text{train}}$ has 22 types of known anomaly and $D_{\text{test}}$ has 39 types of known and unknown anomaly which can be seen in Table~\ref{fig:anomalyclasses}. 
-Three of feature attributes are categorical values and ten of them are large numbers which requires data-preprocessing. 
-Those of three are converted from categorical values into integer values. 
-Preprocessing work applies log probability on large numbers $\hat{\lambda_{j}} = \log (\lambda_{j})$ where $j$ is an index of large number attributes. 
-Each attributes' probability density can be learned by EM algorithm that can be used to calculate a log-likelihood score as it stated in Section~\ref{subsec:normalabnormalsimilarity}
+Three of feature attributes are categorical values and ten of them are large numbers which requires data pre-processing. 
+Preprocessing work does convert three of them from categorical values into integer values and apply $\ln$ function on large numbers. 
+Each attributes' probability density can be estimated by EM algorithm that can be used to calculate a log-likelihood as in Section~\ref{subsec:normalabnormalsimilarity}. 
+
+%Those of three are converted from categorical values into integer values. 
+%Preprocessing work applies log probability on large numbers $\hat{\lambda_{j}} = \log (\lambda_{j})$ where $j$ is an index of large number attributes. 
 \begin{table}[h]
 \begin{center}
 \begin{tabular}{| l | p{10cm} |}
@@ -107,46 +109,60 @@ Others (26) & land, wrong-fragment, urgent, hot, num-failed-logins, logged-in,su
 \hline
 \end{tabular}
 \end{center}
-\caption{39 attributes in the NSL-KDD dataset. Preprocessing work required on categorical values or large numbers.}
+\caption{39 attributes in the NSL-KDD dataset.} % Preprocessing work required on categorical values or large numbers.
 \label{fig:preprocessing}
 \end{table}
+
+Given those mixture models, we can get 2-dimensional vector $\hat{x} = (s_{\text{normal}}, s_{\text{abnormal}})$ 
+where $s_{\text{normal}}$ is a score generated from 39 mixture models of normal network connections of protocol $p$ 
+and $s_{\text{abnormal}}$ is a score generated from 39 mixture models of abnormal network connections of protocol $p$. 
+Each data point $x$ is assigned to protocol $p \in \{\text{TCP/IP}, \text{ICMP}, \text{UDP}\}$ 
+
+With those transported points $\hat{x}$, we can construct an affinity matrix with cosine similarity function as in Section~\ref{sec:spectralclustering}. 
+Therefore it is ready to use spectral clustering. 
 
 \subsection{Detecting Anomalies}
 \label{subsec:detectinganomalies}
 In this section, I describe how a sparse affinity matrix can be used to detect point and collective anomalies. 
-In the following experiments, I divide experiments for known anomalies and unknown anomalies. 
+I divide the testset into known anomalies and unknown anomalies in the following experiments. 
+To use spectral clustering, we need enough sample data apart from anomalies to construct an affinity matrix. 
+I use 2000 random samples of the NSL-KDD dataset. 
+Usually half of them are normal while the others are abnormal. 
+Here is a sample data that I use in this experiments and a result of algorithm given sample data. 
 
 \begin{table}[h]
 \begin{center}
 \scalebox{0.7}{
 \begin{tabular}{| l | l | l | l | l | l | p{5cm} |}
 \hline
-Type of Anomaly & Number & TP & TN & FP & FN & Detection rate ($\%$ correct) \\
+Total number of samples & The number of anomalies & TP & TN & FP & FN & Detection rate $\%$ correct \\
 \hline
-Sample & 962 & 1021 & 907 & 55 & 17 & 94.2 \\ 
+2000 & 962 & 1021 & 907 & 55 & 17 & 94.2 \\ 
 \hline
 \end{tabular}
 }
 \end{center}
-\caption{Sampled data}
+\caption{Detection result of sample data}
 \label{fig:refSingleRobot1}
 \end{table}
 
 \subsubsection{Known Anomalies}
-We can see that trained normal and abnormal similarity functions are sensitive to known anomalies in the testset - their scores are similar to known anomalies and dissimilar to known normal connections. 
+We can see that trained normal and abnormal similarity functions are sensitive to known anomalies in the testset.
+%Their scores are similar to known anomalies and dissimilar to known normal network connections. 
+For most of normal and abnormal classes, similarity scores of their data points are very close to known normal or abnormal connections. 
 %normal and abnormal connections similarity are sensitive to known anomalies. 
-It shows how much trained similarity functions capture the effects of an known anomalies. 
+It shows how much trained similarity functions capture the effects of known anomalies. 
 % The similarity coputed by mixture models gives similarity scores that are used to find k nearest neighborhood.
-For most of classes, similarity of their points is very close to either known normal or abnormal connections. 
 %In summary, all the class successfully detect known anomalies in spectral approach. 
 However this approach does not work if the number of intrusions are insufficient because those classes are not well trained in mixture models, and data points tend to assigned to different clusters. 
+For example, detection rates are poor to the classes that has less than 100 data points such as \textit{ftp write} and \textit{rootkit} in Table~\ref{fig:knownanomaliesdetectionrate}. 
 
 \begin{figure}[htb2]
 \begin{center}
 \subfloat[Predicted labels]{\includegraphics[width=3.0in,angle=0]{./sections/training20_test20_back_prediction_.eps}}
 \subfloat[True labels]{\includegraphics[width=3.0in,angle=0]{./sections/training20_test20_back_true_.eps}}
 \end{center}
-\caption{Anomaly detection for known anomalies. Red:Known and seen abnormal connections, Green:Known and seen normal connections, Blue:Intrusion "back" which is a known anomaly but in the testset.} % I may show rest of data in appendix
+\caption{Anomaly detection for known anomalies. Red:Known and seen abnormal connections, Green:Known and seen normal connections, Blue:Intrusion \textit{back} which is a known and unseen anomalies.} % I may show rest of data in appendix
 \label{fig:refSingleRobot1}
 
 \end{figure}
@@ -156,54 +172,54 @@ However this approach does not work if the number of intrusions are insufficient
 \scalebox{0.7}{
 \begin{tabular}{| l | l | l | l | l | l | p{5cm} |}
 \hline
-Type of Anomaly & Number & TP & TN & FP & FN & Detection rate ($\%$ correct) \\
+Type of Anomaly & The number of anomalies & TP & TN & FP & FN & Detection rate $\%$ correct \\
 \hline
-guess passwd & 1231 & 898 & 2158 (1231) & 35 (0) & 140 & 100 \\
+guess passwd & 2193 (1231) & 898 & 2158 (1231) & 35 (0) & 140 & 98.4 (100) \\
 \hline
-ftp write & 3 & 1019 & 921 (1) & 44 (2) & 19 & 33.3 \\
+ftp write & 965 (3) & 1019 & 921 (1) & 44 (2) & 19 & 95.44 (33.3) \\
 \hline
-nmap & 73 & 1002 & 997 (73) & 38 (0) & 36 & 100 \\
+nmap & 1038 (73) & 1002 & 997 (73) & 38 (0) & 36 & 96.53 (100) \\
 \hline
-back & 370 & 1011 & 1280 (358) & 41 (12) & 27 & 96.7 \\
+back & 1332 (370) & 1011 & 1280 (358) & 41 (12) & 27 & 96.8 (96.7) \\
 \hline
-multihop & 18 & 1011 & 937 (15) & 43 (3) & 27 & 83.3 \\
+multihop & 980 (18) & 1011 & 937 (15) & 43 (3) & 27 & 95.6 (83.3) \\
 \hline
-rootkit & 13 & 1019 & 920 (0) & 55 (13) & 19 & 0  \\
+rootkit & 975 (13) & 1019 & 920 (0) & 55 (13) & 19 & 94.3 (0)  \\
 \hline
-pod & 41 & 1013 & 963 (41) & 40 (0) & 25 & 100 \\
+pod & 1003 (41) & 1013 & 963 (41) & 40 (0) & 25 & 96 (100) \\
 \hline
-perl & 2 & 1021 & 907 (0) & 57 (2) & 17 & 0 \\
+perl & 964 (2) & 1021 & 907 (0) & 57 (2) & 17 & 94 (0) \\
 \hline
-ipsweep & 207 & 999 & 1041 (184) & 62 (23) & 39 & 88.8 \\
+ipsweep & 1169 (207) & 999 & 1041 (184) & 62 (23) & 39 & 94.37 (88.8) \\
 \hline
-teardrop & 12 & 1021 & 932 (12) & 42 (0) & 17 & 100 \\
+teardrop & 974 (12) & 1021 & 932 (12) & 42 (0) & 17 & 95.68 (100) \\
 \hline
-satan & 779 & 1015 & 1657 (777) & 40 (2) & 23 & 99.7 \\
+satan & 1741 (779) & 1015 & 1657 (777) & 40 (2) & 23 & 97.6 (99.7) \\
 \hline
-loadmodule & 2 & 1011 & 924 (2) & 40 (0) & 27 & 100  \\
+loadmodule & 964 (2) & 1011 & 924 (2) & 40 (0) & 27 & 95.8 (100)  \\
 \hline
-buffer overflow & 20 & 1012 & 940 (16) & 42 (4) & 26 & 80 \\ 
+buffer overflow & 982 (20) & 1012 & 940 (16) & 42 (4) & 26 & 95.7 (80) \\ 
 \hline
-phf & 2 & 1019 & 908 (1) & 56 (1) & 19 & 50  \\
+phf & 964 (2) & 1019 & 908 (1) & 56 (1) & 19 & 94.1 (50)  \\
 \hline
-warezmaster & 944 & 946 & 1834 (908) & 72 (36) & 92 & 96.1 \\ 
+warezmaster & 1906 (944) & 946 & 1834 (908) & 72 (36) & 92 & 96.2 (96.1) \\ 
 \hline
-imap & 1 & 1019 & 907 (0) & 56 (1) & 19 & 0 \\
+imap & 963 (1) & 1019 & 907 (0) & 56 (1) & 19 & 94.1 (0) \\
 \hline
-warezclient & 22 & 1019 & 907 (0) & 55 (22) & 19 & 0 \\
+warezclient & 984 (22) & 1019 & 907 (0) & 55 (22) & 19 & 94.2 (0) \\
 \hline
-land & 7 & 1021 & 914 (7) & 55 (0) & 17 & 100  \\
+land & 969 (7) & 1021 & 914 (7) & 55 (0) & 17 & 94.32 (100)  \\
 \hline
-neptune & 5331 & 933 & 5588 (5327) & 31 (4) & 105 & 99.9 \\
+neptune & 6293 (5331) & 933 & 5588 (5327) & 31 (4) & 105 & 99.4 (99.9) \\
 \hline
-smurf & 665 & 1018 & 1579 (665) & 48 (0) & 20 & 100  \\
+smurf & 1627 (665) & 1018 & 1579 (665) & 48 (0) & 20 & 97 (100)  \\
 \hline
 \end{tabular}
 }
 \end{singlespace}
 \end{center}
-\caption{Known anomalies detection rate}
-\label{fig:refSingleRobot1}
+\caption{Detection result of known anomalies. The number in parentheses refers specific anomaly type.}
+\label{fig:knownanomaliesdetectionrate}
 \end{table}
 
 %Result provides the sensitivity and the coverage of similarity measure that is effective. 
@@ -234,12 +250,12 @@ smurf & 665 & 1018 & 1579 (665) & 48 (0) & 20 & 100  \\
 %\end{figure}
 \newpage
 \subsubsection{Unknown Anomalies}
-We see that normal and abnormal connection similarity are also sensitive to most of unknown anomaly. 
-However, we have four classes that are similar to normal connections. 
-Connection density similarity measure is sensitive in this type of anomaly if it is above its threshold. 
+We see that normal and abnormal connection similarity are also sensitive to 13 of out 17 unknown anomalies. 
+Although we also have four classes that are similar to normal connections, 
+density measurement can detect those anomalies if it is above its threshold. 
 
-13 out of 17 unknown anomalies such as "processtable" class are similar to known anomalies. 
-Therefore we can detect them with exactly same way what it have done to known anomalies. 
+13 unknown anomalies such as \textit{processtable} class are similar to known anomalies. 
+Therefore we can detect them with exactly same way what it has done to known anomalies. 
 Those results are good as known anomalies. 
 
 \begin{table}[h]
@@ -247,43 +263,43 @@ Those results are good as known anomalies.
 \scalebox{0.7}{
 \begin{tabular}{| l | l | l | l | l | l | p{5cm} |}
 \hline
-Type of Anomaly & Number & TP & TN & FP & FN & Detection rate ($\%$ correct) \\
+Type of Anomaly & The number of anomalies & TP & TN & FP & FN & Detection rate $\%$ correct \\
 \hline
-processtable & 685 & 1018 & 1597 (683) & 50 (2) & 20 & 99.7 \\ 
+processtable & 1647 (685) & 1018 & 1597 (683) & 50 (2) & 20 & 96.9 (99.7) \\ 
 \hline
-named & 17 & 1021 & 924 (4) & 55 (13) & 17 & 23.5\\
+named & 979 (17) & 1021 & 924 (4) & 55 (13) & 17 & 94.3 (23.5) \\
 \hline
-udpstorm & 2 & 1011 & 924 (2) & 40 (0) & 27 & 100 \\
+udpstorm & 964 (2) & 1011 & 924 (2) & 40 (0) & 27 & 95.8 (100) \\
 \hline
-sqlattack & 2 & 1021 & 907 (0) & 57 (2) & 17 & 0  \\
+sqlattack & 964 (2) & 1021 & 907 (0) & 57 (2) & 17 & 94.0 (0)  \\
 \hline
-ps & 15 & 1019 & 910 (3) & 67 (12) & 19 & 20 \\
+ps & 977 (15) & 1019 & 910 (3) & 67 (12) & 19 & 93.1 (20) \\
 \hline
-httptunnel & 133 & 1015 & 1016 (109) & 79 (24) & 23 & 81.9  \\
+httptunnel & 1095 (133) & 1015 & 1016 (109) & 79 (24) & 23 & 92.7 (81.9)  \\
 \hline
-apache2 & 737 & 1014 & 1656 (734) & 43 (3) & 24 & 99.5 \\
+apache2 & 1699 (737) & 1014 & 1656 (734) & 43 (3) & 24 & 97.4 (99.5) \\
 \hline
-saint & 319 & 1014 & 1227 (309) & 54 (10) & 24 & 96.8 \\
+saint & 1281 (319) & 1014 & 1227 (309) & 54 (10) & 24 & 95.7 (96.8) \\
 \hline
-mscan & 996 & 1018 & 1910 (996) & 48 (0) & 20 & 100 \\
+mscan & 1958 (996) & 1018 & 1910 (996) & 48 (0) & 20 & 97.5 (100) \\
 \hline
-xterm & 13 & 1011 & 935 (13) & 40 (0) & 27 & 100  \\
+xterm & 975 (13) & 1011 & 935 (13) & 40 (0) & 27 & 95.8 (100)  \\
 \hline
-worm & 2 & 1019 & 907 (0) & 57 (2) & 19 & 0 \\
+worm & 964 (2) & 1019 & 907 (0) & 57 (2) & 19 & 94.0 (0) \\
 \hline
-xlock & 9 & 1013 & 925 (3) & 46 (6) & 25 & 66.66  \\
+xlock & 971 (9) & 1013 & 925 (3) & 46 (6) & 25 & 95.2 (66.66)  \\
 \hline
-xsnoop & 4 & 1013 & 925 (3) & 41 (1) & 25 & 75  \\
+xsnoop & 966 (4) & 1013 & 925 (3) & 41 (1) & 25 & 95.7 (75)  \\
 \hline
 \end{tabular}
 }
 \end{center}
-\caption{Unknown anomalies that is similar to the known anomalies detection rate}
+\caption{Detection result of unknown anomalies that is similar to the known anomalies detection rate. The number in parentheses refers specific anomaly type.}
 \label{fig:refSingleRobot1}
 \end{table}
 
-However 4 out of 17 are close to the normal connections in the training set. 
-In that case, a cluster resulted by spectral clustering is denser than normal case can be detected by density based algorithm if we compare with mixture density generated by normal connections only. 
+We have four classes that are close to the normal connections. 
+In that case, a cluster resulted by spectral clustering is denser than normal case, so it can be detected by density based algorithm if we compare with mixture density generated by normal connections only. 
 So with those prior knowledge we can use a spectral approach to find abnormal clusters which is originally classified as normal clusters. 
 
 \begin{figure}[htb2]
@@ -292,30 +308,30 @@ So with those prior knowledge we can use a spectral approach to find abnormal cl
 \subfloat[True labels]{\includegraphics[width=2.0in,angle=0]{./sections/training20_test20_snmpguess_true_.eps}}
 \subfloat[Densities]{\includegraphics[width=2.0in,angle=0]{./sections/guess.eps}}
 \end{center}
-\caption{Density based intrusion detection result for unknown anomalies.  Red:Known and seen abnormal connections, Green:Known and seen normal connections, Blue:Intrusion "snmpguess" which is a unknown anomaly similar to normal connections.} % I may show rest of data in appendix
+\caption{Density based intrusion detection result for unknown anomalies.  Red:Known and seen abnormal connections, Green:Known and seen normal connections, Blue:Intrusion \textit{snmpguess} which is a unknown anomaly similar to normal connections.} % I may show rest of data in appendix
 \label{fig:refSingleRobot1}
 \end{figure}
 
-The performance of density approach is not as good as previous one, and we can see that it is not able to detect "sendmail" class which is too few to form enough density. 
+The performance of density approach is not as good as previous one, and we can see that it is not able to detect \textit{sendmail} class which is too few to form enough density. 
 \begin{table}[h]
 \begin{center}
 \scalebox{0.7}{
 \begin{tabular}{| l | l | l | l | l | l | p{5cm} |}
 \hline
-Type of Anomaly & Number & TP & TN & FP & FN & Detection rate ($\%$ correct) \\
+Type of Anomaly & The number of anomalies & TP & TN & FP & FN & Detection rate ($\%$ correct) \\
 \hline
-snmpguess & 331 & 975 & 1182 (254) & 111 (77) & 63 & 76.7 \\ 
+snmpguess & 1293 (331) & 975 & 1182 (254) & 111 (77) & 63 & 93.9 (76.7) \\ 
 \hline
-snmpgetattack & 178 & 973 & 1048 (126) & 92 (52) & 65 & 71.5 \\
+snmpgetattack & 1140 (178) & 973 & 1048 (126) & 92 (52) & 65 & 91.19 (71.5) \\
 \hline
-mailbomb & 293 & 882 & 1133 (223) & 122 (70) & 156 & 76.1 \\
+mailbomb & 1255 (293) & 882 & 1133 (223) & 122 (70) & 156 & 90.2 (76.1) \\
 \hline
-sendmail & 14 & 1019 & 907 (0) & 69 (14) & 19 & 0  \\
+sendmail & 976 (14) & 1019 & 907 (0) & 69 (14) & 19 & 92.9 (0) \\
 \hline
 \end{tabular}
 }
 \end{center}
-\caption{Unknown anomalies that is similar to known normals detection rate}
+\caption{Detection result of unknown anomalies that is similar to known normal connections. The number in parentheses refers specific anomaly type.}
 \label{fig:refSingleRobot1}
 \end{table}
 
