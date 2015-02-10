@@ -116,6 +116,22 @@ Others (26) & land, wrong-fragment, urgent, hot, num-failed-logins, logged-in,su
 In this section, I describe how a sparse affinity matrix can be used to detect point and collective anomalies. 
 In the following experiments, I divide experiments for known anomalies and unknown anomalies. 
 
+\begin{table}[h]
+\begin{center}
+\scalebox{0.7}{
+\begin{tabular}{| l | l | l | l | l | l | p{5cm} |}
+\hline
+Type of Anomaly & Number & TP & TN & FP & FN & Detection rate ($\%$ correct) \\
+\hline
+Sample & 962 & 1021 & 907 & 55 & 17 & 94.2 \\ 
+\hline
+\end{tabular}
+}
+\end{center}
+\caption{Sampled data}
+\label{fig:refSingleRobot1}
+\end{table}
+
 \subsubsection{Known Anomalies}
 We can see that trained normal and abnormal similarity functions are sensitive to known anomalies in the testset - their scores are similar to known anomalies and dissimilar to known normal connections. 
 %normal and abnormal connections similarity are sensitive to known anomalies. 
@@ -138,29 +154,49 @@ However this approach does not work if the number of intrusions are insufficient
 \begin{center}
 \begin{singlespace}
 \scalebox{0.7}{
-\begin{tabular}{| l | l | p{2cm} || l | l | p{2cm} |}
+\begin{tabular}{| l | l | l | l | l | l | p{5cm} |}
 \hline
-Type of Anomaly & Number & $\%$ correct & Type of Anomaly & Number & $\%$ correct \\
+Type of Anomaly & Number & TP & TN & FP & FN & Detection rate ($\%$ correct) \\
 \hline
-guess passwd & 1231 & 94.91 & ftp write & 3 & 66.66 \\
+guess passwd & 1231 & 898 & 2158 (1231) & 35 (0) & 140 & 100 \\
 \hline
-nmap & 73 & 85.71 & back & 359 & 98.03  \\
+ftp write & 3 & 1019 & 921 (1) & 44 (2) & 19 & 33.3 \\
 \hline
-multihop & 18 & 100 & rootkit & 13 & 84.61  \\
+nmap & 73 & 1002 & 997 (73) & 38 (0) & 36 & 100 \\
 \hline
-pod & 41 & 100 & perl & 2 & 0  \\
+back & 370 & 1011 & 1280 (358) & 41 (12) & 27 & 96.7 \\
 \hline
-ipsweep & 117 & 97.4 & teardrop & 12 & 100  \\
+multihop & 18 & 1011 & 937 (15) & 43 (3) & 27 & 83.3 \\
 \hline
-satan & 727 & 87.96 & loadmodule & 2 & 0  \\
+rootkit & 13 & 1019 & 920 (0) & 55 (13) & 19 & 0  \\
 \hline
-buffer overflow & 20 & 90 & phf & 2 & 50  \\
+pod & 41 & 1013 & 963 (41) & 40 (0) & 25 & 100 \\
 \hline
-warezmaster & 944 & 84 & imap & 1 & 100  \\
+perl & 2 & 1021 & 907 (0) & 57 (2) & 17 & 0 \\
 \hline
-warezclient & 6 & 0 & land & 7 & 100  \\
+ipsweep & 207 & 999 & 1041 (184) & 62 (23) & 39 & 88.8 \\
 \hline
-neptune & 1579 & 89.23 & smurf & 627 & 95.33  \\
+teardrop & 12 & 1021 & 932 (12) & 42 (0) & 17 & 100 \\
+\hline
+satan & 779 & 1015 & 1657 (777) & 40 (2) & 23 & 99.7 \\
+\hline
+loadmodule & 2 & 1011 & 924 (2) & 40 (0) & 27 & 100  \\
+\hline
+buffer overflow & 20 & 1012 & 940 (16) & 42 (4) & 26 & 80 \\ 
+\hline
+phf & 2 & 1019 & 908 (1) & 56 (1) & 19 & 50  \\
+\hline
+warezmaster & 944 & 946 & 1834 (908) & 72 (36) & 92 & 96.1 \\ 
+\hline
+imap & 1 & 1019 & 907 (0) & 56 (1) & 19 & 0 \\
+\hline
+warezclient & 22 & 1019 & 907 (0) & 55 (22) & 19 & 0 \\
+\hline
+land & 7 & 1021 & 914 (7) & 55 (0) & 17 & 100  \\
+\hline
+neptune & 5331 & 933 & 5588 (5327) & 31 (4) & 105 & 99.9 \\
+\hline
+smurf & 665 & 1018 & 1579 (665) & 48 (0) & 20 & 100  \\
 \hline
 \end{tabular}
 }
@@ -211,33 +247,33 @@ Those results are good as known anomalies.
 \scalebox{0.7}{
 \begin{tabular}{| l | l | l | l | l | l | p{5cm} |}
 \hline
-Type of Anomaly & Number & $\%$ correct \\
+Type of Anomaly & Number & TP & TN & FP & FN & Detection rate ($\%$ correct) \\
 \hline
-processtable & 685 & 1011 & 1022 & 40 & 27 & 95.64 \\ 
+processtable & 685 & 1018 & 1597 (683) & 50 (2) & 20 & 99.7 \\ 
 \hline
-named & 17 & 1021 & 924 & 55 & 17 & 88\\
+named & 17 & 1021 & 924 (4) & 55 (13) & 17 & 23.5\\
 \hline
-udpstorm & 2 & 1026 & 914 & 50 & 12 & 100 \\
+udpstorm & 2 & 1011 & 924 (2) & 40 (0) & 27 & 100 \\
 \hline
-sqlattack & 2 & 1021 & 907 & 57 & 17 & 100  \\
+sqlattack & 2 & 1021 & 907 (0) & 57 (2) & 17 & 0  \\
 \hline
-ps & 15 & 1024 & 902 & 75 & 14 & 100 \\
+ps & 15 & 1019 & 910 (3) & 67 (12) & 19 & 20 \\
 \hline
-httptunnel & 133 & 1029 & 970 & 92 & 9 & 81  \\
+httptunnel & 133 & 1015 & 1016 (109) & 79 (24) & 23 & 81.9  \\
 \hline
-apache2 & 737 & 1011 & 1021 & 41 & 27 & 97.7 \\
+apache2 & 737 & 1014 & 1656 (734) & 43 (3) & 24 & 99.5 \\
 \hline
-saint & 309 & 98 \\
+saint & 319 & 1014 & 1227 (309) & 54 (10) & 24 & 96.8 \\
 \hline
-mscan & 996 & 97.42 \\
+mscan & 996 & 1018 & 1910 (996) & 48 (0) & 20 & 100 \\
 \hline
-xterm & 13 & 100  \\
+xterm & 13 & 1011 & 935 (13) & 40 (0) & 27 & 100  \\
 \hline
-worm & 2 & 0 \\
+worm & 2 & 1019 & 907 (0) & 57 (2) & 19 & 0 \\
 \hline
-xclock & 9 & 88.88  \\
+xlock & 9 & 1013 & 925 (3) & 46 (6) & 25 & 66.66  \\
 \hline
-xsnoop & 4 & 0  \\
+xsnoop & 4 & 1013 & 925 (3) & 41 (1) & 25 & 75  \\
 \hline
 \end{tabular}
 }
@@ -268,13 +304,13 @@ The performance of density approach is not as good as previous one, and we can s
 \hline
 Type of Anomaly & Number & TP & TN & FP & FN & Detection rate ($\%$ correct) \\
 \hline
-snmpguess & 331 & 995 & 969 & 93 & 43 & 184/331 (55.5) \\ 
+snmpguess & 331 & 975 & 1182 (254) & 111 (77) & 63 & 76.7 \\ 
 \hline
-snmpgetattack & 978 & 986 & 178 & 84 & 52 & 105/178 (58.9) \\
+snmpgetattack & 178 & 973 & 1048 (126) & 92 (52) & 65 & 71.5 \\
 \hline
-mailbomb & 293 & 1019 & 907 & 155 & 19 & 72/293 (24.7) \\
+mailbomb & 293 & 882 & 1133 (223) & 122 (70) & 156 & 76.1 \\
 \hline
-sendmail & 14 & 1021 & 907 & 69 & 17 & 0/14 (0)  \\
+sendmail & 14 & 1019 & 907 (0) & 69 (14) & 19 & 0  \\
 \hline
 \end{tabular}
 }
