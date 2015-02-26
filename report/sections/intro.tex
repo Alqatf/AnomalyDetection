@@ -4,7 +4,7 @@ Network intrusion detection refers to the detection of malicious activity in com
 An intrusion is different from the normal behaviour of the system, and hence anomaly detection techniques are applicable in the intrusion detection domain \cite{chandola09}.
 
 % Why it is important?
-Network intrusion detection system (NIDS) is important in a computer security perspective. 
+Network intrusion detection systems (NIDS) are important in a computer security perspective. 
 It is one of the most common external and internal discovery methods in industry, and only quick and automated detection method that company can do \cite{verizon14}. 
 % Anomaly detection refers to the problem of finding patterns in data that do not conform to expected behaviour \cite{chandola09}. 
 %The importance of anomaly detection is due to the fact that anomalies in data translate to significant actionable information in a wide variety of application domains \cite{chandola09}. 
@@ -18,7 +18,10 @@ A metric that is too sensitive to differences will yield many false alarms.
 Similarly a metric that is not sensitive enough will yield many missed detections. 
 Normal user behaviours can be arbitrary and various because labeled data corresponding to normal behaviour is fully available while labels for intrusions are rare or not available at all. 
 
-% What would be covered?
+% Problem formulation or What would be covered?
 In this report, I will study the problem of intrusion detection using a spectral approach to detect known and unknown anomalies, especially collective anomalies, with few parametric assumptions. 
 % Such intrusions represent significant deviations from "normal" patterns in the spectral approach. 
 %Some example of such deviations are as follows : 
+The aim of the algorithm is to detect a set of anomalies and is not to classify them into types of anomalies. 
+We can learn normal and abnormal mixture models in order to measure similarity score and estimate a density of normal connections. 
+Anomalies can be detected by cluster algorithm based on affinity matrix which is computed by similarity score, or by comparing density of clusters against threshold. 
