@@ -1,11 +1,17 @@
 \section{Related Work}
 \label{sec:relatedwork}
 % alternatives: What is different approaches/alternative to NIDS has there been before?
-Semi-supervised or unsupervised approaches are preferred in intrusion detection \cite{chandola09} because it can handle imbalanced datasets and make use of unlabeled data which is cheaper to obtain than labeled data.
-Clustering analysis is an important tool for those approaches so also studied in the context of network anomaly detection \cite{chandola09}. 
-Clustering approaches to network intrusion detection systems can be divided into two methods 
-- distance-based \cite{ramaswamy00}\cite{knorr00} and density-based methods \cite{aggarwal01}\cite{breuning00}\cite{ester96}. 
+%(p1: In the related work, you should maybe start with a paragraph where you introduce anomaly detection, and describe what alternatives there are. As I remember it, there are approaches that do one-class classification (and do not try to group anomalies at all), and cluster based approaches (which is what you do). As it is now, you jump directly in sentence 2 of Related Work into an explanation about different clustering methods.)
+For an overview of different anomaly detection methods and applications, mostly semi-supervised or unsupervised approaches have previously been applied to anomaly detection problems including one-class SVM \cite{ester96}, bayesian method \cite{holst12}, graph stream \cite{aggarwal01} and distance-based method \cite{ramaswamy00} because those approaches can handle imbalanced datasets and make use of unlabeled data which is cheaper to obtain than labeled data. 
+However, when the intrusions occur collectively among a background of normal data, those approaches are not effective since they are limited to finding point anomalies as known as outliers. 
+So clustering analysis \cite{breuning00} \cite{knorr00} are preferred in the context of collective anomaly detection. 
 
+%Semi-supervised or unsupervised approaches are preferred in intrusion detection \cite{chandola09} because it can handle imbalanced datasets and make use of unlabeled data which is cheaper to obtain than labeled data.
+%Clustering analysis is an important tool for those approaches so also studied in the context of network anomaly detection \cite{chandola09}. 
+%Clustering approaches to network intrusion detection systems can be divided into two methods 
+%- distance-based \cite{ramaswamy00}\cite{knorr00} and density-based methods \cite{aggarwal01}\cite{breuning00}\cite{ester96}. 
+%In the context of intrusion detection, clustering analysis is \cite{ramaswamy00} \cite{knorr00} is an effective tool so the method presented here is also based on clustering algorithm.  
+%The method presented here is based on clustering analysis since it is an important tool for semi-those approaches so also studied in the context of network anomaly detection \cite{chandola09}. 
 % problems : In what way they differ from each other
 Clustering approaches, however, have several drawbacks. 
 Firstly, they are hard to be easily generalized in multi-dimensional data because the neighborhood can be arbitrary. 

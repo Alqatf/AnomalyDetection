@@ -1,9 +1,15 @@
 \section{Spectral clustering}
 \label{sec:spectralclustering}
 % Basic
-Spectral clustering algorithm is a graph-based clustering algorithm. 
-It represents data points are represented as vertices and constructs an affinity matrix after measuring pairwise similarity and distance between points to form edges. 
-After that, it takes $k$ eigenvectors of corresponding to the $k$ largest eigenvalues of an affinity matrix, and then uses graph cut algorithm to form clusters. 
+Spectral clustering algorithm is a graph-based clustering algorithm of $n$ data points. 
+It make use of an $n \times n$ affinity matrix which is constructed after measuring pairwise similarity and distance between data points to form edges. 
+Unlike the other clustering algorithms, it can determine the number of clusters $k$ by using eigengap algorithm. 
+%It make use of similarity matrix which represents data points as vertices. 
+After that, it takes $k$ eigenvectors of corresponding to the $k$ largest eigenvalues of an affinity matrix as columns, 
+then uses $k$-way clustering algorithm in $k$ dimensions. 
+In short, it performs dimensionality reduction since $k < n$ then produces clusters in fewer dimensions. 
+Note that the number of cluster $k$ is the same as the number of column $k$ of reduced space. 
+
 The assumptions to the methods are that \begin{inparaenum}[\itshape a\upshape)]
 %It involves taking top eigenvectors of an affinity matrix, which is transformed by calculating the similarity between objects in dataset, and then use graph cut algorithm. 
 \item minimizing normalized cut is equivalent to minimizing the probability that a random walk on the graph.
@@ -11,8 +17,8 @@ The assumptions to the methods are that \begin{inparaenum}[\itshape a\upshape)]
 the closer the piecewise-constant eigenvectors will be
 \end{inparaenum}. \newline 
 %In this section, I describe the detail of the spectral clustering algorithm. More details can be found in \cite{ulrike07}.\newline
-In Section~\ref{subsec:eigengap}, I describes the eigengap algorithm.\newline
-In Section~\ref{subsec:multiclass}, I describes the multiclass spectral clustering algorithm.
+%In Section~\ref{subsec:eigengap}, I describes the eigengap algorithm.\newline
+%In Section~\ref{subsec:multiclass}, I describes the multiclass spectral clustering algorithm.
 
 %So it may be applied to image data but not to real network connection data. 
 % Although its performance is generally good, it is weak at noise. 
@@ -24,7 +30,8 @@ In Section~\ref{subsec:multiclass}, I describes the multiclass spectral clusteri
 \subsection{Eigengap algorithm}
 \label{subsec:eigengap}
 % Important concept - k -  to a reviewer first 
-We can find the value of $k$ that maximizes the eigengap which finds a maximum difference between consecutive eigenvalues by following equation. 
+The eigengap is a difference between two consecutive eigenvalues. 
+We can find the value of $k$ that maximizes the eigengap by following equation. 
 \begin{equation}
 \Delta_{max} = \operatorname*{arg\,max}_{k} \Delta_k, \text{~~} \Delta_k = | \lambda_k - \lambda_{k-1} |
 \end{equation}
@@ -42,6 +49,7 @@ Spectral clustering algorithms attempt to find $k$ subsets of data points which 
 
 Let $A \in \mathbb{R}^{n \times n}$ is the affinity matrix where $n$ is the number of data points. It is defined as 
 \begin{equation}
+\label{eq:sim}
 A_{i,j} = \left\{ 
   \begin{array}{l l}
     sim(x_i, x_j) & \quad \text{for $x_j$ is a data point in neighbourhood of $x_i$}\\
@@ -87,6 +95,7 @@ Thirdly, we need to choose proper clustering method.
 %After we find them, we can build embedded space from the eigenvectors corresponding to the $k$ eigenvalues given by eigengap algorithm. 
 %After that, we can apply known outlier detection techniques \cite{knorr00} to the reduced $n \times k$ space to produce $k$ clusters. 
 \begin{figure}[ht]
+\label{fig:spectralclustering}
 \begin{mdframed}
 \begin{enumerate}
 \item[Input] : Similarity matrix $S \in \mathbb{R}^{n \times n}$, number $k$ of clusters. 

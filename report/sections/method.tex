@@ -1,17 +1,28 @@
 \section{Network Connection Similarity}
 \label{sec:connectionsimilarity}
+In this section, I describe how multiclass spectral clustering algorithm can be applied to find anomalies in network connection data. 
+%Equation~\ref{eq:sim} contains cosine similarity function and nearest neighbourhood measurement that allow a set of data points to construct the normalized Laplacian matrix. 
+%It works well on low-dimensional data otherwise its pairwise cosine similarity and nearest neighbourhood can be arbitrary. 
+%In this section, I describe how EM algorithm can reduce network data points' dimensionality and how we can detect point anomalies within a cluster which is classified as a normal case. 
+%(p4: Add a sentence in the beginning of Section 5 that leads over from Section 4, saying that you now will explain how the multiclass spectral clustering algorithm can be applied to finding anomaly classes in network connection data.)
+
 A network connection is a connection between computers in the Internet to transmit and receive data. 
-Connection data created by host computers is important to monitor of a network status.
-Network connection similarity helps to measure the similarity between network connections, and is essential to construct clusters. 
+Connection data created by host computers is important to monitor of a network status. 
+The problem is that mostly a network connection data is high-dimensional. 
+So its pairwise cosine similarity and nearest neighbourhood can be arbitrary. 
+Network connection data have also a number of point anomalies. 
+A major drawback to clustering is that point anomalies can be assigned to a larger cluster which might be possibly classified to normal behaviour. 
+
+%Network connection similarity helps to measure the similarity between network connections, and is essential to construct clusters. 
 %, and requires comparison methods that helps to measure the similarity between network connections. 
 %Network connection similairy methods provide how the data points are similar each other and is essential to construct clusters. 
-After reviewing the families of proposed schemes, I identified similarity and density approaches as a promising approach to solve the problem.
+After reviewing the families of proposed schemes, I identified similarity and density approaches as a promising approach to solve the problems.
 %In this report, we are gonig to measure similarity between network connections. 
 %Since there is not only one normal state, I generated mixture models for normal connections for each protocols and attributes.
 %so the problem of comparing similarity has been an important problem. %\cite{}
 \newline
 %In Section~\ref{subsec:problemformulation}, I describe the problem.\newline
-In Section~\ref{subsec:normalabnormalsimilarity}, I propose new approaches to train similarity cost function.\newline
+In Section~\ref{subsec:normalabnormalsimilarity}, I propose new approaches to train similarity score function.\newline
 In Section~\ref{subsec:densitysimilarity}, I describe density similarity measurement which is relied on the way of representatives of the clusters and threshold.\newline
 %In Section~\ref{subsec:learningsimilarity}, I describe how the algorithm learn mixture models with training set.\newline
 %\subsection{Problem Formulation}
@@ -22,7 +33,7 @@ In Section~\ref{subsec:densitysimilarity}, I describe density similarity measure
 %
 \subsection{Normal and Abnormal Network Connection Similarity}
 \label{subsec:normalabnormalsimilarity}
-I now describe how to train a similarity cost function for both normal and abnormal network connection data points. 
+I now describe how to train a similarity score function for both normal and abnormal network connection data points to reduce dimensionality. 
 Let $\hat{x_i} = (score_{\text{normal}}, score_{\text{abnormal}})$ is a node that is two-dimensional 
 where $score_{\text{normal}}$ is a similarity score to normal mixture models 
 and $score_{\text{abnormal}}$ is a similarity score to abnormal mixture models. 
